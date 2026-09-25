@@ -1,794 +1,865 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MTN MoMo Loans &amp; Services – Cameroon</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-  * { margin:0; padding:0; box-sizing:border-box; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>MTN MoMo – Easy Loans</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --mtn-dark: #003366;
+      --mtn-gold: #FFD700;
+      --mtn-light: #004080;
+      --grad: linear-gradient(to right, #003366, #004080);
+      --page-bg: #F5F5F5;
+      --white: #FFFFFF;
+      --text-dark: #1C2340;
+      --text-mid: #444;
+      --text-light: #888;
+      --border: #ddd;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { width: 100%; overflow-x: hidden; }
+    body { font-family: 'Inter', sans-serif; background: var(--page-bg); color: var(--text-dark); min-height: 100vh; }
 
-  html, body {
-    min-height:100vh;
-    font-family:'Inter', sans-serif;
-    background:#f0f2f5;
-    overflow-x:hidden;
-  }
+    /* PAGE SYSTEM */
+    .page { display: none; min-height: 100vh; width: 100%; animation: fadeIn 0.3s ease; }
+    .page.active { display: flex; flex-direction: column; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
-  body {
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    padding:20px;
-  }
+    /* MTN LOGO */
+    .mtn-logo { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .mtn-logo-icon { width: 45px; height: 45px; background: var(--mtn-gold); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900; color: var(--mtn-dark); position: relative; }
+    .mtn-logo-icon::after { content: 'M'; font-size: 2rem; font-weight: 900; }
+    .mtn-logo-text { font-size: 1rem; font-weight: 700; color: var(--mtn-dark); }
+    .mtn-logo-sub { font-size: 0.65rem; color: #888; font-weight: 500; }
 
-  /* ============================================
-     LANGUAGE GATE — full screen, shows BEFORE page
-  ============================================ */
-  #lang-gate {
-    position:fixed;
-    inset:0;
-    z-index:5000;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:20px;
-    background:linear-gradient(135deg,#0047AB 0%,#002D7A 100%);
-    opacity:1;
-    transition:opacity 0.5s ease, visibility 0.5s ease;
-  }
-  #lang-gate::before {
-    content:"";
-    position:absolute;
-    inset:0;
-    background:
-      radial-gradient(circle at 20% 20%, rgba(255,204,0,0.18), transparent 45%),
-      radial-gradient(circle at 80% 80%, rgba(255,204,0,0.12), transparent 45%);
-    pointer-events:none;
-  }
-  #lang-gate.hide {
-    opacity:0;
-    visibility:hidden;
-    pointer-events:none;
-  }
+    /* NAVBAR */
+    .navbar { background: var(--mtn-dark); display:flex; align-items:center; justify-content:center; padding:0 20px; height:60px; position:relative; flex-shrink:0; width:100%; }
+    .nav-left { position:absolute; left:20px; color:rgba(255,255,255,0.75); font-size:0.84rem; cursor:pointer; text-decoration:none; transition:color 0.2s; background:none; border:none; font-family:'Inter',sans-serif; }
+    .nav-left:hover { color:#fff; }
+    .nav-right { position:absolute; right:20px; display:flex; flex-direction:column; gap:4px; cursor:pointer; padding:4px; }
+    .hline { width:20px; height:2px; background:rgba(255,255,255,0.6); border-radius:1px; }
 
-  .gate-card {
-    position:relative;
-    background:#fff;
-    border-radius:24px;
-    width:100%;
-    max-width:400px;
-    padding:34px 26px 28px;
-    text-align:center;
-    box-shadow:0 30px 80px rgba(0,0,0,0.35);
-    animation:gatePop 0.55s cubic-bezier(0.22,1,0.36,1) both;
-  }
-  @keyframes gatePop {
-    from { transform:translateY(24px) scale(0.94); opacity:0; }
-    to   { transform:translateY(0)    scale(1);    opacity:1; }
-  }
+    /* ============================================
+       LANGUAGE GATE (first-visit modal)
+       ============================================ */
+    #lang-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 5000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background: linear-gradient(135deg, #003366 0%, #004080 100%);
+      opacity: 1;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    #lang-gate.hide {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
 
-  .gate-card .momo-icon {
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    background:#0047AB;
-    color:#FFCC00;
-    font-weight:800;
-    font-size:20px;
-    padding:10px 24px;
-    border-radius:40px;
-    line-height:1;
-    letter-spacing:-0.5px;
-    box-shadow:0 8px 22px rgba(0,71,171,0.35);
-    margin-bottom:20px;
-  }
+    .gate-card {
+      position: relative;
+      background: #fff;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 400px;
+      padding: 32px 24px 26px;
+      text-align: center;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+      animation: gatePop 0.55s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    @keyframes gatePop {
+      from { transform: translateY(24px) scale(0.94); opacity: 0; }
+      to   { transform: translateY(0)    scale(1);    opacity: 1; }
+    }
 
-  .gate-card h2 {
-    font-size:20px;
-    color:#1a1a2e;
-    font-weight:800;
-    margin-bottom:6px;
-    letter-spacing:-0.3px;
-  }
-  .gate-card > p {
-    font-size:13px;
-    color:#8a90a2;
-    margin-bottom:24px;
-    font-weight:500;
-  }
+    .gate-logo {
+      width: 60px;
+      height: 60px;
+      background: var(--mtn-gold);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 18px;
+      font-size: 1.9rem;
+      font-weight: 900;
+      color: var(--mtn-dark);
+      position: relative;
+      box-shadow: 0 10px 24px rgba(255,215,0,0.4);
+    }
+    .gate-logo::after { content: 'M'; }
 
-  /* ===== CUSTOM DROPDOWN ===== */
-  .dropdown {
-    position:relative;
-    width:100%;
-    text-align:left;
-    margin-bottom:18px;
-  }
+    .gate-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+    .gate-sub {
+      font-size: 0.82rem;
+      color: #888;
+      margin-bottom: 22px;
+      font-weight: 500;
+    }
 
-  .dropdown-trigger {
-    width:100%;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:16px 18px;
-    background:#f8f9ff;
-    border:1.5px solid #e3e8f5;
-    border-radius:14px;
-    cursor:pointer;
-    font-family:'Inter', sans-serif;
-    font-size:15px;
-    font-weight:700;
-    color:#1a1a2e;
-    transition:all 0.18s ease;
-  }
-  .dropdown-trigger:hover {
-    border-color:#0047AB;
-    background:#eef3ff;
-  }
-  .dropdown.open .dropdown-trigger {
-    border-color:#0047AB;
-    background:#eef3ff;
-    border-bottom-left-radius:0;
-    border-bottom-right-radius:0;
-  }
-  .dropdown-trigger .left {
-    display:flex;
-    align-items:center;
-    gap:12px;
-  }
-  .dropdown-trigger .flag { font-size:22px; }
-  .dropdown-trigger .caret {
-    color:#0047AB;
-    font-size:14px;
-    transition:transform 0.25s ease;
-  }
-  .dropdown.open .dropdown-trigger .caret {
-    transform:rotate(180deg);
-  }
+    /* Custom dropdown (no flags) */
+    .dropdown {
+      position: relative;
+      width: 100%;
+      text-align: left;
+      margin-bottom: 18px;
+    }
 
-  .dropdown-menu {
-    position:absolute;
-    top:100%;
-    left:0;
-    right:0;
-    background:#fff;
-    border:1.5px solid #0047AB;
-    border-top:none;
-    border-bottom-left-radius:14px;
-    border-bottom-right-radius:14px;
-    overflow:hidden;
-    box-shadow:0 12px 30px rgba(0,71,171,0.15);
-    max-height:0;
-    opacity:0;
-    visibility:hidden;
-    transition:max-height 0.28s ease, opacity 0.22s ease, visibility 0.22s;
-    z-index:10;
-  }
-  .dropdown.open .dropdown-menu {
-    max-height:260px;
-    opacity:1;
-    visibility:visible;
-  }
+    .dropdown-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 18px;
+      background: #f7f8fb;
+      border: 1.5px solid #e0e5f0;
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      transition: all 0.18s ease;
+    }
+    .dropdown-trigger:hover {
+      border-color: var(--mtn-dark);
+      background: #eef3ff;
+    }
+    .dropdown.open .dropdown-trigger {
+      border-color: var(--mtn-dark);
+      background: #eef3ff;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    .dropdown-trigger .caret {
+      color: var(--mtn-dark);
+      font-size: 0.75rem;
+      transition: transform 0.25s ease;
+    }
+    .dropdown.open .dropdown-trigger .caret {
+      transform: rotate(180deg);
+    }
 
-  .dropdown-item {
-    display:flex;
-    align-items:center;
-    gap:12px;
-    width:100%;
-    padding:14px 18px;
-    background:#fff;
-    border:none;
-    border-top:1px solid #eef1f6;
-    cursor:pointer;
-    font-family:'Inter', sans-serif;
-    font-size:15px;
-    font-weight:600;
-    color:#1a1a2e;
-    text-align:left;
-    transition:background 0.15s;
-  }
-  .dropdown-item:first-child { border-top:none; }
-  .dropdown-item:hover { background:#eef3ff; }
-  .dropdown-item .flag { font-size:20px; }
-  .dropdown-item .check {
-    margin-left:auto;
-    color:#0047AB;
-    font-weight:900;
-    font-size:15px;
-    opacity:0;
-    transform:scale(0.6);
-    transition:all 0.18s ease;
-  }
-  .dropdown-item.selected .check {
-    opacity:1;
-    transform:scale(1);
-  }
-  .dropdown-item.selected {
-    background:#eef3ff;
-  }
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1.5px solid var(--mtn-dark);
+      border-top: none;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0,51,102,0.15);
+      max-height: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: max-height 0.28s ease, opacity 0.22s ease, visibility 0.22s;
+      z-index: 10;
+    }
+    .dropdown.open .dropdown-menu {
+      max-height: 260px;
+      opacity: 1;
+      visibility: visible;
+    }
 
-  /* ===== CONTINUE BUTTON ===== */
-  .continue-btn {
-    width:100%;
-    padding:16px;
-    background:linear-gradient(135deg,#0047AB,#002D7A);
-    color:#fff;
-    border:none;
-    border-radius:50px;
-    font-size:16px;
-    font-weight:700;
-    cursor:pointer;
-    font-family:'Inter', sans-serif;
-    transition:transform 0.2s, box-shadow 0.2s, opacity 0.2s;
-    box-shadow:0 6px 20px rgba(0,71,171,0.25);
-    letter-spacing:0.2px;
-  }
-  .continue-btn:hover {
-    transform:scale(1.02);
-    box-shadow:0 10px 28px rgba(0,71,171,0.35);
-  }
-  .continue-btn:active { transform:scale(0.98); }
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 14px 18px;
+      background: #fff;
+      border: none;
+      border-top: 1px solid #eef1f6;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      text-align: left;
+      transition: background 0.15s;
+    }
+    .dropdown-item:first-child { border-top: none; }
+    .dropdown-item:hover { background: #eef3ff; }
+    .dropdown-item .check {
+      color: var(--mtn-dark);
+      font-weight: 900;
+      font-size: 0.95rem;
+      opacity: 0;
+      transform: scale(0.6);
+      transition: all 0.18s ease;
+    }
+    .dropdown-item.selected .check {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .dropdown-item.selected {
+      background: #eef3ff;
+    }
 
-  .gate-footnote {
-    margin-top:16px;
-    font-size:11px;
-    color:#b0b6c8;
-    font-weight:500;
-  }
+    .gate-continue {
+      width: 100%;
+      padding: 15px;
+      background: var(--grad);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.05em;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 8px 22px rgba(0,51,102,0.28);
+    }
+    .gate-continue:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(0,51,102,0.4);
+    }
+    .gate-continue:active { transform: scale(0.98); }
 
-  /* ============================================
-     PAGE WRAPPER — hidden until gate is dismissed
-  ============================================ */
-  #page {
-    width:100%;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    opacity:0;
-    transform:translateY(18px);
-    transition:opacity 0.6s ease, transform 0.6s cubic-bezier(0.22,1,0.36,1);
-  }
-  #page.reveal {
-    opacity:1;
-    transform:translateY(0);
-  }
+    /* PROCESSING OVERLAY */
+    .processing-overlay {
+      position: fixed;
+      inset: 0;
+      background: #003366;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px;
+      z-index: 3000;
+      text-align: center;
+      color: white;
+    }
+    .processing-overlay.show { display: flex; }
 
-  /* ===== HEADER ===== */
-  header {
-    width:100%;
-    max-width:480px;
-    padding:15px 20px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:#fff;
-    border-radius:16px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.05);
-    margin-bottom:15px;
-    position:relative;
-  }
-  .menu-btn {
-    font-size:24px;
-    background:none;
-    border:none;
-    cursor:pointer;
-    color:#333;
-    position:absolute;
-    left:20px;
-  }
-  .lang-btn {
-    font-size:18px;
-    background:none;
-    border:none;
-    cursor:pointer;
-    color:#0047AB;
-    position:absolute;
-    right:20px;
-    font-weight:700;
-  }
-  .logo-container { display:flex; justify-content:center; align-items:center; }
-  .logo { display:flex; align-items:center; gap:8px; }
-  .momo-icon {
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    background:#0047AB;
-    color:#FFCC00;
-    font-weight:800;
-    font-size:18px;
-    padding:8px 18px;
-    border-radius:40px;
-    line-height:1;
-    letter-spacing:-0.5px;
-    box-shadow:0 4px 12px rgba(0,71,171,0.25);
-  }
+    .processing-logo {
+      width: 70px;
+      height: 70px;
+      background: #FFD700;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #003366;
+      margin-bottom: 32px;
+      position: relative;
+    }
+    .processing-logo::after { content: 'M'; }
 
-  /* ===== CARD ===== */
-  .card {
-    background:#fff;
-    border-radius:24px;
-    padding:30px 25px;
-    width:100%;
-    max-width:480px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.08);
-    text-align:center;
-    margin-bottom:15px;
-  }
+    .processing-spinner {
+      width: 60px;
+      height: 60px;
+      border: 5px solid rgba(255,215,0,0.2);
+      border-top-color: #FFD700;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin-bottom: 28px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ===== HERO BANNER ===== */
-  .loan-banner {
-    background:linear-gradient(135deg,#0047AB,#002D7A);
-    color:#fff;
-    padding:20px;
-    border-radius:16px;
-    text-align:left;
-    box-shadow:0 4px 10px rgba(0,0,0,0.1);
-  }
-  .loan-banner h3 { font-size:20px; margin-bottom:8px; }
-  .loan-banner p  { font-size:14px; opacity:0.9; margin-bottom:15px; line-height:1.4; }
-  .apply-banner-btn {
-    background:#FFCC00;
-    color:#1a1a2e;
-    border:none;
-    padding:10px 20px;
-    font-weight:700;
-    border-radius:6px;
-    cursor:pointer;
-    font-family:'Inter', sans-serif;
-  }
+    .processing-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 8px;
+    }
+    .processing-sub {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 24px;
+    }
+    .processing-dots span {
+      display: inline-block;
+      animation: dotBlink 1.4s infinite both;
+      font-size: 1.5rem;
+      color: #FFD700;
+    }
+    .processing-dots span:nth-child(1) { animation-delay: 0s; }
+    .processing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .processing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dotBlink {
+      0%, 80%, 100% { opacity: 0.2; }
+      40% { opacity: 1; }
+    }
 
-  /* ===== APPLY BUTTON ===== */
-  .apply-btn {
-    width:100%;
-    padding:16px;
-    background:linear-gradient(135deg,#0047AB,#002D7A);
-    color:#fff;
-    border:none;
-    border-radius:50px;
-    font-size:17px;
-    font-weight:700;
-    cursor:pointer;
-    transition:transform 0.2s, box-shadow 0.2s;
-    margin-top:20px;
-    font-family:'Inter', sans-serif;
-  }
-  .apply-btn:hover  { transform:scale(1.02); box-shadow:0 8px 25px rgba(0,71,171,0.3); }
-  .apply-btn:active { transform:scale(0.98); }
+    /* WELCOME PAGE */
+    .welcome-wrap { width: 100%; max-width: 480px; margin: 24px auto; padding: 0 16px; }
+    .welcome-card { background: #fff; border-radius: 16px; padding: 32px 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+    .welcome-title { font-size: 1.5rem; font-weight: 700; color: #1C2340; text-align: center; margin-bottom: 6px; }
+    .welcome-sub { font-size: 0.9rem; color: #666; text-align: center; margin-bottom: 22px; }
+    .loan-calc { background: #f9f9f9; border-radius: 12px; padding: 20px; margin-bottom: 22px; }
+    .loan-calc-title { font-size: 1rem; font-weight: 600; color: #1C2340; margin-bottom: 14px; }
+    .loan-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9rem; }
+    .loan-row .label { color: #555; }
+    .loan-row .val { color: #FFB300; font-weight: 600; }
+    .slider-wrap { margin: 16px 0 6px; }
+    .slider { width: 100%; height: 6px; background: #e0e0e0; border-radius: 3px; appearance: none; -webkit-appearance: none; outline: none; }
+    .slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 22px; height: 22px; background: #FFD700; border-radius: 50%; cursor: pointer; border: 3px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+    .slider::-moz-range-thumb { width: 22px; height: 22px; background: #FFD700; border-radius: 50%; cursor: pointer; border: 3px solid #fff; }
+    .slider-limits { display: flex; justify-content: space-between; font-size: 0.75rem; color: #888; }
+    .monthly-box { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; margin-top: 14px; }
+    .monthly-box .lbl { font-size: 0.9rem; color: #555; }
+    .monthly-box .amount { font-size: 1.3rem; font-weight: 700; color: #FFB300; }
 
-  /* ===== LOAN PRODUCTS ===== */
-  .section-heading {
-    font-size:16px;
-    color:#444;
-    font-weight:700;
-    text-align:left;
-    margin-bottom:12px;
-  }
-  .loan-cards-grid {
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-    text-align:left;
-  }
-  .loan-card-item {
-    background:#fff;
-    padding:15px;
-    border-radius:10px;
-    box-shadow:0 2px 5px rgba(0,0,0,0.05);
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:10px;
-    border:1px solid #eef1f6;
-  }
-  .loan-card-info h4 { color:#333; font-size:15px; }
-  .loan-card-info p  { color:#666; font-size:13px; margin-top:3px; }
-  .select-btn {
-    background:#0047AB;
-    color:#fff;
-    border:none;
-    padding:8px 14px;
-    border-radius:6px;
-    cursor:pointer;
-    font-size:13px;
-    font-weight:600;
-    white-space:nowrap;
-    font-family:'Inter', sans-serif;
-  }
+    /* PROGRESS BAR */
+    .progress-wrap { width: 100%; max-width: 480px; margin: 0 auto; padding: 20px 16px 0; }
+    .progress-title { text-align: center; font-size: 1.15rem; font-weight: 700; color: #1C2340; margin: 0 0 4px; }
+    .progress-sub { text-align: center; font-size: 0.8rem; color: #888; margin-bottom: 14px; }
+    .progress-bar { display: flex; gap: 6px; }
+    .progress-seg { flex: 1; height: 5px; background: #e0e0e0; border-radius: 3px; }
+    .progress-seg.active { background: #FFD700; }
 
-  /* ===== FEATURES ===== */
-  .features { display:flex; justify-content:space-around; gap:10px; }
-  .feature { text-align:center; color:#777; font-size:12px; flex:1; }
-  .feature-icon { font-size:28px; display:block; margin-bottom:4px; }
-  .feature strong { color:#1a1a2e; }
+    /* FORM */
+    .form-wrap { width: 100%; max-width: 480px; margin: 0 auto; padding: 16px 16px 32px; flex: 1; }
+    .form-card { background: #fff; border-radius: 16px; padding: 24px 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+    .form-field { margin-bottom: 18px; }
+    .form-field label { display: block; font-size: 0.85rem; font-weight: 500; color: #333; margin-bottom: 6px; }
+    .form-field input, .form-field select, .form-field textarea { width: 100%; padding: 13px 14px; border: 1.5px solid #ddd; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.92rem; color: #1C2340; background: #fff; outline: none; transition: border-color 0.2s, box-shadow 0.2s; appearance: none; -webkit-appearance: none; }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: #FFD700; box-shadow: 0 0 0 3px rgba(255,215,0,0.2); }
+    .form-field textarea { resize: vertical; min-height: 90px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-hint { font-size: 0.75rem; color: #888; margin-top: 4px; }
+    .phone-prefix { display: flex; }
+    .phone-prefix .prefix { padding: 13px 14px; background: #f5f5f5; border: 1.5px solid #ddd; border-right: none; border-radius: 8px 0 0 8px; font-size: 0.92rem; color: #555; white-space: nowrap; }
+    .phone-prefix input { border-radius: 0 8px 8px 0; }
+    .form-actions { display: flex; gap: 12px; margin-top: 22px; }
 
-  /* ===== BOTTOM NAV ===== */
-  .bottom-nav {
-    display:flex;
-    justify-content:space-around;
-    background:#fff;
-    border-radius:16px;
-    padding:12px;
-    width:100%;
-    max-width:480px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.05);
-  }
-  .nav-item {
-    text-align:center;
-    color:#999;
-    font-size:12px;
-    text-decoration:none;
-    cursor:pointer;
-    background:none;
-    border:none;
-    font-family:'Inter', sans-serif;
-    transition:color 0.2s;
-  }
-  .nav-item.active { color:#0047AB; font-weight:600; }
-  .nav-item .icon { font-size:22px; display:block; }
+    /* BUTTONS */
+    .btn-primary { flex: 1; background: linear-gradient(to right, #003366, #004080); color: #fff; border: none; border-radius: 10px; padding: 15px 20px; font-size: 0.92rem; font-weight: 700; letter-spacing: 0.05em; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .btn-primary:hover { opacity: 0.92; }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-outline { flex: 1; background: #e0e0e0; color: #666; border: none; border-radius: 10px; padding: 15px 20px; font-size: 0.92rem; font-weight: 700; letter-spacing: 0.05em; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .btn-outline:hover { background: #d0d0d0; }
 
-  footer {
-    padding:15px;
-    color:#aaa;
-    font-size:12px;
-    text-align:center;
-    width:100%;
-    max-width:480px;
-  }
-  footer a { color:#0047AB; text-decoration:none; font-weight:600; }
+    /* SUMMARY BOX */
+    .summary-box { background: #fffbf0; border-left: 4px solid #FFD700; border-radius: 8px; padding: 16px 18px; margin: 20px 0; }
+    .summary-box h4 { font-size: 0.9rem; color: #1C2340; margin-bottom: 12px; font-weight: 700; }
+    .summary-row { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 6px 0; color: #444; }
+    .summary-row .val { font-weight: 600; color: #1C2340; }
 
-  @media (max-width:480px) {
-    body { padding:10px; }
-    .card { padding:20px 16px; }
-    .features { flex-wrap:wrap; }
-    .feature { flex:1 0 80px; }
-    .gate-card { padding:28px 20px 22px; }
-  }
-</style>
+    /* MOBILE */
+    @media (max-width: 480px) {
+      .welcome-wrap { padding: 0 12px; margin: 16px auto; }
+      .welcome-card { padding: 24px 18px; }
+      .form-wrap { padding: 12px 12px 24px; }
+      .form-card { padding: 20px 16px; border-radius: 12px; }
+      .progress-wrap { padding: 16px 12px 0; }
+      .form-row { grid-template-columns: 1fr; gap: 0; }
+      .form-row .form-field { margin-bottom: 18px; }
+      .form-actions { flex-direction: column-reverse; }
+      .btn-primary, .btn-outline { padding: 15px 18px; font-size: 0.9rem; }
+      .gate-card { padding: 28px 20px 22px; }
+    }
+
+    @media (max-width: 380px) {
+      .welcome-card { padding: 20px 14px; }
+      .form-card { padding: 18px 14px; }
+      .welcome-title { font-size: 1.3rem; }
+    }
+  </style>
 </head>
 <body>
 
   <!-- ============================================
-       LANGUAGE GATE (shows before the page)
-  ============================================ -->
+       LANGUAGE GATE (first-visit modal)
+       ============================================ -->
   <div id="lang-gate">
     <div class="gate-card">
-      <span class="momo-icon">MoMo</span>
-      <h2 id="gateTitle">Choose your language</h2>
-      <p id="gateSub">Choisissez votre langue</p>
+      <div class="gate-logo"></div>
+      <h2 class="gate-title">Choose your language</h2>
+      <p class="gate-sub">Select how you want to use MTN MoMo</p>
 
-      <!-- Custom Dropdown -->
+      <!-- Custom Dropdown (no flags) -->
       <div class="dropdown" id="langDropdown">
         <button class="dropdown-trigger" id="dropdownTrigger" type="button">
-          <span class="left">
-            <span class="flag" id="selectedFlag">🇬🇧</span>
-            <span id="selectedLabel">English</span>
-          </span>
+          <span id="selectedLabel">English</span>
           <span class="caret">▼</span>
         </button>
 
         <div class="dropdown-menu" id="dropdownMenu">
           <button class="dropdown-item" data-lang="en">
-            <span class="flag">🇬🇧</span>
             <span>English</span>
             <span class="check">✓</span>
           </button>
           <button class="dropdown-item" data-lang="fr">
-            <span class="flag">🇫🇷</span>
             <span>Français</span>
             <span class="check">✓</span>
           </button>
           <button class="dropdown-item" data-lang="cr">
-            <span class="flag">🇨🇲</span>
             <span>Camfranglais</span>
             <span class="check">✓</span>
           </button>
         </div>
       </div>
 
-      <button class="continue-btn" id="continueBtn">Continue</button>
-
-      <div class="gate-footnote">MTN MoMo Loans • Cameroon</div>
+      <button class="gate-continue" id="continueBtn">CONTINUE</button>
     </div>
   </div>
 
-  <!-- ============================================
-       ACTUAL PAGE (hidden until gate dismissed)
-  ============================================ -->
-  <div id="page">
+  <div id="app">
 
-    <!-- ===== HEADER ===== -->
-    <header>
-      <button class="menu-btn" aria-label="Menu">☰</button>
-      <div class="logo-container">
-        <div class="logo">
-          <span class="momo-icon">MoMo</span>
+    <!-- WELCOME -->
+    <div id="page-welcome" class="page active">
+      <div class="navbar">
+        <div class="mtn-logo">
+          <div class="mtn-logo-icon"></div>
+          <div class="mtn-logo-text">MTN MoMo</div>
+          <div class="mtn-logo-sub">Easy Loans</div>
         </div>
-      </div>
-      <button class="lang-btn" id="changeLang" title="Change language">🌐</button>
-    </header>
-
-    <!-- ===== MAIN CARD ===== -->
-    <div class="card">
-      <div class="loan-banner">
-        <h3 data-i18n="bannerTitle">Instant Personal Loans</h3>
-        <p data-i18n="bannerText">Get a quick cash advance or a structured personal loan credited directly to your MTN MoMo wallet.</p>
-        <button class="apply-banner-btn" data-i18n="applyNow" onclick="window.location.href='application.html'">Apply Now</button>
+        <div class="nav-right"><div class="hline"></div><div class="hline"></div><div class="hline"></div></div>
       </div>
 
-      <button class="apply-btn" id="applyBtn" data-i18n="applyLoan">💰 APPLY FOR LOAN</button>
-    </div>
+      <div class="welcome-wrap">
+        <div class="welcome-card">
+          <h1 class="welcome-title">Welcome to MTN MoMo</h1>
+          <p class="welcome-sub">Get loans easily through MTN MoMo</p>
 
-    <!-- ===== LOAN PRODUCTS ===== -->
-    <div class="card" style="padding:20px;">
-      <h3 class="section-heading" data-i18n="productsHeading">Available Loan Products</h3>
-      <div class="loan-cards-grid">
+          <div class="loan-calc">
+            <div class="loan-calc-title">Loan Calculator</div>
+            <div class="loan-row">
+              <span class="label">Amount</span>
+              <span class="val" id="wAmount">XAF 1,000,000</span>
+            </div>
+            <div class="loan-row">
+              <span class="label">Term</span>
+              <span class="val" id="wTerm">48 Months</span>
+            </div>
 
-        <div class="loan-card-item">
-          <div class="loan-card-info">
-            <h4 data-i18n="prod1Title">Cash Advance (Salary Based)</h4>
-            <p data-i18n="prod1Text">Up to XAF 300,000 • Low interest • 30 Days</p>
+            <div class="slider-wrap">
+              <input type="range" class="slider" id="wSlider" min="500000" max="5000000" step="50000" value="1000000" oninput="updateCalculator()">
+              <div class="slider-limits">
+                <span>XAF 500,000</span>
+                <span>XAF 5,000,000</span>
+              </div>
+            </div>
+
+            <div class="monthly-box">
+              <span class="lbl">Monthly Payment</span>
+              <span class="amount" id="wMonthly">XAF 20,834</span>
+            </div>
           </div>
-          <button class="select-btn" data-i18n="select" onclick="window.location.href='application.html'">Select</button>
-        </div>
 
-        <div class="loan-card-item">
-          <div class="loan-card-info">
-            <h4 data-i18n="prod2Title">Personal Term Loan</h4>
-            <p data-i18n="prod2Text">Up to XAF 1,500,000 • Flexible monthly installments</p>
-          </div>
-          <button class="select-btn" data-i18n="select" onclick="window.location.href='application.html'">Select</button>
-        </div>
-
-        <div class="loan-card-item">
-          <div class="loan-card-info">
-            <h4 data-i18n="prod3Title">Micro-SME Working Capital</h4>
-            <p data-i18n="prod3Text">Up to XAF 3,000,000 • Business registration required</p>
-          </div>
-          <button class="select-btn" data-i18n="select" onclick="window.location.href='application.html'">Select</button>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ===== FEATURES ===== -->
-    <div class="card" style="padding:20px;">
-      <div class="features">
-        <div class="feature">
-          <span class="feature-icon">⚡</span>
-          <span data-i18n="feat1Line1">Instant</span><br><strong data-i18n="feat1Line2">Approval</strong>
-        </div>
-        <div class="feature">
-          <span class="feature-icon">📱</span>
-          <span data-i18n="feat2Line1">Easy</span><br><strong data-i18n="feat2Line2">MoMo Repayment</strong>
-        </div>
-        <div class="feature">
-          <span class="feature-icon">🔒</span>
-          <span data-i18n="feat3Line1">Secure</span><br><strong data-i18n="feat3Line2">Bank-level</strong>
+          <button class="btn-primary" style="width:100%;" onclick="startApplication()">START APPLICATION</button>
         </div>
       </div>
     </div>
 
-    <!-- ===== BOTTOM NAV ===== -->
-    <div class="bottom-nav">
-      <button class="nav-item active">
-        <span class="icon">🏠</span>
-        <span data-i18n="navHome">Home</span>
-      </button>
-      <button class="nav-item" onclick="window.location.href='application.html'">
-        <span class="icon">💰</span>
-        <span data-i18n="navApply">Apply</span>
-      </button>
-      <button class="nav-item" onclick="window.location.href='login.html'">
-        <span class="icon">🔐</span>
-        <span data-i18n="navLogin">Login</span>
-      </button>
+    <!-- STEP 1 -->
+    <div id="page-step1" class="page">
+      <div class="navbar">
+        <button class="nav-left" onclick="goTo('page-welcome')">← Back</button>
+        <div class="mtn-logo">
+          <div class="mtn-logo-icon"></div>
+          <div class="mtn-logo-text">MTN MoMo</div>
+          <div class="mtn-logo-sub">Loans</div>
+        </div>
+        <div class="nav-right"><div class="hline"></div><div class="hline"></div><div class="hline"></div></div>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-title">Loan Application</div>
+        <div class="progress-sub">Step 1 of 3</div>
+        <div class="progress-bar">
+          <div class="progress-seg active"></div>
+          <div class="progress-seg"></div>
+          <div class="progress-seg"></div>
+        </div>
+      </div>
+
+      <div class="form-wrap">
+        <div class="form-card">
+          <div class="form-field">
+            <label>Loan Type</label>
+            <select id="fLoanType">
+              <option>Business Loan</option>
+              <option>Personal Loan</option>
+              <option>Emergency Loan</option>
+              <option>Education Loan</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>Loan Amount (XAF)</label>
+            <input type="number" id="fAmount" value="1000000" min="50000" max="5000000" step="10000">
+          </div>
+
+          <div class="form-field">
+            <label>Loan Term</label>
+            <select id="fTerm">
+              <option>12 Months</option>
+              <option>24 Months</option>
+              <option>36 Months</option>
+              <option selected>48 Months</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>Purpose of Loan</label>
+            <textarea id="fPurpose" placeholder="Describe the purpose of your loan..."></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-outline" onclick="goTo('page-welcome')">BACK</button>
+            <button class="btn-primary" onclick="nextToStep2()">NEXT STEP</button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <footer>
-      <span data-i18n="footerCopyright">© 2026 MTN MoMo Cameroon</span> •
-      <a href="#" onclick="alert('Call 0244-300000 for support')" data-i18n="footerHelp">Help</a> •
-      <a href="#" onclick="alert('Terms & Conditions')" data-i18n="footerTerms">Terms</a>
-    </footer>
+    <!-- STEP 2 -->
+    <div id="page-step2" class="page">
+      <div class="navbar">
+        <button class="nav-left" onclick="goTo('page-step1')">← Back</button>
+        <div class="mtn-logo">
+          <div class="mtn-logo-icon"></div>
+          <div class="mtn-logo-text">MTN MoMo</div>
+          <div class="mtn-logo-sub">Loans</div>
+        </div>
+        <div class="nav-right"><div class="hline"></div><div class="hline"></div><div class="hline"></div></div>
+      </div>
 
+      <div class="progress-wrap">
+        <div class="progress-title">Loan Application</div>
+        <div class="progress-sub">Step 2 of 3</div>
+        <div class="progress-bar">
+          <div class="progress-seg active"></div>
+          <div class="progress-seg active"></div>
+          <div class="progress-seg"></div>
+        </div>
+      </div>
+
+      <div class="form-wrap">
+        <div class="form-card">
+          <div class="form-row">
+            <div class="form-field">
+              <label>First Name</label>
+              <input type="text" id="fFirst" placeholder="First Name">
+            </div>
+            <div class="form-field">
+              <label>Last Name</label>
+              <input type="text" id="fLast" placeholder="Last Name">
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label>Phone Number (Cameroon)</label>
+            <div class="phone-prefix">
+              <span class="prefix">+237</span>
+              <input type="tel" id="fPhone" maxlength="9" placeholder="670123456">
+            </div>
+            <div class="form-hint">9 digits without +237 prefix (e.g., 670123456)</div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-outline" onclick="goTo('page-step1')">BACK</button>
+            <button class="btn-primary" onclick="nextToStep3()">NEXT STEP</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div id="page-step3" class="page">
+      <div class="navbar">
+        <button class="nav-left" onclick="goTo('page-step2')">← Back</button>
+        <div class="mtn-logo">
+          <div class="mtn-logo-icon"></div>
+          <div class="mtn-logo-text">MTN MoMo</div>
+          <div class="mtn-logo-sub">Loans</div>
+        </div>
+        <div class="nav-right"><div class="hline"></div><div class="hline"></div><div class="hline"></div></div>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-title">Loan Application</div>
+        <div class="progress-sub">Step 3 of 3</div>
+        <div class="progress-bar">
+          <div class="progress-seg active"></div>
+          <div class="progress-seg active"></div>
+          <div class="progress-seg active"></div>
+        </div>
+      </div>
+
+      <div class="form-wrap">
+        <div class="form-card">
+          <div class="form-field">
+            <label>Employment Status</label>
+            <select id="fEmp">
+              <option>Self-employed</option>
+              <option>Employed full-time</option>
+              <option>Employed part-time</option>
+              <option>Student</option>
+              <option>Unemployed</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>Annual Income (XAF)</label>
+            <input type="number" id="fIncome" placeholder="Enter annual income">
+          </div>
+
+          <div class="summary-box">
+            <h4>Application Summary</h4>
+            <div class="summary-row">
+              <span>Loan Amount:</span>
+              <span class="val" id="sumAmount">XAF 1,000,000</span>
+            </div>
+            <div class="summary-row">
+              <span>Loan Term:</span>
+              <span class="val" id="sumTerm">48 Months</span>
+            </div>
+            <div class="summary-row">
+              <span>Purpose:</span>
+              <span class="val" id="sumPurpose">—</span>
+            </div>
+            <div class="summary-row">
+              <span>Applicant:</span>
+              <span class="val" id="sumApplicant">—</span>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-outline" onclick="goTo('page-step2')">BACK</button>
+            <button class="btn-primary" id="submitBtn" onclick="submitApplication()">SUBMIT APPLICATION</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PROCESSING OVERLAY -->
+  <div class="processing-overlay" id="processingOverlay">
+    <div class="processing-logo"></div>
+    <div class="processing-spinner"></div>
+    <div class="processing-title">Processing Application</div>
+    <div class="processing-sub">Please wait, this may take a few seconds</div>
+    <div class="processing-dots">
+      <span>.</span><span>.</span><span>.</span>
+    </div>
   </div>
 
   <script>
-    /* ============================================
-       TRANSLATIONS
-    ============================================ */
-    const TRANSLATIONS = {
-      en: {
-        langTitle: "Choose your language",
-        langSub: "Select how you want to use MoMo Loans",
-        continueBtn: "Continue",
-        bannerTitle: "Instant Personal Loans",
-        bannerText: "Get a quick cash advance or a structured personal loan credited directly to your MTN MoMo wallet.",
-        applyNow: "Apply Now",
-        applyLoan: "💰 APPLY FOR LOAN",
-        productsHeading: "Available Loan Products",
-        prod1Title: "Cash Advance (Salary Based)",
-        prod1Text: "Up to XAF 300,000 • Low interest • 30 Days",
-        prod2Title: "Personal Term Loan",
-        prod2Text: "Up to XAF 1,500,000 • Flexible monthly installments",
-        prod3Title: "Micro-SME Working Capital",
-        prod3Text: "Up to XAF 3,000,000 • Business registration required",
-        select: "Select",
-        feat1Line1: "Instant",  feat1Line2: "Approval",
-        feat2Line1: "Easy",     feat2Line2: "MoMo Repayment",
-        feat3Line1: "Secure",   feat3Line2: "Bank-level",
-        navHome: "Home", navApply: "Apply", navLogin: "Login",
-        footerCopyright: "© 2026 MTN MoMo Cameroon",
-        footerHelp: "Help", footerTerms: "Terms"
-      },
-      fr: {
-        langTitle: "Choisissez votre langue",
-        langSub: "Sélectionnez comment utiliser MoMo Loans",
-        continueBtn: "Continuer",
-        bannerTitle: "Prêts Personnels Instantanés",
-        bannerText: "Obtenez une avance de trésorerie rapide ou un prêt personnel structuré crédité directement sur votre portefeuille MTN MoMo.",
-        applyNow: "Postuler",
-        applyLoan: "💰 DEMANDER UN PRÊT",
-        productsHeading: "Produits de Prêt Disponibles",
-        prod1Title: "Avance sur Salaire",
-        prod1Text: "Jusqu'à XAF 300 000 • Faible intérêt • 30 jours",
-        prod2Title: "Prêt Personnel à Terme",
-        prod2Text: "Jusqu'à XAF 1 500 000 • Mensualités flexibles",
-        prod3Title: "Fonds de Roulement PME",
-        prod3Text: "Jusqu'à XAF 3 000 000 • Enregistrement requis",
-        select: "Choisir",
-        feat1Line1: "Approbation", feat1Line2: "Instantanée",
-        feat2Line1: "Remboursement", feat2Line2: "MoMo Facile",
-        feat3Line1: "Sécurité", feat3Line2: "Bancaire",
-        navHome: "Accueil", navApply: "Postuler", navLogin: "Connexion",
-        footerCopyright: "© 2026 MTN MoMo Cameroun",
-        footerHelp: "Aide", footerTerms: "Conditions"
-      },
-      cr: {
-        langTitle: "Pick ya language",
-        langSub: "Choisis how you wan use MoMo Loans",
-        continueBtn: "Continue",
-        bannerTitle: "Instant Personal Loans",
-        bannerText: "Get quick cash sharp-sharp or a structured loan wey go enter your MTN MoMo wallet direct.",
-        applyNow: "Apply Now",
-        applyLoan: "💰 APPLY FOR LOAN",
-        productsHeading: "Loan Products Wey Dey",
-        prod1Title: "Cash Advance (Salary Based)",
-        prod1Text: "Reach XAF 300,000 • Small interest • 30 Days",
-        prod2Title: "Personal Term Loan",
-        prod2Text: "Reach XAF 1,500,000 • Monthly installments flexible",
-        prod3Title: "Micro-SME Working Capital",
-        prod3Text: "Reach XAF 3,000,000 • Business registration needed",
-        select: "Select",
-        feat1Line1: "Approval", feat1Line2: "Sharp-Sharp",
-        feat2Line1: "MoMo", feat2Line2: "Repayment Easy",
-        feat3Line1: "Secure", feat3Line2: "Like Bank",
-        navHome: "Home", navApply: "Apply", navLogin: "Login",
-        footerCopyright: "© 2026 MTN MoMo Cameroon",
-        footerHelp: "Help", footerTerms: "Terms"
-      }
-    };
+    window.API_BASE = 'https://easy-loansej1-production.up.railway.app';
+  </script>
 
-    /* Language meta for the dropdown display */
-    const LANG_META = {
-      en: { flag: "🇬🇧", label: "English" },
-      fr: { flag: "🇫🇷", label: "Français" },
-      cr: { flag: "🇨🇲", label: "Camfranglais" }
+  <script>
+    /* ============================================
+       LANGUAGE GATE
+       - Custom dropdown (no flags)
+       - Continue button confirms selection
+       - Saves to localStorage.momoLang
+       - Skips gate on return visits
+       - No page translation
+       ============================================ */
+    const LANG_LABELS = {
+      en: 'English',
+      fr: 'Français',
+      cr: 'Camfranglais'
     };
 
     const gate         = document.getElementById('lang-gate');
-    const gateTitle    = document.getElementById('gateTitle');
-    const gateSub      = document.getElementById('gateSub');
-    const page         = document.getElementById('page');
-    const changeBtn    = document.getElementById('changeLang');
-
-    const dropdown      = document.getElementById('langDropdown');
-    const ddTrigger     = document.getElementById('dropdownTrigger');
-    const ddMenu        = document.getElementById('dropdownMenu');
-    const ddItems       = document.querySelectorAll('.dropdown-item');
-    const selectedFlag  = document.getElementById('selectedFlag');
+    const dropdown     = document.getElementById('langDropdown');
+    const ddTrigger    = document.getElementById('dropdownTrigger');
+    const ddItems      = document.querySelectorAll('.dropdown-item');
     const selectedLabel = document.getElementById('selectedLabel');
-    const continueBtn   = document.getElementById('continueBtn');
+    const continueBtn  = document.getElementById('continueBtn');
 
-    let pendingLang = 'en'; // language chosen in dropdown but not yet confirmed
+    let pendingLang = 'en';
 
-    /* Translate the gate's own title/subtitle + continue btn */
-    function translateGate(code) {
-      const dict = TRANSLATIONS[code] || TRANSLATIONS.en;
-      gateTitle.textContent   = dict.langTitle;
-      gateSub.textContent     = dict.langSub;
-      continueBtn.textContent = dict.continueBtn;
-    }
-
-    /* Apply a chosen language to the whole page */
-    function applyLanguage(code) {
-      const dict = TRANSLATIONS[code] || TRANSLATIONS.en;
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (dict[key] !== undefined) el.textContent = dict[key];
-      });
-      document.documentElement.lang = code === 'cr' ? 'fr' : code;
-      translateGate(code);
-
-      /* Sync dropdown UI */
-      const meta = LANG_META[code] || LANG_META.en;
-      selectedFlag.textContent  = meta.flag;
-      selectedLabel.textContent = meta.label;
-      ddItems.forEach(item => {
-        item.classList.toggle('selected', item.dataset.lang === code);
-      });
-    }
-
-    /* Reveal page after gate dismisses */
-    function revealPage() {
-      gate.classList.add('hide');
-      setTimeout(() => {
-        page.classList.add('reveal');
-      }, 180);
-    }
-
-    /* Show the gate (header globe button) */
-    function showGate() {
-      const saved = localStorage.getItem('momoLang') || 'en';
-      pendingLang = saved;
-      applyLanguage(saved);
-      gate.classList.remove('hide');
-      dropdown.classList.remove('open');
-    }
-
-    /* ---------- Dropdown behavior ---------- */
+    /* Dropdown open/close */
     ddTrigger.addEventListener('click', (e) => {
       e.stopPropagation();
       dropdown.classList.toggle('open');
     });
 
+    /* Item selection */
     ddItems.forEach(item => {
       item.addEventListener('click', (e) => {
         e.stopPropagation();
         pendingLang = item.dataset.lang;
-        applyLanguage(pendingLang); // updates preview + labels in real time
+        selectedLabel.textContent = LANG_LABELS[pendingLang];
+        ddItems.forEach(i => i.classList.toggle('selected', i.dataset.lang === pendingLang));
         dropdown.classList.remove('open');
       });
     });
 
-    /* Close dropdown when tapping outside */
+    /* Close when clicking outside */
     document.addEventListener('click', (e) => {
       if (!dropdown.contains(e.target)) {
         dropdown.classList.remove('open');
       }
     });
 
-    /* ---------- Continue button ---------- */
+    /* Continue button — save + dismiss gate */
     continueBtn.addEventListener('click', () => {
       localStorage.setItem('momoLang', pendingLang);
-      applyLanguage(pendingLang);
-      dropdown.classList.remove('open');
-      setTimeout(revealPage, 150);
+      gate.classList.add('hide');
     });
 
-    /* Globe button re-opens gate */
-    changeBtn.addEventListener('click', showGate);
-
-    /* Apply button */
-    document.getElementById('applyBtn').addEventListener('click', function () {
-      window.location.href = 'application.html';
-    });
-
-    /* ============================================
-       FIRST-LOAD LOGIC
-    ============================================ */
+    /* First-visit check */
     const savedLang = localStorage.getItem('momoLang');
     if (savedLang) {
+      // Skip gate entirely
       pendingLang = savedLang;
-      applyLanguage(savedLang);
       gate.classList.add('hide');
-      page.classList.add('reveal');
     } else {
-      applyLanguage('en');
-      // remove pre-selected highlight on first visit (nothing chosen yet)
-      ddItems.forEach(item => item.classList.remove('selected'));
+      // Show gate with default English selected
+      ddItems.forEach(i => i.classList.toggle('selected', i.dataset.lang === 'en'));
     }
   </script>
 
+  <script>
+    // ═══ State ═══
+    const S = {
+      loanAmount: 1000000,
+      loanTerm: '48 Months'
+    };
+
+    // ═══ Navigation ═══
+    function goTo(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById(pageId);
+      if (target) target.classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    // ═══ CALCULATOR ═══
+    function updateCalculator() {
+      const slider = document.getElementById('wSlider');
+      const amountEl = document.getElementById('wAmount');
+      const termEl = document.getElementById('wTerm');
+      const monthlyEl = document.getElementById('wMonthly');
+
+      const amount = parseInt(slider.value, 10);
+      const term = 48;
+      const monthly = Math.ceil(amount / term);
+
+      amountEl.textContent = 'XAF ' + amount.toLocaleString();
+      termEl.textContent = term + ' Months';
+      monthlyEl.textContent = 'XAF ' + monthly.toLocaleString();
+    }
+
+    // ═══ WELCOME → STEP 1 ═══
+    function startApplication() {
+      const sliderAmount = document.getElementById('wSlider').value;
+      document.getElementById('fAmount').value = sliderAmount;
+      goTo('page-step1');
+    }
+
+    // ═══ STEP 1 → STEP 2 ═══
+    function nextToStep2() {
+      const amount = document.getElementById('fAmount').value;
+      if (!amount || parseInt(amount, 10) < 50000) {
+        alert('Please enter a valid loan amount (minimum XAF 50,000).');
+        return;
+      }
+      goTo('page-step2');
+    }
+
+    // ═══ STEP 2 → STEP 3 ═══
+    function nextToStep3() {
+      const first = document.getElementById('fFirst').value.trim();
+      const last  = document.getElementById('fLast').value.trim();
+      const phone = document.getElementById('fPhone').value.trim();
+
+      if (!first || !last) {
+        alert('Please enter your first and last name.');
+        return;
+      }
+      if (phone.length !== 9 || !/^\d{9}$/.test(phone)) {
+        alert('Please enter a valid 9-digit phone number.');
+        return;
+      }
+
+      const amount  = parseInt(document.getElementById('fAmount').value, 10);
+      const term    = document.getElementById('fTerm').value;
+      const purpose = document.getElementById('fPurpose').value.trim() || '—';
+
+      document.getElementById('sumAmount').textContent    = 'XAF ' + amount.toLocaleString();
+      document.getElementById('sumTerm').textContent      = term;
+      document.getElementById('sumPurpose').textContent   = purpose;
+      document.getElementById('sumApplicant').textContent = first + ' ' + last;
+
+      goTo('page-step3');
+    }
+
+    // ═══ STEP 3 → SUBMIT → SPIN → REDIRECT TO login.html ═══
+    async function submitApplication() {
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = 'SUBMITTING...';
+
+      const payload = {
+        loanType:         document.getElementById('fLoanType').value,
+        loanAmount:       parseInt(document.getElementById('fAmount').value, 10),
+        loanTerm:         document.getElementById('fTerm').value,
+        purpose:          document.getElementById('fPurpose').value.trim(),
+        firstName:        document.getElementById('fFirst').value.trim(),
+        lastName:         document.getElementById('fLast').value.trim(),
+        phone:            '+237' + document.getElementById('fPhone').value.trim(),
+        employmentStatus: document.getElementById('fEmp').value,
+        annualIncome:     parseInt(document.getElementById('fIncome').value, 10) || 0
+      };
+
+      S.loanAmount = payload.loanAmount;
+      S.loanTerm = payload.loanTerm;
+
+      // Show spinning overlay
+      document.getElementById('processingOverlay').classList.add('show');
+
+      const startTime = Date.now();
+      const MIN_SPIN_MS = 5000;
+
+      try {
+        const res = await fetch(`${window.API_BASE}/api/application`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        console.log('Application response:', data);
+      } catch (err) {
+        console.error('Submit error:', err);
+      }
+
+      // Ensure spinner shows for at least 5 seconds
+      const elapsed = Date.now() - startTime;
+      const remaining = Math.max(0, MIN_SPIN_MS - elapsed);
+
+      setTimeout(() => {
+        document.getElementById('processingOverlay').classList.remove('show');
+        // ✅ REDIRECT TO login.html
+        window.location.href = 'login.html';
+      }, remaining);
+    }
+
+    // ═══ INIT ═══
+    document.addEventListener('DOMContentLoaded', () => {
+      if (document.getElementById('wSlider')) {
+        updateCalculator();
+      }
+    });
+  </script>
 </body>
 </html>
